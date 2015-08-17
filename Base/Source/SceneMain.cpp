@@ -188,6 +188,7 @@ void SceneMain::Init()
 }
 void SceneMain::UpdateInputs(double dt)
 {
+
 	// For gameplay
 	{
 		// Check Collision of th hero before moving up
