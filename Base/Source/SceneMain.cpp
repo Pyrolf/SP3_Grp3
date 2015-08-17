@@ -276,7 +276,7 @@ void SceneMain::UpdateInputs(double dt)
 	// Others
 	{
 		// Choose play
-		if(Application::IsKeyPressed('1'))
+		if(Application::IsKeyPressed(VK_UP))
 		{
 			if(gameState == PAUSE || gameState == MAINMENU)
 			{
