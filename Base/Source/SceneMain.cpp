@@ -284,9 +284,10 @@ void SceneMain::UpdateInputs(double dt)
 					choice = PLAY;
 				}
 			}
+			
 		}
 		// Choose exit
-		else if(Application::IsKeyPressed('2'))
+		else if(Application::IsKeyPressed(VK_DOWN))
 		{
 			if(gameState == PAUSE)
 			{
@@ -302,6 +303,7 @@ void SceneMain::UpdateInputs(double dt)
 					choice = EXIT;
 				}
 			}
+
 		}
 		// Confirm choice
 		else if(Application::IsKeyPressed(VK_RETURN))
@@ -623,8 +625,8 @@ void SceneMain::Render()
 			Render2DMesh(meshList[GEO_MAINMENU], false);
 			
 			//On screen text
-			RenderTextOnScreen(meshList[GEO_TEXT], "1.PLAY", Color(1, 1, 1), 5, 25, 15);
-			RenderTextOnScreen(meshList[GEO_TEXT], "2.EXIT", Color(1, 1, 1), 5, 25, 10);
+			RenderTextOnScreen(meshList[GEO_TEXT], "START GAME", Color(1, 1, 1), 5, 25, 15);
+			RenderTextOnScreen(meshList[GEO_TEXT], "EXIT", Color(1, 1, 1), 5, 25, 10);
 			if(choice == PLAY)
 			{
 				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 15, 15);
