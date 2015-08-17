@@ -4,8 +4,7 @@ Object2D::Object2D()
 	:
 rotationalVelocity(0),
 rotationalAcceleration(0),
-active(false),
-image(NULL)
+active(false)
 {
 }
 

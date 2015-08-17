@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Map.cpp" />
     <ClCompile Include="Source\MathUtility.cpp" />
     <ClCompile Include="Source\MatrixStack.cpp" />
     <ClCompile Include="Source\Mtx44.cpp" />
@@ -19,6 +20,7 @@
     <ClCompile Include="Source\Vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Map.h" />
     <ClInclude Include="Source\MathUtility.h" />
     <ClInclude Include="Source\MatrixStack.h" />
     <ClInclude Include="Source\Mtx44.h" />

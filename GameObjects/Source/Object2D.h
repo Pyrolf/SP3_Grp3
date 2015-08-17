@@ -1,6 +1,5 @@
 #pragma once
 #include "Vector3.h"
-#include "Texture.h"
 
 class Object2D
 {
@@ -18,7 +17,6 @@ public:
 
 	bool active;
 
-	Texture* image;
 protected:
 	void UpdatePosition(const double& deltaTime);
 	void UpdateVelocity(const double& deltaTime);

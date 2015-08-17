@@ -12,9 +12,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\AI.cpp" />
+    <ClCompile Include="Source\Enemy.cpp" />
+    <ClCompile Include="Source\Strategy.cpp" />
+    <ClCompile Include="Source\Strategy_Kill.cpp" />
+    <ClCompile Include="Source\Strategy_Safe.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\AI.h" />
+    <ClInclude Include="Source\Enemy.h" />
+    <ClInclude Include="Source\Strategy.h" />
+    <ClInclude Include="Source\Strategy_Kill.h" />
+    <ClInclude Include="Source\Strategy_Safe.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E8970069-C54D-4F31-95EF-9AE0FB441894}</ProjectGuid>
@@ -51,7 +59,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\GameObjects\Source;$(SolutionDir)\Common\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\GameObjects\Source;$(SolutionDir)\Common\Source</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -67,7 +75,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\Events\Source;$(SolutionDir)\GameObjects\Source;$(SolutionDir)\nyeh\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\GameObjects\Source;$(SolutionDir)\Common\Source</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
