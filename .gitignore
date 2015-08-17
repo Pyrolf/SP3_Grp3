@@ -20,5 +20,6 @@ Release/AI.lib
 Release/GameObjects.lib
 *.opensdf
 *.sdf
+*.suo
 *.user
 *.log
