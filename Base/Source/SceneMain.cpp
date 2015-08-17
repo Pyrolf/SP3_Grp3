@@ -70,6 +70,7 @@ SceneMain::~SceneMain()
 void SceneMain::Init()
 {
 	SceneBase::Init();
+	
 
 	for(int index = 0; index < 2; index++)
 	{
