@@ -1,4 +1,4 @@
-﻿Build started 17/8/2015 12:13:20 PM.
+﻿Build started 17/8/2015 12:29:48 PM.
      1>Project "C:\Users\User\Desktop\SP3_Grp3\Base\Base.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\Base.unsuccessfulbuild" because "AlwaysCreate" was specified.
@@ -14,4 +14,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:00.06
+Time Elapsed 00:00:00.07

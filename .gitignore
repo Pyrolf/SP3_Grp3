@@ -24,3 +24,7 @@ Release/GameObjects.lib
 *.suo
 *.user
 *.log
+*.suo
+SP3_Framework.sdf
+Base/Debug/Base.log
+*.log
