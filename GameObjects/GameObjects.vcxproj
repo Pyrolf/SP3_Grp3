@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Asteroid2D.h" />
+    <ClInclude Include="Source\AsteroidFactory.h" />
+    <ClInclude Include="Source\Bullet2D.h" />
+    <ClInclude Include="Source\Bullet2DFactory.h" />
+    <ClInclude Include="Source\DamagesThings.h" />
+    <ClInclude Include="Source\EnemyShip2D.h" />
+    <ClInclude Include="Source\Factory.h" />
+    <ClInclude Include="Source\GameObject.h" />
+    <ClInclude Include="Source\Killable.h" />
+    <ClInclude Include="Source\Object2D.h" />
+    <ClInclude Include="Source\Object2DFactory.h" />
+    <ClInclude Include="Source\PlayerShip2D.h" />
+    <ClInclude Include="Source\Ship2D.h" />
+    <ClInclude Include="Source\ShipFactory.h" />
+    <ClInclude Include="Source\SpawnsObjects.h" />
+    <ClInclude Include="Source\World2D.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Asteroid2D.cpp" />
+    <ClCompile Include="Source\AsteroidFactory.cpp" />
+    <ClCompile Include="Source\Bullet2D.cpp" />
+    <ClCompile Include="Source\Bullet2DFactory.cpp" />
+    <ClCompile Include="Source\DamagesThings.cpp" />
+    <ClCompile Include="Source\EnemyShip2D.cpp" />
+    <ClCompile Include="Source\Factory.cpp" />
+    <ClCompile Include="Source\GameObject.cpp" />
+    <ClCompile Include="Source\Killable.cpp" />
+    <ClCompile Include="Source\Object2D.cpp" />
+    <ClCompile Include="Source\Object2DFactory.cpp" />
+    <ClCompile Include="Source\PlayerShip2D.cpp" />
+    <ClCompile Include="Source\Ship2D.cpp" />
+    <ClCompile Include="Source\ShipFactory.cpp" />
+    <ClCompile Include="Source\SpawnsObjects.cpp" />
+    <ClCompile Include="Source\World2D.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{95EAF54E-40B8-4724-A959-A402E8C34D7C}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>GameObjects</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Common\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Animations\Source;$(SolutionDir)\nyeh\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
