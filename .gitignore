@@ -20,8 +20,5 @@ Release/AI.lib
 Release/GameObjects.lib
 *.opensdf
 *.sdf
-*.suo
 *.user
 *.log
-Debug/Common.lib
-Release/Base.exe
