@@ -19,6 +19,7 @@
     <ClInclude Include="Source\EnemyShip2D.h" />
     <ClInclude Include="Source\Factory.h" />
     <ClInclude Include="Source\GameObject.h" />
+    <ClInclude Include="Source\GenerateGO.h" />
     <ClInclude Include="Source\Killable.h" />
     <ClInclude Include="Source\Object2D.h" />
     <ClInclude Include="Source\Object2DFactory.h" />

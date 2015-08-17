@@ -71,6 +71,9 @@
     <ClInclude Include="Source\SpawnsObjects.h">
       <Filter>Header Files\example</Filter>
     </ClInclude>
+    <ClInclude Include="Source\GenerateGO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Asteroid2D.cpp">

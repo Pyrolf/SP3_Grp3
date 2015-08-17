@@ -5,6 +5,7 @@
 #include "Enemy.h"
 #include "Vector2.h"
 #include "Goodies.h"
+#include "GenerateGO.h"
 
 struct Level
 {
@@ -17,6 +18,9 @@ public:
 
 	// Codes for Parallax Scrolling
 	CMap* m_cRearMap;
+	
+	// GameObj vector
+	vector<GameObject*> GameObjects;
 
 	// Enemies
 	vector<CEnemy*> theEnemy;
