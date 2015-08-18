@@ -19,7 +19,7 @@
     <ClInclude Include="Source\EnemyShip2D.h" />
     <ClInclude Include="Source\Factory.h" />
     <ClInclude Include="Source\GameObject.h" />
-    <ClInclude Include="Source\GenerateGO.h" />
+    <ClInclude Include="Source\GameObjectFactory.h" />
     <ClInclude Include="Source\Killable.h" />
     <ClInclude Include="Source\Object2D.h" />
     <ClInclude Include="Source\Object2DFactory.h" />
@@ -38,6 +38,7 @@
     <ClCompile Include="Source\EnemyShip2D.cpp" />
     <ClCompile Include="Source\Factory.cpp" />
     <ClCompile Include="Source\GameObject.cpp" />
+    <ClCompile Include="Source\GameObjectFactory.cpp" />
     <ClCompile Include="Source\Killable.cpp" />
     <ClCompile Include="Source\Object2D.cpp" />
     <ClCompile Include="Source\Object2DFactory.cpp" />

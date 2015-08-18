@@ -19,10 +19,7 @@ public:
 	int type;
 	bool active;
 	Vector3 pos;
-	int tileSize;
 
-	GameObject(int type, Vector3 pos, int tileSize);
+	GameObject(int type, Vector3 pos);
 	~GameObject();
-
-	int CheckColision(Vector3 pos);
 };

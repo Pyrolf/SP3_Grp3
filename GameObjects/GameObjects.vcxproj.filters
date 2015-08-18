@@ -71,7 +71,7 @@
     <ClInclude Include="Source\SpawnsObjects.h">
       <Filter>Header Files\example</Filter>
     </ClInclude>
-    <ClInclude Include="Source\GenerateGO.h">
+    <ClInclude Include="Source\GameObjectFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -123,6 +123,9 @@
     </ClCompile>
     <ClCompile Include="Source\SpawnsObjects.cpp">
       <Filter>Source Files\example</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameObjectFactory.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

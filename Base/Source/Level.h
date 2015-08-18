@@ -5,7 +5,7 @@
 #include "Enemy.h"
 #include "Vector2.h"
 #include "Goodies.h"
-#include "GenerateGO.h"
+#include "GameObjectFactory.h"
 
 struct Level
 {
@@ -20,7 +20,7 @@ public:
 	CMap* m_cRearMap;
 	
 	// GameObj vector
-	vector<GameObject*> GameObjects;
+	GameObjectFactory* gameObjects;
 
 	// Enemies
 	vector<CEnemy*> theEnemy;
