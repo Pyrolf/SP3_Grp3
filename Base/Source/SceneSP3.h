@@ -3,7 +3,7 @@
 
 #include "SceneBase.h"
 #include "Level.h"
-#include "Vector2.h"
+#include "Vector3.h"
 #include "PlayerInfo.h"
 
 class SceneSP3 : public SceneBase

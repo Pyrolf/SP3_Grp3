@@ -740,7 +740,7 @@ Mesh* MeshBuilder::Generate2DMesh(const std::string &meshName, Color color, int 
 	return mesh;
 }
 
-Mesh* MeshBuilder::GeneratePartOfSpriteSheet2D(const std::string &meshName, int width, int height, unsigned numRow, unsigned numCol, int posNumU, int posNumV)
+Mesh* MeshBuilder::GeneratePartOfSpriteSheet2D(const std::string &meshName, int width, int height, unsigned numRow, unsigned numCol, int posNumCol, int posNumRow)
 {
 	Vertex v;
 	std::vector<Vertex> vertex_buffer_data;
@@ -752,8 +752,8 @@ Mesh* MeshBuilder::GeneratePartOfSpriteSheet2D(const std::string &meshName, int 
 	float uSize = 1.f / numCol;
 	float vSize = 1.f / numRow;
 
-	float u1 = posNumU * uSize;
-	float v1 = 1.f - posNumV * vSize - vSize;
+	float u1 = posNumCol * uSize;
+	float v1 = 1.f - posNumRow * vSize - vSize;
 
 	v.pos.Set(0, 0, 0);
 	v.normal.Set(0, 0, 1);

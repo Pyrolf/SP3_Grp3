@@ -136,40 +136,60 @@ void SceneSP3::UpdateInputs(double dt)
 		// Check Collision of th hero before moving up
 		if(Application::IsKeyPressed('W'))
 		{
-			if(this->theHero->GetCurrentState() == this->theHero->PLAYING && !this->theHero->GetSideView())
+			if(this->theHero->GetCurrentState() == this->theHero->PLAYING)
 			{
-				switch (this->theHero->CheckCollision(this->theHero->GetPos_x(), this->theHero->GetPos_y() + this->theHero->GetMovementSpeed() * dt, true, false, false, false, currentLevel->m_cMap))
+				GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x(), this->theHero->GetPos_y() + this->theHero->GetMovementSpeed() * dt));
+				if(goCollidedWith)
 				{
-				case 0:
+					switch (goCollidedWith->type)
 					{
+					case GameObject::WALL:
+						break;
+					case GameObject::DOOR:
+						{
+							this->theHero->SetPos_x(goCollidedWith->pos.x);
+							this->theHero->SetPos_y(goCollidedWith->pos.y);
+							this->theHero->SetCurrentState( this->theHero->EXITING );
+						}
+						break;
+					default :
 						this->theHero->MoveUpDown( true, dt, currentLevel->m_cMap);
+						break;
 					}
-					break;
+				}
+				else
+				{
+					this->theHero->MoveUpDown( true, dt, currentLevel->m_cMap);
 				}
 			}
 		}
 		// Check Collision of th hero before moving down
 		if(Application::IsKeyPressed('S'))
 		{
-			if(this->theHero->GetCurrentState() == this->theHero->PLAYING && !this->theHero->GetSideView())
+			if(this->theHero->GetCurrentState() == this->theHero->PLAYING)
 			{
-				switch (this->theHero->CheckCollision(this->theHero->GetPos_x(), this->theHero->GetPos_y() - this->theHero->GetMovementSpeed() * dt, false, true, false, false, currentLevel->m_cMap))
+				GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x(), this->theHero->GetPos_y() - this->theHero->GetMovementSpeed() * dt));
+				if(goCollidedWith)
 				{
-				case 0:
-					this->theHero->MoveUpDown( false, dt, currentLevel->m_cMap);
-					break;
+					switch (goCollidedWith->type)
+					{
+					case GameObject::WALL:
+						break;
+					case GameObject::DOOR:
+						{
+							this->theHero->SetPos_x(goCollidedWith->pos.x);
+							this->theHero->SetPos_y(goCollidedWith->pos.y);
+							this->theHero->SetCurrentState( this->theHero->EXITING );
+						}
+						break;
+					default :
+						this->theHero->MoveUpDown( true, dt, currentLevel->m_cMap);
+						break;
+					}
 				}
-			}
-		}
-		// Check Collision of the hero before jumping up
-		if(Application::IsKeyPressed(' '))
-		{
-			if(this->theHero->GetCurrentState() == this->theHero->PLAYING && this->theHero->GetSideView())
-			{
-				if(this->theHero->CheckCollision(this->theHero->GetPos_x(), this->theHero->GetPos_y() + 500 * dt, true, false, false, false,currentLevel->m_cMap) == 0
-					&& this->theHero->isOnGround())
+				else
 				{
-					this->theHero->SetToJumpUpwards(currentLevel->m_cMap);
+					this->theHero->MoveUpDown( false, dt, currentLevel->m_cMap);
 				}
 			}
 		}
@@ -179,11 +199,28 @@ void SceneSP3::UpdateInputs(double dt)
 		{
 			if(this->theHero->GetCurrentState() == this->theHero->PLAYING)
 			{
-				switch (this->theHero->CheckCollision(this->theHero->GetPos_x() - this->theHero->GetMovementSpeed() * dt, this->theHero->GetPos_y(), false, false, true, false, currentLevel->m_cMap))
+				GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x() - this->theHero->GetMovementSpeed() * dt, this->theHero->GetPos_y()));
+				if(goCollidedWith)
 				{
-				case 0:
+					switch (goCollidedWith->type)
+					{
+					case GameObject::WALL:
+						break;
+					case GameObject::DOOR:
+						{
+							this->theHero->SetPos_x(goCollidedWith->pos.x);
+							this->theHero->SetPos_y(goCollidedWith->pos.y);
+							this->theHero->SetCurrentState( this->theHero->EXITING );
+						}
+						break;
+					default :
+						this->theHero->MoveUpDown( true, dt, currentLevel->m_cMap);
+						break;
+					}
+				}
+				else
+				{
 					this->theHero->MoveLeftRight( true, dt, currentLevel->m_cMap);
-					break;
 				}
 			}
 		}
@@ -192,18 +229,28 @@ void SceneSP3::UpdateInputs(double dt)
 		{
 			if(this->theHero->GetCurrentState() == this->theHero->PLAYING)
 			{
-				switch (this->theHero->CheckCollision(this->theHero->GetPos_x() + this->theHero->GetMovementSpeed() * dt, this->theHero->GetPos_y(), false, false, false, true, currentLevel->m_cMap))
+				GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x() + this->theHero->GetMovementSpeed() * dt, this->theHero->GetPos_y()));
+				if(goCollidedWith)
 				{
-				case 0:
-					this->theHero->MoveLeftRight( false, dt, currentLevel->m_cMap );
-					break;
-				case 3:
+					switch (goCollidedWith->type)
 					{
-						int checkPosition_X = 1 + (int) ((this->theHero->GetMapOffset_x() + this->theHero->GetPos_x() + this->theHero->GetMovementSpeed() * dt) / currentLevel->m_cMap->GetTileSize());
-						this->theHero->SetPos_x(checkPosition_X * currentLevel->m_cMap->GetTileSize() - theHero->GetMapOffset_x());
-						this->theHero->SetCurrentState( this->theHero->EXITING );
+					case GameObject::WALL:
+						break;
+					case GameObject::DOOR:
+						{
+							this->theHero->SetPos_x(goCollidedWith->pos.x);
+							this->theHero->SetPos_y(goCollidedWith->pos.y);
+							this->theHero->SetCurrentState( this->theHero->EXITING );
+						}
+						break;
+					default :
+						this->theHero->MoveUpDown( true, dt, currentLevel->m_cMap);
+						break;
 					}
-					break;
+				}
+				else
+				{
+					this->theHero->MoveLeftRight( false, dt, currentLevel->m_cMap);
 				}
 			}
 		}
@@ -254,8 +301,6 @@ void SceneSP3::UpdateInputs(double dt)
 				{
 					gameState = MAINMENU;
 					this->theHero->Reset();
-					this->theHero->SetNoOfCoins(0);
-					this->theHero->SetNoOfLives(3);
 					this->theHero->SetCurrentState(this->theHero->PLAYING);
 					for(vector<CEnemy *>::iterator it = currentLevel->theEnemy.begin(); it != currentLevel->theEnemy.end(); ++it)
 					{
@@ -277,17 +322,16 @@ void SceneSP3::UpdateInputs(double dt)
 					choice = NONE;
 					gameState = PLAYING;
 					currentLevel = levelList[0];
-					theHero->SetPos_x(currentLevel->HeroStartPos.x, true);
-					theHero->SetPos_y(currentLevel->HeroStartPos.y, true);
-					theHero->SetSideView(currentLevel->sideView);
+					theHero->SetPos_x(currentLevel->HeroStartPos.x);
+					theHero->SetPos_y(currentLevel->HeroStartPos.y);
+					theHero->SetInitialPos_x(currentLevel->HeroStartPos.x);
+					theHero->SetInitialPos_y(currentLevel->HeroStartPos.y);
 				}
 			}
 			else if(gameState == GAMEOVER)
 			{
 				gameState = MAINMENU;
 				this->theHero->Reset();
-				this->theHero->SetNoOfCoins(0);
-				this->theHero->SetNoOfLives(3);
 				this->theHero->SetCurrentState(this->theHero->PLAYING);
 				for(vector<CEnemy *>::iterator it = currentLevel->theEnemy.begin(); it != currentLevel->theEnemy.end(); ++it)
 				{
@@ -331,9 +375,10 @@ void SceneSP3::Update(double dt)
 								if(index + 1 < levelList.size())
 								{
 									currentLevel = levelList[index + 1];
-									theHero->SetPos_x(currentLevel->HeroStartPos.x, true);
-									theHero->SetPos_y(currentLevel->HeroStartPos.y, true);
-									theHero->SetSideView(currentLevel->sideView);
+									theHero->SetPos_x(currentLevel->HeroStartPos.x);
+									theHero->SetPos_y(currentLevel->HeroStartPos.y);
+									theHero->SetInitialPos_x(currentLevel->HeroStartPos.x);
+									theHero->SetInitialPos_y(currentLevel->HeroStartPos.y);
 									this->theHero->SetCurrentState(this->theHero->PLAYING);
 									this->theHero->SetTimeElasped( 0.f );
 									break;
@@ -341,7 +386,6 @@ void SceneSP3::Update(double dt)
 								else
 								{
 									gameState = GAMEOVER;
-									theHero->SetNoOfCoins(theHero->GetNoOfCoins() + theHero->GetNoOfLives() * 100);
 									break;
 								}
 							}
@@ -360,8 +404,8 @@ void SceneSP3::Update(double dt)
 			{
 				CEnemy *enemy = (CEnemy *)*it;
 				// if the hero enters the kill zone, then enemygoes into kill strategy mode
-				float Dist_x = (Vector3(enemy->GetPos_x(), 0, 0) - Vector3(theHero->GetPos_x() + theHero->GetMapOffset_x(), 0, 0)).Length();
-				float Dist_y = (Vector3(0, enemy->GetPos_y(), 0) - Vector3(0, theHero->GetPos_y() - theHero->GetMapOffset_y(), 0)).Length();
+				float Dist_x = (Vector3(enemy->GetPos_x(), 0, 0) - Vector3(theHero->GetPos_x(), 0, 0)).Length();
+				float Dist_y = (Vector3(0, enemy->GetPos_y(), 0) - Vector3(0, theHero->GetPos_y(), 0)).Length();
 				float radius = 4 * currentLevel->m_cMap->GetTileSize();
 				if( Dist_x <= radius - currentLevel->m_cMap->GetTileSize() * 0.5 && Dist_y < currentLevel->m_cMap->GetTileSize() * 0.5)
 				{
@@ -379,19 +423,51 @@ void SceneSP3::Update(double dt)
 				}
 
 				//Update the enemies
-				Vector2 EnemyPrevPos;
+				Vector3 EnemyPrevPos;
 				EnemyPrevPos.x = enemy->GetPos_x();
 				EnemyPrevPos.y = enemy->GetPos_y();
 				switch (enemy->GetCurrentStrategy())
 				{
 				case enemy->KILL:
 					{
-						enemy->SetDestination(theHero->GetMapOffset_x() + theHero->GetPos_x(), theHero->GetPos_y() - theHero->GetMapOffset_y());
+						enemy->SetDestination( theHero->GetPos_x(), theHero->GetPos_y());
 						enemy->Update( currentLevel->m_cMap, dt );
-						if(this->theHero->CheckCollision(enemy->GetPos_x() - theHero->GetMapOffset_x(), enemy->GetPos_y(), false, false, true, true,currentLevel->m_cMap, false) == 1)
+						GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(enemy->GetPos_x(), enemy->GetPos_y()));
+						if(goCollidedWith)
 						{
-							enemy->SetPos_x(EnemyPrevPos.x);
-							enemy->SetPos_y(EnemyPrevPos.y);
+							switch (goCollidedWith->type)
+							{
+							case GameObject::WALL:
+								{
+									enemy->SetPos_x(EnemyPrevPos.x);
+									enemy->SetPos_y(EnemyPrevPos.y);
+								}
+								break;
+							case GameObject::DOOR:
+								{
+									enemy->SetPos_x(EnemyPrevPos.x);
+									enemy->SetPos_y(EnemyPrevPos.y);
+								}
+								break;
+							default :
+								{
+									if(enemy->GetDestination_x() < EnemyPrevPos.x )
+									{
+										enemy->SetAnimationInvert(true);
+										enemy->SetAnimationCounter(enemy->GetAnimationCounter() - 0.5f);
+										if(enemy->GetAnimationCounter() < 1.0f)
+											enemy->SetAnimationCounter(4.0f);
+									}
+									else if(enemy->GetDestination_x() > EnemyPrevPos.x )
+									{
+										enemy->SetAnimationInvert(false);
+										enemy->SetAnimationCounter(enemy->GetAnimationCounter() + 0.5f);
+										if(enemy->GetAnimationCounter() > 4.0f)
+											enemy->SetAnimationCounter(1.0f);
+									}
+								}
+								break;
+							}
 						}
 						else
 						{
@@ -467,31 +543,6 @@ void SceneSP3::Update(double dt)
 					break;
 				}
 			}
-
-			// Goodies
-			for(vector<CGoodies *>::iterator it = currentLevel->theGoodiesList.begin(); it != currentLevel->theGoodiesList.end(); ++it)
-			{
-				CGoodies *goodies = (CGoodies *)*it;
-				if(!goodies->interacted)
-				{
-					float Dist = (Vector3(goodies->GetPos_x(), goodies->GetPos_y(), 0) - Vector3(theHero->GetPos_x() + theHero->GetMapOffset_x(), theHero->GetPos_y() - theHero->GetMapOffset_y(), 0)).Length();
-					if( Dist <= currentLevel->m_cMap->GetTileSize())
-					{
-						if(goodies->GetMesh()->name == "GEO_TILE_COIN")
-						{
-							theHero->SetNoOfCoins(theHero->GetNoOfCoins() + 1);
-							goodies->interacted = true;
-							break;
-						}
-						else
-						{
-							theHero->SetNoOfLives(theHero->GetNoOfLives() + 1);
-							goodies->interacted = true;
-							break;
-						}
-					}
-				}
-			}
 		}
 		else
 		{
@@ -500,8 +551,8 @@ void SceneSP3::Update(double dt)
 				theHero->SetPos_y(theHero->GetPos_y() - 400 * dt);
 			else
 			{
-				theHero->SetNoOfLives(theHero->GetNoOfLives() - 1);
-				if(theHero->GetNoOfLives() > 0)
+				theHero->SetHealth(0);
+				if(theHero->GetHealth() > 0)
 				{
 					// Reset informations
 					theHero->Reset();
@@ -524,11 +575,6 @@ void SceneSP3::Update(double dt)
 					gameState = GAMEOVER;
 				}
 			}
-		}
-		// Highscore
-		if(highscore < theHero->GetNoOfCoins())
-		{
-			highscore = theHero->GetNoOfCoins();
 		}
 	}
 }
@@ -584,18 +630,6 @@ void SceneSP3::Render()
 		{
 			Render2DMesh(meshList[GEO_GAMEOVER], false);
 
-			//On screen text
-			std::ostringstream ss;
-			ss.str(std::string());
-			ss.precision(4);
-			ss << theHero->GetNoOfCoins();
-			RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0.8, 0.8, 0.8), 8, 28, 25);
-
-			ss.str(std::string());
-			ss.precision(4);
-			ss << highscore;
-			RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0.8, 0.8, 0.8), 4, 34, 12);
-
 			RenderTextOnScreen(meshList[GEO_TEXT], "Press enter to return", Color(1, 1, 1), 2.5, 13, 5);
 		}
 		break;
@@ -607,33 +641,17 @@ void SceneSP3::Render()
 			modelStack.PushMatrix();
 
 			modelStack.Translate( currentLevel->m_cMap->GetNumOfTiles_Width() * currentLevel->m_cMap->GetTileSize() * 0.5 - theHero->GetPos_x(),  currentLevel->m_cMap->GetNumOfTiles_Height() * currentLevel->m_cMap->GetTileSize() * 0.5 - theHero->GetPos_y(), 0);
-			// Render the hero
-			RenderHero();
+
 			// Render the Game Objects
 			RenderGameObjects();
 			// Render the zombie
 			RenderEnemies();
+			// Render the hero
+			RenderHero();
 
 			modelStack.PopMatrix();
 
 			RenderGUI();
-
-			Render2DMesh(meshList[GEO_LIVE], false, 1.0f, 0, 800 - 32);
-			//On screen text
-			std::ostringstream ss;
-			ss.precision(3);
-			ss << "X" << theHero->GetNoOfLives();
-			RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(1, 1, 1), 3, 3, 57);
-
-			ss.str(std::string());
-			ss.precision(4);
-			ss << theHero->GetNoOfCoins();
-			RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0.8, 0.8, 0.8), 3, 71, 57);
-
-			ss.str(std::string());
-			ss.precision(4);
-			ss << highscore;
-			RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 0, 0), 2.5, 71, 54);
 		}
 		break;
 	}
@@ -701,6 +719,10 @@ void SceneSP3::RenderGameObjects()
 		if(go->type == GameObject::WALL)
 		{
 			Render2DMesh(meshList[GEO_TILEGROUND], false, 1.0f, go->pos.x, go->pos.y);
+		}
+		else if(go->type == GameObject::DOOR)
+		{
+			Render2DMesh(meshList[GEO_DOOR], false, 1.0f, go->pos.x, go->pos.y);
 		}
 	}
 }
@@ -770,4 +792,10 @@ Render the Enemies. This is a private function for use in this class only
 ********************************************************************************/
 void SceneSP3::RenderGUI()
 {
+	RenderMeshIn2D(meshList[GEO_LIVE], false, 1.0f, -80, 75);
+	//On screen text
+	std::ostringstream ss;
+	ss.precision(3);
+	ss << "X" << theHero->GetHealth();
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(1, 1, 1), 3, 3, 57);
 }

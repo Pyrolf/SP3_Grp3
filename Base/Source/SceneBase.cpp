@@ -218,7 +218,7 @@ void SceneBase::Init()
 	meshList[GEO_MAGMA]->textureID = LoadTGA("Image//tile2_magma.tga");
 	meshList[GEO_DOOR] = MeshBuilder::Generate2DMesh("GEO_DOOR", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f);
 	meshList[GEO_DOOR]->textureID = LoadTGA("Image//tile3_door.tga");
-	meshList[GEO_LIVE] = MeshBuilder::Generate2DMesh("GEO_LIVE", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f);
+	meshList[GEO_LIVE] = MeshBuilder::Generate2DMesh("GEO_LIVE", Color(1, 1, 1), 0.0f, 0.0f, 5.0f, 5.0f);
 	meshList[GEO_LIVE]->textureID = LoadTGA("Image//heart.tga");
 	
 	meshList[GEO_MAINMENU] = MeshBuilder::Generate2DMesh("GEO_MAINMENU", Color(1, 1, 1), 0.0f, 0.0f, 1024.0f, 800.0f);
