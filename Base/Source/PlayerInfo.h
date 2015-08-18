@@ -1,5 +1,5 @@
 #pragma once
-#include "Vector2.h"
+#include "Vector3.h"
 #include "Map.h"
 class CPlayerInfo
 {
@@ -85,8 +85,8 @@ public:
 
 private:
 	// Hero's information
-	Vector2 theHeroPosition;
-	Vector2 theHeroInitialPosition;
+	Vector3 theHeroPosition;
+	Vector3 theHeroInitialPosition;
 
 	float movementSpeed;
 

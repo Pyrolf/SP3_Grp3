@@ -1,7 +1,7 @@
 #pragma once
-#include "Vector2.h"
+#include "Vector3.h"
 #include "Map.h"
-#include "Strategy.h"
+#include "GameObjectFactory.h"
 
 class CEnemy
 {
@@ -21,6 +21,7 @@ public:
 
 	// Initialise this class instance
 	void Init(void);
+
 	// Set position x of the enemy
 	void SetPos_x(int pos_x, bool intial = false, float endPointDiff_x = 0.f);
 	// Set position y of the enemy
@@ -38,55 +39,55 @@ public:
 	int GetDestination_y(void);
 
 	// ENEMY Update
-	void Update(CMap* m_cMap, float timeDiff);
+	void Update(GameObjectFactory* goManager, float timeDiff, Vector3 heroPos);
 
-	// Strategy
-	void ChangeStrategy(CStrategy* theNewStrategy, bool bDelete=true);
-
-	// Set Animation Invert status of the player
+	// Set Animation Invert status of the enemy
 	void SetAnimationInvert(bool ENEMYAnimationInvert);
-	// Get Animation Invert status of the player
+	// Get Animation Invert status of the enemy
 	bool GetAnimationInvert(void);
-	// Set Animation Counter of the player
+	// Set Animation Counter of the enemy
 	void SetAnimationCounter(float ENEMYAnimationCounter);
-	// Get Animation Counter of the player
+	// Get Animation Counter of the enemy
 	float GetAnimationCounter(void);
 	
-	enum CURRENT_STRATEGY
+	enum CURRENT_MODE
 	{
-		NIL,
-		KILL,
-		SAFE,
-		NUM_OF_STRATEGY,
+		ATTACK,
+		CHASE,
+		RETURN,
+		PATROL,
+		IDLE,
+		NUM_OF_CURRENT_MODE,
 	};
-
-	CEnemy::CURRENT_STRATEGY GetCurrentStrategy(void);
-	void SetCurrentStrategy(CEnemy::CURRENT_STRATEGY currentStrategy);
+	void SetCurrentMode(CURRENT_MODE currentMode);
+	CURRENT_MODE GetCurrentMode(void);
 	
 	float GetInitialPos_x(void);
 	float GetInitialPos_y(void);
-	
-	float GetFinalPos_x(void);
-	float GetFinalPos_y(void);
 
 	void SetKilledHero(bool killedHero);
 	bool GetKilledHero(void);
 
+	void SetMaxRangeToDetect(int maxRangeToDetect);
+	int GetMaxRangeToDetect(void);
+
+	bool CheckCollision(GameObjectFactory* goManager, Vector3 pos);
+
+	void MoveEnemy(GameObjectFactory* goManager, float timeDiff, Vector3 target);
+
 private:
 	// ENEMY's information
-	Vector2 theENEMYPosition;
-	Vector2 theENEMYInitialPosition;
-	Vector2 theENEMYFinalPosition;
+	Vector3 theENEMYPosition;
+	Vector3 theENEMYInitialPosition;
+	Vector3 patrolTarget;
+	float idleTime;
+
+	CURRENT_MODE currentMode;
+
+	int maxRangeToDetect;
 
 	bool enemyAnimationInvert;
 	float enemyAnimationCounter;
-
-	// The Destination is the position of the Hero
-	Vector2 theDestination;
-
-	CStrategy* theStrategy;
-
-	CEnemy::CURRENT_STRATEGY currentStrategy;
 
 	bool killedHero;
 };

@@ -7,8 +7,6 @@
 #include "Utility.h"
 #include "LoadTGA.h"
 #include <sstream>
-#include "Strategy_Kill.h"
-#include "Strategy_Safe.h"
 
 SceneBase::SceneBase()
 {

@@ -7,8 +7,6 @@
 #include "Utility.h"
 #include "LoadTGA.h"
 #include <sstream>
-#include "Strategy_Kill.h"
-#include "Strategy_Safe.h"
 
 SceneSP3::SceneSP3()
 	: gameState(MAINMENU)
@@ -78,7 +76,6 @@ void SceneSP3::Init()
 	for(int index = 0; index < levelList.size(); index++)
 	{
 		vector<Vector3> enemyInitialPos;
-		vector<Vector3> enemyFinalPos;
 		for(int i = 0; i < levelList[index]->m_cMap->getNumOfTiles_MapHeight(); i ++)
 		{
 			for(int k = 0; k < levelList[index]->m_cMap->getNumOfTiles_MapWidth() + 1; k ++)
@@ -89,10 +86,6 @@ void SceneSP3::Init()
 				if (levelList[index]->m_cMap->theScreenMap[i][k] == 10)
 				{
 					enemyInitialPos.push_back(Vector3(k, levelList[index]->m_cMap->getNumOfTiles_MapHeight() - i - 1));
-				}
-				else if (levelList[index]->m_cMap->theScreenMap[i][k] == 11)
-				{
-					enemyFinalPos.push_back(Vector3(k, levelList[index]->m_cMap->getNumOfTiles_MapHeight() - i - 1));
 				}
 				else if (levelList[index]->m_cMap->theScreenMap[i][k] == 20)
 				{
@@ -109,12 +102,12 @@ void SceneSP3::Init()
 			{
 				// Set the strategy for the enemy
 				levelList[index]->theEnemy.push_back(new CEnemy);
-				levelList[index]->theEnemy[i]->ChangeStrategy(NULL, false);
-				levelList[index]->theEnemy[i]->SetPos_x(enemyInitialPos[i].x  * levelList[index]->m_cMap->GetTileSize(), true, enemyFinalPos[i].x  * levelList[index]->m_cMap->GetTileSize());
-				levelList[index]->theEnemy[i]->SetPos_y(enemyInitialPos[i].y  * levelList[index]->m_cMap->GetTileSize(), true, enemyFinalPos[i].y  * levelList[index]->m_cMap->GetTileSize());
-				levelList[index]->theEnemy[i]->ChangeStrategy(new CStrategy_Safe());
-				levelList[index]->theEnemy[i]->SetCurrentStrategy(levelList[index]->theEnemy[i]->SAFE);
-				levelList[index]->theEnemy[i]->SetDestination(levelList[index]->theEnemy[i]->GetFinalPos_x(), levelList[index]->theEnemy[i]->GetFinalPos_y());
+
+				levelList[index]->theEnemy[i]->SetPos_x(enemyInitialPos[i].x  * levelList[index]->m_cMap->GetTileSize(), true);
+				levelList[index]->theEnemy[i]->SetPos_y(enemyInitialPos[i].y  * levelList[index]->m_cMap->GetTileSize(), true);
+
+				levelList[index]->theEnemy[i]->SetMaxRangeToDetect(levelList[index]->m_cMap->GetTileSize() * 4);
+
 				levelList[index]->theEnemy[i]->SetAnimationCounter(0.f);
 				levelList[index]->theEnemy[i]->SetAnimationInvert(false);
 			}
@@ -183,7 +176,7 @@ void SceneSP3::UpdateInputs(double dt)
 						}
 						break;
 					default :
-						this->theHero->MoveUpDown( true, dt, currentLevel->m_cMap);
+						this->theHero->MoveUpDown( false, dt, currentLevel->m_cMap);
 						break;
 					}
 				}
@@ -214,7 +207,7 @@ void SceneSP3::UpdateInputs(double dt)
 						}
 						break;
 					default :
-						this->theHero->MoveUpDown( true, dt, currentLevel->m_cMap);
+						this->theHero->MoveLeftRight( true, dt, currentLevel->m_cMap);
 						break;
 					}
 				}
@@ -244,7 +237,7 @@ void SceneSP3::UpdateInputs(double dt)
 						}
 						break;
 					default :
-						this->theHero->MoveUpDown( true, dt, currentLevel->m_cMap);
+						this->theHero->MoveLeftRight( false, dt, currentLevel->m_cMap);
 						break;
 					}
 				}
@@ -403,140 +396,7 @@ void SceneSP3::Update(double dt)
 			for(vector<CEnemy *>::iterator it = currentLevel->theEnemy.begin(); it != currentLevel->theEnemy.end(); ++it)
 			{
 				CEnemy *enemy = (CEnemy *)*it;
-				// if the hero enters the kill zone, then enemygoes into kill strategy mode
-				float Dist_x = (Vector3(enemy->GetPos_x(), 0, 0) - Vector3(theHero->GetPos_x(), 0, 0)).Length();
-				float Dist_y = (Vector3(0, enemy->GetPos_y(), 0) - Vector3(0, theHero->GetPos_y(), 0)).Length();
-				float radius = 4 * currentLevel->m_cMap->GetTileSize();
-				if( Dist_x <= radius - currentLevel->m_cMap->GetTileSize() * 0.5 && Dist_y < currentLevel->m_cMap->GetTileSize() * 0.5)
-				{
-					enemy->ChangeStrategy(new  CStrategy_Kill());
-					enemy->SetCurrentStrategy(enemy->KILL);
-				}
-				else
-				{
-					if(enemy->GetCurrentStrategy() == enemy->KILL)
-					{
-						enemy->ChangeStrategy(new CStrategy_Safe());
-						enemy->SetCurrentStrategy(enemy->SAFE);
-						enemy->SetDestination(enemy->GetInitialPos_x(), enemy->GetInitialPos_y());
-					}
-				}
-
-				//Update the enemies
-				Vector3 EnemyPrevPos;
-				EnemyPrevPos.x = enemy->GetPos_x();
-				EnemyPrevPos.y = enemy->GetPos_y();
-				switch (enemy->GetCurrentStrategy())
-				{
-				case enemy->KILL:
-					{
-						enemy->SetDestination( theHero->GetPos_x(), theHero->GetPos_y());
-						enemy->Update( currentLevel->m_cMap, dt );
-						GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(enemy->GetPos_x(), enemy->GetPos_y()));
-						if(goCollidedWith)
-						{
-							switch (goCollidedWith->type)
-							{
-							case GameObject::WALL:
-								{
-									enemy->SetPos_x(EnemyPrevPos.x);
-									enemy->SetPos_y(EnemyPrevPos.y);
-								}
-								break;
-							case GameObject::DOOR:
-								{
-									enemy->SetPos_x(EnemyPrevPos.x);
-									enemy->SetPos_y(EnemyPrevPos.y);
-								}
-								break;
-							default :
-								{
-									if(enemy->GetDestination_x() < EnemyPrevPos.x )
-									{
-										enemy->SetAnimationInvert(true);
-										enemy->SetAnimationCounter(enemy->GetAnimationCounter() - 0.5f);
-										if(enemy->GetAnimationCounter() < 1.0f)
-											enemy->SetAnimationCounter(4.0f);
-									}
-									else if(enemy->GetDestination_x() > EnemyPrevPos.x )
-									{
-										enemy->SetAnimationInvert(false);
-										enemy->SetAnimationCounter(enemy->GetAnimationCounter() + 0.5f);
-										if(enemy->GetAnimationCounter() > 4.0f)
-											enemy->SetAnimationCounter(1.0f);
-									}
-								}
-								break;
-							}
-						}
-						else
-						{
-							if(enemy->GetDestination_x() < EnemyPrevPos.x )
-							{
-								enemy->SetAnimationInvert(true);
-								enemy->SetAnimationCounter(enemy->GetAnimationCounter() - 0.5f);
-								if(enemy->GetAnimationCounter() < 1.0f)
-									enemy->SetAnimationCounter(4.0f);
-							}
-							else if(enemy->GetDestination_x() > EnemyPrevPos.x )
-							{
-								enemy->SetAnimationInvert(false);
-								enemy->SetAnimationCounter(enemy->GetAnimationCounter() + 0.5f);
-								if(enemy->GetAnimationCounter() > 4.0f)
-									enemy->SetAnimationCounter(1.0f);
-							}
-						}
-					}
-					break;
-				case enemy->SAFE:
-					{
-						enemy->Update( currentLevel->m_cMap, dt );
-						if(enemy->GetDestination_x() < EnemyPrevPos.x )
-						{
-							enemy->SetAnimationInvert(true);
-							enemy->SetAnimationCounter(enemy->GetAnimationCounter() - 0.5f);
-							if(enemy->GetAnimationCounter() < 1.0f)
-								enemy->SetAnimationCounter(4.0f);
-
-							if(enemy->GetDestination_x() >= enemy->GetPos_x())
-							{
-								if(enemy->GetDestination_x() == enemy->GetInitialPos_x())
-								{
-									enemy->SetPos_x(enemy->GetInitialPos_x());
-									enemy->SetDestination(enemy->GetFinalPos_x(), enemy->GetFinalPos_y());
-								}
-								else
-								{
-									enemy->SetPos_x(enemy->GetFinalPos_x());
-									enemy->SetDestination(enemy->GetInitialPos_x(), enemy->GetInitialPos_y());
-								}
-							}
-						}
-						else if(enemy->GetDestination_x() > EnemyPrevPos.x )
-						{
-							enemy->SetAnimationInvert(false);
-							enemy->SetAnimationCounter(enemy->GetAnimationCounter() + 0.5f);
-							if(enemy->GetAnimationCounter() > 4.0f)
-								enemy->SetAnimationCounter(1.0f);
-
-
-							if(enemy->GetDestination_x() <= enemy->GetPos_x())
-							{
-								if(enemy->GetDestination_x() == enemy->GetInitialPos_x())
-								{
-									enemy->SetPos_x(enemy->GetInitialPos_x());
-									enemy->SetDestination(enemy->GetFinalPos_x(), enemy->GetFinalPos_y());
-								}
-								else
-								{
-									enemy->SetPos_x(enemy->GetFinalPos_x());
-									enemy->SetDestination(enemy->GetInitialPos_x(), enemy->GetInitialPos_y());
-								}
-							}
-						}
-					}
-					break;
-				}
+				enemy->Update(currentLevel->gameObjectsManager, dt, Vector3(theHero->GetPos_x(), theHero->GetPos_y()));
 				if(enemy->GetKilledHero())
 				{
 					this->theHero->SetCurrentState(this->theHero->DYING);
@@ -635,12 +495,12 @@ void SceneSP3::Render()
 		break;
 	default:
 		{
-			// Render the background image
-			RenderBackground();
-
 			modelStack.PushMatrix();
 
 			modelStack.Translate( currentLevel->m_cMap->GetNumOfTiles_Width() * currentLevel->m_cMap->GetTileSize() * 0.5 - theHero->GetPos_x(),  currentLevel->m_cMap->GetNumOfTiles_Height() * currentLevel->m_cMap->GetTileSize() * 0.5 - theHero->GetPos_y(), 0);
+
+			// Render the background image
+			RenderBackground();
 
 			// Render the Game Objects
 			RenderGameObjects();

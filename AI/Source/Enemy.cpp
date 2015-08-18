@@ -2,21 +2,17 @@
 #include <iostream>
 
 CEnemy::CEnemy(void)
-	: theStrategy(NULL)
-	, enemyAnimationInvert(false)
+	: enemyAnimationInvert(false)
 	, enemyAnimationCounter(0.f)
-	, currentStrategy(NIL)
 	, killedHero(false)
+	, maxRangeToDetect(0)
+	, currentMode(RETURN)
+	, idleTime(0)
 {
 }
 
 CEnemy::~CEnemy(void)
 {
-	if (theStrategy != NULL)
-	{
-		delete theStrategy;
-		theStrategy = NULL;
-	}
 }
 
 // Initialise this class instance
@@ -26,10 +22,6 @@ void CEnemy::Init(void)
 	theENEMYPosition.y = 0;
 	theENEMYInitialPosition.x = 0;
 	theENEMYInitialPosition.y = 0;
-	theENEMYFinalPosition.x = 0;
-	theENEMYFinalPosition.y = 0;
-	theDestination.x = 0;
-	theDestination.y = 0;
 }
 
 // Set position x of the player
@@ -39,7 +31,6 @@ void CEnemy::SetPos_x(int pos_x, bool intial, float endPoint_x)
 	if(intial)
 	{
 		theENEMYInitialPosition.x = pos_x;
-		theENEMYFinalPosition.x = endPoint_x;
 	}
 }
 
@@ -50,18 +41,6 @@ void CEnemy::SetPos_y(int pos_y, bool intial, float endPoint_y)
 	if(intial)
 	{
 		theENEMYInitialPosition.y = pos_y;
-		theENEMYFinalPosition.y = endPoint_y;
-	}
-}
-
-// Set the destination of this enemy
-void CEnemy::SetDestination(const int pos_x, const int pos_y)
-{
-	theDestination.x = pos_x;
-	theDestination.y = pos_y;
-	if(theStrategy != NULL)
-	{
-		theStrategy->SetDestination(theDestination.x, theDestination.y);
 	}
 }
 
@@ -75,18 +54,6 @@ int CEnemy::GetPos_x(void)
 int CEnemy::GetPos_y(void)
 {
 	return theENEMYPosition.y;
-}
-
-// Set the destination of this enemy
-int CEnemy::GetDestination_x(void)
-{
-	return theDestination.x;
-}
-
-// Set the destination of this enemy
-int CEnemy::GetDestination_y(void)
-{
-	return theDestination.y;
 }
 
 // Set Animation Invert status of the player
@@ -116,49 +83,121 @@ float CEnemy::GetAnimationCounter(void)
 /********************************************************************************
 Hero Update
 ********************************************************************************/
-void CEnemy::Update(CMap* m_cMap, float timeDiff)
+void CEnemy::Update(GameObjectFactory* goManager, float timeDiff, Vector3 heroPos)
 {
-	if (theStrategy != NULL)
+	float DistFromHeroToEnemy = (theENEMYPosition - heroPos).Length();
+	if(DistFromHeroToEnemy < maxRangeToDetect)
 	{
-		if(theStrategy->Update( m_cMap, timeDiff))
+		if(DistFromHeroToEnemy > goManager->tileSize)
 		{
-			killedHero = true;
+			if(currentMode != CHASE)
+			{
+				currentMode = CHASE;
+			}
 		}
-		theStrategy->GetEnemyPosition( (theENEMYPosition.x),
-			(theENEMYPosition.y) );
-	}
-}
-
-/********************************************************************************
-Strategy
-********************************************************************************/
-void CEnemy::ChangeStrategy(CStrategy* theNewStrategy, bool bDelete)
-{
-	if (bDelete == true)
-	{
-		if (theStrategy != NULL)
+		else
 		{
-			delete theStrategy;
-			theStrategy = NULL;
+			if(currentMode != ATTACK)
+			{
+				currentMode = ATTACK;
+				killedHero = true;
+			}
 		}
 	}
-	theStrategy = theNewStrategy;
-	if (theStrategy != NULL)
+	else
 	{
-		theStrategy->SetDestination( theDestination.x, theDestination.y );
-		theStrategy->SetEnemyPosition(theENEMYPosition.x,
-			theENEMYPosition.y);
+		if(currentMode != RETURN && currentMode != PATROL && currentMode != IDLE)
+		{
+			currentMode = RETURN;
+		}
+	}
+
+	Vector3 theENEMYPrevPosition = theENEMYPosition;
+	switch(currentMode)
+	{
+	case CHASE:
+		{
+			MoveEnemy(goManager, timeDiff, heroPos);
+		}
+		break;
+	case RETURN:
+		{
+			MoveEnemy(goManager, timeDiff, theENEMYInitialPosition);
+			if(theENEMYPosition == theENEMYInitialPosition|| theENEMYPosition == theENEMYPrevPosition)
+			{
+				if(rand() % 2 == 0)
+				{
+					currentMode = PATROL;
+					while(true)
+					{
+						patrolTarget = Vector3(Math::RandFloatMinMax(theENEMYInitialPosition.x - maxRangeToDetect, theENEMYInitialPosition.x + maxRangeToDetect), Math::RandFloatMinMax(theENEMYInitialPosition.y - maxRangeToDetect, theENEMYInitialPosition.y + maxRangeToDetect));
+						if(!CheckCollision(goManager, patrolTarget))
+							break;
+					}
+				}
+				else
+				{
+					currentMode = IDLE;
+					idleTime = Math::RandFloatMinMax(1, 3);
+				}
+			}
+		}
+		break;
+	case PATROL:
+		{
+			MoveEnemy(goManager, timeDiff, patrolTarget);
+			if(theENEMYPosition == patrolTarget || theENEMYPosition == theENEMYPrevPosition)
+			{
+				if(rand() % 2 == 0)
+				{
+					while(true)
+					{
+						patrolTarget = Vector3(Math::RandFloatMinMax(theENEMYInitialPosition.x - maxRangeToDetect, theENEMYInitialPosition.x + maxRangeToDetect), Math::RandFloatMinMax(theENEMYInitialPosition.y - maxRangeToDetect, theENEMYInitialPosition.y + maxRangeToDetect));
+						if(!CheckCollision(goManager, patrolTarget))
+							break;
+					}
+				}
+				else
+				{
+					currentMode = IDLE;
+					idleTime = Math::RandFloatMinMax(1, 3);
+				}
+			}
+		}
+		break;
+	case IDLE:
+		{
+			idleTime -=timeDiff;
+			if(idleTime <= 0.f)
+			{
+				if(rand() % 2 == 0)
+				{
+					currentMode = PATROL;
+					while(true)
+					{
+						patrolTarget = Vector3(Math::RandFloatMinMax(theENEMYInitialPosition.x - maxRangeToDetect, theENEMYInitialPosition.x + maxRangeToDetect), Math::RandFloatMinMax(theENEMYInitialPosition.y - maxRangeToDetect, theENEMYInitialPosition.y + maxRangeToDetect));
+						if(!CheckCollision(goManager, patrolTarget))
+							break;
+					}
+				}
+				else
+				{
+					idleTime = Math::RandFloatMinMax(1, 3);
+				}
+			}
+		}
+		break;
 	}
 }
 
-CEnemy::CURRENT_STRATEGY CEnemy::GetCurrentStrategy(void)
+void CEnemy::SetCurrentMode(CEnemy::CURRENT_MODE currentMode)
 {
-	return currentStrategy;
+	this->currentMode = currentMode;
 }
 
-void CEnemy::SetCurrentStrategy(CEnemy::CURRENT_STRATEGY currentStrategy)
+CEnemy::CURRENT_MODE CEnemy::GetCurrentMode(void)
 {
-	this->currentStrategy = currentStrategy;
+	return currentMode;
 }
 
 float CEnemy::GetInitialPos_x(void)
@@ -171,16 +210,6 @@ float CEnemy::GetInitialPos_y(void)
 	return theENEMYInitialPosition.y;
 }
 
-float CEnemy::GetFinalPos_x(void)
-{
-	return theENEMYFinalPosition.x;
-}
-
-float CEnemy::GetFinalPos_y(void)
-{
-	return theENEMYFinalPosition.y;
-}
-
 void CEnemy::SetKilledHero(bool killedHero)
 {
 	this->killedHero = killedHero;
@@ -189,4 +218,143 @@ void CEnemy::SetKilledHero(bool killedHero)
 bool CEnemy::GetKilledHero(void)
 {
 	return killedHero;
+}
+
+void CEnemy::SetMaxRangeToDetect(int maxRangeToDetect)
+{
+	this->maxRangeToDetect = maxRangeToDetect;
+}
+
+int CEnemy::GetMaxRangeToDetect(void)
+{
+	return maxRangeToDetect;
+}
+
+bool CEnemy::CheckCollision(GameObjectFactory* goManager, Vector3 pos)
+{
+	GameObject* goCollidedWith = goManager->CheckColision(pos);
+	if(goCollidedWith)
+	{
+		switch (goCollidedWith->type)
+		{
+		case GameObject::WALL:
+			{
+				return true;
+			}
+			break;
+		case GameObject::DOOR:
+			{
+				return true;
+			}
+			break;
+		default :
+			{
+				return false;
+			}
+			break;
+		}
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void CEnemy::MoveEnemy(GameObjectFactory* goManager, float timeDiff, Vector3 target)
+{
+	Vector3 theENEMYPrevPosition = theENEMYPosition;
+
+	Vector3 diffInDis_x = Vector3(target.x) - Vector3(theENEMYPosition.x);
+	Vector3 diffInDis_y = Vector3(0, target.y) - Vector3(0, theENEMYPosition.y);
+
+	if(diffInDis_x.Length() < diffInDis_y.Length())
+	{
+		if(theENEMYPosition.x != target.x)
+		{
+			float moveBy = ((diffInDis_x).Normalized()).x * 100 * timeDiff;
+			if(!CheckCollision(goManager, theENEMYPosition + Vector3(moveBy)))
+			{
+				theENEMYPosition.x += moveBy;
+				if((theENEMYPrevPosition.x < target.x && theENEMYPosition.x >= target.x)
+					|| (theENEMYPrevPosition.x > target.x && theENEMYPosition.x <= target.x))
+				{
+					theENEMYPosition.x = target.x;
+				}
+			}
+			else
+			{
+				if(theENEMYPosition.y != target.y)
+				{
+					float moveBy = ((diffInDis_y).Normalized()).y * 100 * timeDiff;
+					if(!CheckCollision(goManager, theENEMYPosition + Vector3(0, moveBy)))
+					{
+						theENEMYPosition.y += moveBy;
+						if((theENEMYPrevPosition.y < target.y && theENEMYPosition.y >= target.y)
+							|| (theENEMYPrevPosition.y > target.y && theENEMYPosition.y <= target.y))
+						{
+							theENEMYPosition.y = target.y;
+						}
+					}
+				}
+			}
+		}
+		else if(theENEMYPosition.y != target.y)
+		{
+			float moveBy = ((diffInDis_y).Normalized()).y * 100 * timeDiff;
+			if(!CheckCollision(goManager, theENEMYPosition + Vector3(0, moveBy)))
+			{
+				theENEMYPosition.y += moveBy;
+				if((theENEMYPrevPosition.y < target.y && theENEMYPosition.y >= target.y)
+					|| (theENEMYPrevPosition.y > target.y && theENEMYPosition.y <= target.y))
+				{
+					theENEMYPosition.y = target.y;
+				}
+			}
+		}
+	}
+	else
+	{
+		if(theENEMYPosition.y != target.y)
+		{
+			float moveBy = ((diffInDis_y).Normalized()).y * 100 * timeDiff;
+			if(!CheckCollision(goManager, theENEMYPosition + Vector3(0, moveBy)))
+			{
+				theENEMYPosition.y += moveBy;
+				if((theENEMYPrevPosition.y < target.y && theENEMYPosition.y >= target.y)
+					|| (theENEMYPrevPosition.y > target.y && theENEMYPosition.y <= target.y))
+				{
+					theENEMYPosition.y = target.y;
+				}
+			}
+			else
+			{
+				if(theENEMYPosition.x != target.x)
+				{
+					float moveBy = ((diffInDis_x).Normalized()).x * 100 * timeDiff;
+					if(!CheckCollision(goManager, theENEMYPosition + Vector3(moveBy)))
+					{
+						theENEMYPosition.x += moveBy;
+						if((theENEMYPrevPosition.x < target.x && theENEMYPosition.x >= target.x)
+							|| (theENEMYPrevPosition.x > target.x && theENEMYPosition.x <= target.x))
+						{
+							theENEMYPosition.x = target.x;
+						}
+					}
+				}
+			}
+		}
+		else if(theENEMYPosition.x != target.x)
+		{
+			float moveBy = ((diffInDis_x).Normalized()).x * 100 * timeDiff;
+			if(!CheckCollision(goManager, theENEMYPosition + Vector3(moveBy)))
+			{
+				theENEMYPosition.x += moveBy;
+				if((theENEMYPrevPosition.x < target.x && theENEMYPosition.x >= target.x)
+					|| (theENEMYPrevPosition.x > target.x && theENEMYPosition.x <= target.x))
+				{
+					theENEMYPosition.x = target.x;
+				}
+			}
+		}
+	}
 }

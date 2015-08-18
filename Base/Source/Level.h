@@ -5,7 +5,6 @@
 #include "Enemy.h"
 #include "Vector2.h"
 #include "Goodies.h"
-#include "GameObjectFactory.h"
 
 struct Level
 {
