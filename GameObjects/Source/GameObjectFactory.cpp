@@ -23,7 +23,7 @@ void GameObjectFactory::generateGO(CMap *map)
 	{
 		for(int k = 0; k < map->getNumOfTiles_MapWidth(); k ++)
 		{
-			if(map->theScreenMap[i][k] != 0)
+			if(map->theScreenMap[i][k] != 0 && map->theScreenMap[i][k] < 8)
 			{
 				GoList.push_back(new GameObject(map->theScreenMap[i][k], Vector3(k * map->GetTileSize(), ((map->getNumOfTiles_MapHeight() - i) * map->GetTileSize()) - map->GetTileSize(), 0)));
 			}

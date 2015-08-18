@@ -4,6 +4,7 @@
 
 #include "timer.h"
 #include "SceneMain.h"
+#include "SceneSP3.h"
 
 class Application
 {
@@ -38,7 +39,7 @@ private:
 	double m_dAccumulatedTime_ThreadTwo;
 
 	// The handler for the scene
-	SceneMain *scene;
+	SceneSP3 *scene;
 };
 
 #endif

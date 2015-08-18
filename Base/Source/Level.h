@@ -20,7 +20,7 @@ public:
 	CMap* m_cRearMap;
 	
 	// GameObj vector
-	GameObjectFactory* gameObjects;
+	GameObjectFactory* gameObjectsManager;
 
 	// Enemies
 	vector<CEnemy*> theEnemy;

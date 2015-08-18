@@ -418,7 +418,7 @@ void SceneBase::Render2DMesh(Mesh *mesh, bool enableLight, float size, float x, 
 	viewStack.PushMatrix();
 	viewStack.LoadIdentity();
 	modelStack.PushMatrix();
-	modelStack.LoadIdentity();
+	//modelStack.LoadIdentity();
 	modelStack.Translate(x, y, 0);
 	if (rotate)
 	{
