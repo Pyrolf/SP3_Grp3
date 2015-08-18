@@ -20,9 +20,7 @@ Sound::~Sound()
 /*
 ISoundEngine * engine = createIrrKlangDevice();
 if(!engine)
-*/
 
-/*
 engine->play2D("../../media/getout.ogg", true);
 
 extern ISoundEngine * engine; add this to respective classes
@@ -31,9 +29,7 @@ eg. while(i != 'q')
 {
 engine->play2D("../../media/...");
 }
-*/
 
-/*
 put code in exit
 engine->stopAllSounds();
 
