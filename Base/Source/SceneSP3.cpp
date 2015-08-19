@@ -278,6 +278,14 @@ void SceneSP3::Update(double dt)
 						this->theHero->SetCurrentState(this->theHero->DYING);
 					}
 					this->theHero->SetHealth(theHero->GetHealth() - 1);
+					if(this->theHero->GetPos_x() != enemy->GetPos_x())
+					{
+						this->theHero->SetPos_x(this->theHero->GetPos_x() + ((Vector3(this->theHero->GetPos_x()) - Vector3(enemy->GetPos_x())).Normalized() * currentLevel->gameObjectsManager->tileSize).x);
+					}
+					if(this->theHero->GetPos_y() != enemy->GetPos_y())
+					{
+						this->theHero->SetPos_y(this->theHero->GetPos_y() + ((Vector3(this->theHero->GetPos_y()) - Vector3(enemy->GetPos_y())).Normalized() * currentLevel->gameObjectsManager->tileSize).y);
+					}
 					enemy->SetHitHero(false);
 					break;
 				}
@@ -372,7 +380,8 @@ void SceneSP3::Render()
 		{
 			modelStack.PushMatrix();
 
-			modelStack.Translate( currentLevel->m_cMap->GetNumOfTiles_Width() * currentLevel->m_cMap->GetTileSize() * 0.5 - theHero->GetPos_x(),  currentLevel->m_cMap->GetNumOfTiles_Height() * currentLevel->m_cMap->GetTileSize() * 0.5 - theHero->GetPos_y(), 0);
+			modelStack.Translate( currentLevel->m_cMap->GetNumOfTiles_Width() * currentLevel->m_cMap->GetTileSize() * 0.5 - theHero->GetPos_x() * 2,  currentLevel->m_cMap->GetNumOfTiles_Height() * currentLevel->m_cMap->GetTileSize() * 0.5 - theHero->GetPos_y() * 2, 0);
+			modelStack.Scale(2,2,2);
 
 			// Render the background image
 			RenderBackground();

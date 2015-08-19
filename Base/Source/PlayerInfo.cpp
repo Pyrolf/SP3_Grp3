@@ -6,7 +6,7 @@ static float GRAVITY = 3000.f;
 CPlayerInfo::CPlayerInfo(void)
 	: theHeroPosition(0, 0)
 	, theHeroInitialPosition(0, 0)
-	, movementSpeed(400.0f)
+	, movementSpeed(200.0f)
 	, currentState(PLAYING)
 	, timeElasped(0.f)
 	, heroAnimationDirection(DOWN)
@@ -56,7 +56,7 @@ void CPlayerInfo::MoveUpDown(const bool mode, const float timeDiff, CMap* m_cMap
 		heroAnimationDirection = UP;
 		heroAnimationInvert = false;
 		heroAnimationCounter += 30 * timeDiff;
-		if(heroAnimationCounter > 5.0f)
+		if(heroAnimationCounter > 8.0f)
 			heroAnimationCounter = 0.0f;
 	}
 	else
@@ -65,7 +65,7 @@ void CPlayerInfo::MoveUpDown(const bool mode, const float timeDiff, CMap* m_cMap
 		heroAnimationDirection = DOWN;
 		heroAnimationInvert = false;
 		heroAnimationCounter += 30 * timeDiff;
-		if(heroAnimationCounter > 5.0f)
+		if(heroAnimationCounter > 8.0f)
 			heroAnimationCounter = 0.0f;
 	}
 }
@@ -81,8 +81,8 @@ void CPlayerInfo::MoveLeftRight(const bool mode, const float timeDiff, CMap* m_c
 		heroAnimationDirection = LEFT;
 		heroAnimationInvert = true;
 		heroAnimationCounter -= 15 * timeDiff;
-		if(heroAnimationCounter < 2.0f)
-			heroAnimationCounter = 5.0f;
+		if(heroAnimationCounter < 0.0f)
+			heroAnimationCounter = 8.0f;
 	}
 	else
 	{
@@ -90,8 +90,8 @@ void CPlayerInfo::MoveLeftRight(const bool mode, const float timeDiff, CMap* m_c
 		heroAnimationDirection = RIGHT;
 		heroAnimationInvert = false;
 		heroAnimationCounter += 15 * timeDiff;
-		if(heroAnimationCounter > 5.0f)
-			heroAnimationCounter = 2.0f;
+		if(heroAnimationCounter > 8.0f)
+			heroAnimationCounter = 0.0f;
 	}
 }
 
