@@ -456,12 +456,6 @@ void SceneSP3::RenderEnemies()
 					Render2DMesh(meshList[GEO_TILEENEMY_FRAME2], false, 1.0f, enemy_x, enemy_y);
 				else if((int)enemy->GetAnimationCounter() == 3)
 					Render2DMesh(meshList[GEO_TILEENEMY_FRAME3], false, 1.0f, enemy_x, enemy_y);
-				else if((int)enemy->GetAnimationCounter() == 4)
-					Render2DMesh(meshList[GEO_TILEENEMY_FRAME4], false, 1.0f, enemy_x, enemy_y);
-				else if((int)enemy->GetAnimationCounter() == 5)
-					Render2DMesh(meshList[GEO_TILEENEMY_FRAME5], false, 1.0f, enemy_x, enemy_y);
-				else if((int)enemy->GetAnimationCounter() == 6)
-					Render2DMesh(meshList[GEO_TILEENEMY_FRAME6], false, 1.0f, enemy_x, enemy_y);
 				else
 					Render2DMesh(meshList[GEO_TILEENEMY_FRAME0], false, 1.0f, enemy_x, enemy_y);
 
@@ -477,12 +471,6 @@ void SceneSP3::RenderEnemies()
 					Render2DMesh(meshList[GEO_TILEENEMY_FRAME2], false, 1.0f, enemy_x, enemy_y, true);
 				else if((int)enemy->GetAnimationCounter() == 3)
 					Render2DMesh(meshList[GEO_TILEENEMY_FRAME3], false, 1.0f, enemy_x, enemy_y, true);
-				else if((int)enemy->GetAnimationCounter() == 4)
-					Render2DMesh(meshList[GEO_TILEENEMY_FRAME4], false, 1.0f, enemy_x, enemy_y, true);
-				else if((int)enemy->GetAnimationCounter() == 5)
-					Render2DMesh(meshList[GEO_TILEENEMY_FRAME5], false, 1.0f, enemy_x, enemy_y, true);
-				else if((int)enemy->GetAnimationCounter() == 6)
-					Render2DMesh(meshList[GEO_TILEENEMY_FRAME6], false, 1.0f, enemy_x, enemy_y, true);
 				else
 					Render2DMesh(meshList[GEO_TILEENEMY_FRAME0], false, 1.0f, enemy_x, enemy_y, true);
 			}
