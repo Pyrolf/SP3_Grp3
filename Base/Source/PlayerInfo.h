@@ -1,6 +1,7 @@
 #pragma once
 #include "Vector3.h"
 #include "Map.h"
+#include "Mesh.h"
 class CPlayerInfo
 {
 public:
@@ -82,7 +83,10 @@ public:
 	// Get Animation Counter of the player
 	int GetAnimationCounter(void);
 	void Reset(void);
-
+	
+	std::vector<Mesh*> frontMeshes;
+	std::vector<Mesh*> backMeshes;
+	std::vector<Mesh*> sideMeshes;
 private:
 	// Hero's information
 	Vector3 theHeroPosition;

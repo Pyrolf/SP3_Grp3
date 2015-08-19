@@ -155,64 +155,7 @@ void SceneBase::Init()
 	meshList[GEO_GROUND_BACKGROUND]->textureID = LoadTGA("Image//ground_background.tga");
 	meshList[GEO_ICECAVE_BACKGROUND] = MeshBuilder::Generate2DMesh("GEO_ICECAVE_BACKGROUND", Color(1, 1, 1), 0.0f, 0.0f, 1024.0f, 800.0f);
 	meshList[GEO_ICECAVE_BACKGROUND]->textureID = LoadTGA("Image//icecave_background.tga");
-	//Assignment
-	meshList[GEO_TILEHERO_FRAME0] = MeshBuilder::GeneratePartOfSpriteSheet2D("GEO_TILEHERO_FRAME0", 32.0f, 32.0f, 4, 9, 0, 3);
-	meshList[GEO_TILEHERO_FRAME0]->textureID = LoadTGA("Image//tile_hero_office.tga");
-	meshList[GEO_TILEHERO_FRAME1] = MeshBuilder::GeneratePartOfSpriteSheet2D("GEO_TILEHERO_FRAME1", 32.0f, 32.0f, 4, 9, 1, 3);
-	meshList[GEO_TILEHERO_FRAME1]->textureID = LoadTGA("Image//tile_hero_office.tga");
-	meshList[GEO_TILEHERO_FRAME2] = MeshBuilder::GeneratePartOfSpriteSheet2D("GEO_TILEHERO_FRAME2", 32.0f, 32.0f, 4, 9, 2, 3);
-	meshList[GEO_TILEHERO_FRAME2]->textureID = LoadTGA("Image//tile_hero_office.tga");
-	meshList[GEO_TILEHERO_FRAME3] = MeshBuilder::GeneratePartOfSpriteSheet2D("GEO_TILEHERO_FRAME3", 32.0f, 32.0f, 4, 9, 3, 3);
-	meshList[GEO_TILEHERO_FRAME3]->textureID = LoadTGA("Image//tile_hero_office.tga");
-	meshList[GEO_TILEHERO_FRAME4] = MeshBuilder::GeneratePartOfSpriteSheet2D("GEO_TILEHERO_FRAME4", 32.0f, 32.0f, 4, 9, 4, 3);
-	meshList[GEO_TILEHERO_FRAME4]->textureID = LoadTGA("Image//tile_hero_office.tga");
-	meshList[GEO_TILEHERO_FRAME5] = MeshBuilder::GeneratePartOfSpriteSheet2D("GEO_TILEHERO_FRAME5", 32.0f, 32.0f, 4, 9, 5, 3);
-	meshList[GEO_TILEHERO_FRAME5]->textureID = LoadTGA("Image//tile_hero_office.tga");
-	meshList[GEO_TILEHERO_FRAME6] = MeshBuilder::GeneratePartOfSpriteSheet2D("GEO_TILEHERO_FRAME6", 32.0f, 32.0f, 4, 9, 6, 3);
-	meshList[GEO_TILEHERO_FRAME6]->textureID = LoadTGA("Image//tile_hero_office.tga");
-	meshList[GEO_TILEHERO_FRAME7] = MeshBuilder::GeneratePartOfSpriteSheet2D("GEO_TILEHERO_FRAME7", 32.0f, 32.0f, 4, 9, 7, 3);
-	meshList[GEO_TILEHERO_FRAME7]->textureID = LoadTGA("Image//tile_hero_office.tga");
-	meshList[GEO_TILEHERO_FRAME8] = MeshBuilder::GeneratePartOfSpriteSheet2D("GEO_TILEHERO_FRAME8", 32.0f, 32.0f, 4, 9, 8, 3);
-	meshList[GEO_TILEHERO_FRAME8]->textureID = LoadTGA("Image//tile_hero_office.tga");
-	
-	meshList[GEO_TILEHERO_FRAME0_FRONT] = MeshBuilder::GeneratePartOfSpriteSheet2D("GEO_TILEHERO_FRAME0_FRONT", 32.0f, 32.0f, 4, 9, 0, 2);
-	meshList[GEO_TILEHERO_FRAME0_FRONT]->textureID = LoadTGA("Image//tile_hero_office.tga");
-	meshList[GEO_TILEHERO_FRAME1_FRONT] = MeshBuilder::GeneratePartOfSpriteSheet2D("GEO_TILEHERO_FRAME1_FRONT", 32.0f, 32.0f, 4, 9, 1, 2);
-	meshList[GEO_TILEHERO_FRAME1_FRONT]->textureID = LoadTGA("Image//tile_hero_office.tga");
-	meshList[GEO_TILEHERO_FRAME2_FRONT] = MeshBuilder::GeneratePartOfSpriteSheet2D("GEO_TILEHERO_FRAME2_FRONT", 32.0f, 32.0f, 4, 9, 2, 2);
-	meshList[GEO_TILEHERO_FRAME2_FRONT]->textureID = LoadTGA("Image//tile_hero_office.tga");
-	meshList[GEO_TILEHERO_FRAME3_FRONT] = MeshBuilder::GeneratePartOfSpriteSheet2D("GEO_TILEHERO_FRAME3_FRONT", 32.0f, 32.0f, 4, 9, 3, 2);
-	meshList[GEO_TILEHERO_FRAME3_FRONT]->textureID = LoadTGA("Image//tile_hero_office.tga");
-	meshList[GEO_TILEHERO_FRAME4_FRONT] = MeshBuilder::GeneratePartOfSpriteSheet2D("GEO_TILEHERO_FRAME4_FRONT", 32.0f, 32.0f, 4, 9, 4, 2);
-	meshList[GEO_TILEHERO_FRAME4_FRONT]->textureID = LoadTGA("Image//tile_hero_office.tga");
-	meshList[GEO_TILEHERO_FRAME5_FRONT] = MeshBuilder::GeneratePartOfSpriteSheet2D("GEO_TILEHERO_FRAME5_FRONT", 32.0f, 32.0f, 4, 9, 5, 2);
-	meshList[GEO_TILEHERO_FRAME5_FRONT]->textureID = LoadTGA("Image//tile_hero_office.tga");
-	meshList[GEO_TILEHERO_FRAME6_FRONT] = MeshBuilder::GeneratePartOfSpriteSheet2D("GEO_TILEHERO_FRAME6_FRONT", 32.0f, 32.0f, 4, 9, 6, 2);
-	meshList[GEO_TILEHERO_FRAME6_FRONT]->textureID = LoadTGA("Image//tile_hero_office.tga");
-	meshList[GEO_TILEHERO_FRAME7_FRONT] = MeshBuilder::GeneratePartOfSpriteSheet2D("GEO_TILEHERO_FRAME7_FRONT", 32.0f, 32.0f, 4, 9, 7, 2);
-	meshList[GEO_TILEHERO_FRAME7_FRONT]->textureID = LoadTGA("Image//tile_hero_office.tga");
-	meshList[GEO_TILEHERO_FRAME8_FRONT] = MeshBuilder::GeneratePartOfSpriteSheet2D("GEO_TILEHERO_FRAME8_FRONT", 32.0f, 32.0f, 4, 9, 8, 2);
-	meshList[GEO_TILEHERO_FRAME8_FRONT]->textureID = LoadTGA("Image//tile_hero_office.tga");
-
-	meshList[GEO_TILEHERO_FRAME0_BACK] = MeshBuilder::GeneratePartOfSpriteSheet2D("GEO_TILEHERO_FRAME0_BACK", 32.0f, 32.0f, 4, 9, 0, 0);
-	meshList[GEO_TILEHERO_FRAME0_BACK]->textureID = LoadTGA("Image//tile_hero_office.tga");
-	meshList[GEO_TILEHERO_FRAME1_BACK] = MeshBuilder::GeneratePartOfSpriteSheet2D("GEO_TILEHERO_FRAME1_BACK", 32.0f, 32.0f, 4, 9, 1, 0);
-	meshList[GEO_TILEHERO_FRAME1_BACK]->textureID = LoadTGA("Image//tile_hero_office.tga");
-	meshList[GEO_TILEHERO_FRAME2_BACK] = MeshBuilder::GeneratePartOfSpriteSheet2D("GEO_TILEHERO_FRAME2_BACK", 32.0f, 32.0f, 4, 9, 2, 0);
-	meshList[GEO_TILEHERO_FRAME2_BACK]->textureID = LoadTGA("Image//tile_hero_office.tga");
-	meshList[GEO_TILEHERO_FRAME3_BACK] = MeshBuilder::GeneratePartOfSpriteSheet2D("GEO_TILEHERO_FRAME3_BACK", 32.0f, 32.0f, 4, 9, 3, 0);
-	meshList[GEO_TILEHERO_FRAME3_BACK]->textureID = LoadTGA("Image//tile_hero_office.tga");
-	meshList[GEO_TILEHERO_FRAME4_BACK] = MeshBuilder::GeneratePartOfSpriteSheet2D("GEO_TILEHERO_FRAME4_BACK", 32.0f, 32.0f, 4, 9, 4, 0);
-	meshList[GEO_TILEHERO_FRAME4_BACK]->textureID = LoadTGA("Image//tile_hero_office.tga");
-	meshList[GEO_TILEHERO_FRAME5_BACK] = MeshBuilder::GeneratePartOfSpriteSheet2D("GEO_TILEHERO_FRAME5_BACK", 32.0f, 32.0f, 4, 9, 5, 0);
-	meshList[GEO_TILEHERO_FRAME5_BACK]->textureID = LoadTGA("Image//tile_hero_office.tga");
-	meshList[GEO_TILEHERO_FRAME6_BACK] = MeshBuilder::GeneratePartOfSpriteSheet2D("GEO_TILEHERO_FRAME6_BACK", 32.0f, 32.0f, 4, 9, 6, 0);
-	meshList[GEO_TILEHERO_FRAME6_BACK]->textureID = LoadTGA("Image//tile_hero_office.tga");
-	meshList[GEO_TILEHERO_FRAME7_BACK] = MeshBuilder::GeneratePartOfSpriteSheet2D("GEO_TILEHERO_FRAME7_BACK", 32.0f, 32.0f, 4, 9, 7, 0);
-	meshList[GEO_TILEHERO_FRAME7_BACK]->textureID = LoadTGA("Image//tile_hero_office.tga");
-	meshList[GEO_TILEHERO_FRAME8_BACK] = MeshBuilder::GeneratePartOfSpriteSheet2D("GEO_TILEHERO_FRAME8_BACK", 32.0f, 32.0f, 4, 9, 8, 0);
-	meshList[GEO_TILEHERO_FRAME8_BACK]->textureID = LoadTGA("Image//tile_hero_office.tga");
-	
+	//Assignment	
 	meshList[GEO_TILEENEMY_FRAME0] = MeshBuilder::GeneratePartOfSpriteSheet2D("GEO_TILEENEMY_FRAME0", 32.0f, 32.0f, 4, 4, 0, 3);
 	meshList[GEO_TILEENEMY_FRAME0]->textureID = LoadTGA("Image//tile_zombie.tga");
 	meshList[GEO_TILEENEMY_FRAME1] = MeshBuilder::GeneratePartOfSpriteSheet2D("GEO_TILEENEMY_FRAME1", 32.0f, 32.0f, 4, 4, 1, 3);

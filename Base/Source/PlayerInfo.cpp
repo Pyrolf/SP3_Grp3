@@ -19,6 +19,30 @@ CPlayerInfo::CPlayerInfo(void)
 
 CPlayerInfo::~CPlayerInfo(void)
 {
+	for(int i = 0; i < frontMeshes.size(); ++i)
+	{
+		if(frontMeshes[i])
+		{
+			delete frontMeshes[i];
+			frontMeshes[i] = NULL;
+		}
+	}
+	for(int i = 0; i < backMeshes.size(); ++i)
+	{
+		if(backMeshes[i])
+		{
+			delete backMeshes[i];
+			backMeshes[i] = NULL;
+		}
+	}
+	for(int i = 0; i < sideMeshes.size(); ++i)
+	{
+		if(sideMeshes[i])
+		{
+			delete sideMeshes[i];
+			sideMeshes[i] = NULL;
+		}
+	}
 }
 
 // Set position x of the player
@@ -57,7 +81,7 @@ void CPlayerInfo::MoveUpDown(const bool mode, const float timeDiff, CMap* m_cMap
 		heroAnimationInvert = false;
 		heroAnimationCounter += 30 * timeDiff;
 		if(heroAnimationCounter > 8.0f)
-			heroAnimationCounter = 0.0f;
+			heroAnimationCounter = 1.0f;
 	}
 	else
 	{
@@ -66,7 +90,7 @@ void CPlayerInfo::MoveUpDown(const bool mode, const float timeDiff, CMap* m_cMap
 		heroAnimationInvert = false;
 		heroAnimationCounter += 30 * timeDiff;
 		if(heroAnimationCounter > 8.0f)
-			heroAnimationCounter = 0.0f;
+			heroAnimationCounter = 1.0f;
 	}
 }
 
