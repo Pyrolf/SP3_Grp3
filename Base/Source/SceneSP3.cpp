@@ -8,6 +8,8 @@
 #include "LoadTGA.h"
 #include <sstream>
 
+ISoundEngine * engine;
+
 SceneSP3::SceneSP3()
 	: gameState(MAINMENU)
 	, highscore(0)
@@ -60,9 +62,24 @@ void SceneSP3::Init()
 			}
 		}
 	}
+	soundinit();
+	
 }
+
+int SceneSP3::soundinit()
+{
+	engine = createIrrKlangDevice();
+
+   if (!engine)
+      return 0;
+
+   return 0;
+}
+
 void SceneSP3::UpdateInputs(double dt)
 {
+	static bool upkey = false;
+	static bool downkey = false;
 	// For gameplay
 	{
 		// Check Collision of th hero before moving up
@@ -118,7 +135,7 @@ void SceneSP3::UpdateInputs(double dt)
 	// Others
 	{
 		// Choose play
-		if(Application::IsKeyPressed(VK_UP))
+		if(Application::IsKeyPressed(VK_UP) && upkey == false)
 		{
 			if(gameState == PAUSE || gameState == MAINMENU)
 			{
@@ -127,10 +144,16 @@ void SceneSP3::UpdateInputs(double dt)
 					choice = PLAY;
 				}
 			}
-
+			engine->play2D("../media/click-click-mono.wav");
+			upkey = true;
+			
+		}
+		else if(Application::IsKeyPressed(VK_UP) == false && upkey == true)
+		{
+			upkey = false;
 		}
 		// Choose exit
-		else if(Application::IsKeyPressed(VK_DOWN))
+		else if(Application::IsKeyPressed(VK_DOWN) && downkey == false)
 		{
 			if(gameState == PAUSE)
 			{
@@ -146,7 +169,12 @@ void SceneSP3::UpdateInputs(double dt)
 					choice = EXIT;
 				}
 			}
-
+			engine->play2D("../media/click-click-mono.wav");
+			downkey = true;
+		}
+		else if(Application::IsKeyPressed(VK_DOWN) == false && downkey == true)
+		{
+			downkey = false;
 		}
 		// Confirm choice
 		else if(Application::IsKeyPressed(VK_RETURN))
@@ -363,6 +391,7 @@ void SceneSP3::Render()
 void SceneSP3::Exit()
 {
 	delete theHero;
+	engine->stopAllSounds();
 }
 
 /********************************************************************************

@@ -6,6 +6,10 @@
 #include "Vector3.h"
 #include "PlayerInfo.h"
 
+#include <irrKlang.h>
+#pragma comment(lib, "irrKlang.lib")
+using namespace irrklang;
+
 class SceneSP3 : public SceneBase
 {
 public:
@@ -25,6 +29,8 @@ public:
 		EXIT,
 	};
 	CHOICE choice;
+
+	int soundinit();
 private:
 
 	vector<Level*> levelList;
