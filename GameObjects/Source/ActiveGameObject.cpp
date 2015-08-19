@@ -9,12 +9,33 @@ ActiveGameObject::ActiveGameObject(int type, Vector3 pos)
 {
 	GameObject::GameObject(type, pos);
 	active = false;
-	currentFrame = 0;
-	random = 0;
+	
+	randomInt = NULL;
+	randomFloat = NULL;
+
+	InitRanodmVars();
+}
+
+void ActiveGameObject::InitRanodmVars()
+{
+	switch(type)
+	{
+
+	}
 }
 
 ActiveGameObject::~ActiveGameObject(void)
 {
+	if(randomInt)
+	{
+		delete randomInt;
+		randomInt = NULL;
+	}
+	if(randomFloat)
+	{
+		delete randomFloat;
+		randomFloat = NULL;
+	}
 }
 
 void ActiveGameObject::update(double dt)
@@ -23,10 +44,20 @@ void ActiveGameObject::update(double dt)
 	{
 	case WET_FLOOR:
 		{
+			if(active)
+			{
+				currentFrame += dt;
+				//if(currentFrame >= numofsprite)
+				//{
+				//		currentFrame = 0;
+				//		active = false;
+				//}
+			}
 			break;
 		}
 	case TIMING_DOOR:
 		{
+
 			break;
 		}
 	}

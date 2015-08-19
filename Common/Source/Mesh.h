@@ -1,5 +1,4 @@
-#ifndef MESH_H
-#define MESH_H
+#pragma once
 
 #include <string>
 #include "Material.h"
@@ -14,10 +13,12 @@ public:
 		DRAW_LINES,
 		DRAW_MODE_LAST,
 	};
-	Mesh(const std::string &meshName);
-	~Mesh();
-	void Render();
-	void Render(unsigned offset, unsigned count);
+
+	Mesh(const std::string &GLMeshName);
+	virtual ~Mesh(void);
+
+	virtual void Render() = 0;
+	virtual void Render(unsigned offset, unsigned count) = 0;
 
 	const std::string name;
 	DRAW_MODE mode;
@@ -28,5 +29,3 @@ public:
 	Material material;
 	unsigned textureID;
 };
-
-#endif

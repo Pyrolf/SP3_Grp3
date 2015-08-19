@@ -5,12 +5,16 @@ class ActiveGameObject : public GameObject
 {
 public:
 	bool active;
-	float currentFrame;
-	int random; // for any use depending on the gameObject
+
+	////////for any use depending on the gameObject////////
+	int* randomInt;
+	float* randomFloat;
+	///////////////////////////////////////////////////////
 
 	ActiveGameObject();
 	ActiveGameObject(int type, Vector3 pos);
 	~ActiveGameObject();
 
 	void update(double dt);
+	void InitRanodmVars();
 };

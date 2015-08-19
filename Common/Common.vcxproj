@@ -14,6 +14,7 @@
     <ClCompile Include="Source\Map.cpp" />
     <ClCompile Include="Source\MathUtility.cpp" />
     <ClCompile Include="Source\MatrixStack.cpp" />
+    <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\Mtx44.cpp" />
     <ClCompile Include="Source\timer.cpp" />
     <ClCompile Include="Source\Vector2.cpp" />
@@ -21,13 +22,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Map.h" />
+    <ClInclude Include="Source\Material.h" />
     <ClInclude Include="Source\MathUtility.h" />
     <ClInclude Include="Source\MatrixStack.h" />
+    <ClInclude Include="Source\Mesh.h" />
     <ClInclude Include="Source\Mtx44.h" />
     <ClInclude Include="Source\MyMath.h" />
     <ClInclude Include="Source\timer.h" />
     <ClInclude Include="Source\Vector2.h" />
     <ClInclude Include="Source\Vector3.h" />
+    <ClInclude Include="Source\Vertex.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B594FE34-E00B-4E94-AD04-D1FF100AA5DC}</ProjectGuid>

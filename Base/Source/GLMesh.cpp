@@ -1,18 +1,18 @@
 
-#include "Mesh.h"
+#include "GLMesh.h"
 #include "GL\glew.h"
 #include "Vertex.h"
 
-Mesh::Mesh(const std::string &meshName)
-	: name(meshName)
-	, mode(DRAW_TRIANGLES)
+GLMesh::GLMesh(const std::string &GLMeshName)
+	:
+Mesh(GLMeshName)
 {
 	glGenBuffers(1, &vertexBuffer);
 	glGenBuffers(1, &indexBuffer);
 	textureID = 0;
 }
 
-Mesh::~Mesh()
+GLMesh::~GLMesh()
 {
 	glDeleteBuffers(1, &vertexBuffer);
 	glDeleteBuffers(1, &indexBuffer);
@@ -20,7 +20,7 @@ Mesh::~Mesh()
 		glDeleteTextures(1, &textureID);
 }
 
-void Mesh::Render()
+void GLMesh::Render()
 {
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
@@ -57,7 +57,7 @@ void Mesh::Render()
 	}
 }
 
-void Mesh::Render(unsigned offset, unsigned count)
+void GLMesh::Render(unsigned offset, unsigned count)
 {
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);

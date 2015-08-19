@@ -4,6 +4,7 @@
 #include "Vertex.h"
 #include "MyMath.h"
 #include "LoadOBJ.h"
+#include "GLMesh.h"
 /******************************************************************************/
 /*!
 \brief
@@ -49,7 +50,7 @@ Mesh* MeshBuilder::GenerateAxes(const std::string &meshName, float lengthX, floa
 	index_buffer_data.push_back(4);
 	index_buffer_data.push_back(5);
 
-	Mesh *mesh = new Mesh(meshName);
+	Mesh *mesh = new GLMesh(meshName);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(Vertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
@@ -104,7 +105,7 @@ Mesh* MeshBuilder::GenerateCrossHair(const std::string &meshName, float colour_r
 	index_buffer_data.push_back(2);
 	index_buffer_data.push_back(3);
 
-	Mesh *mesh = new Mesh(meshName);
+	Mesh *mesh = new GLMesh(meshName);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(Vertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
@@ -164,7 +165,7 @@ Mesh* MeshBuilder::GenerateQuad(const std::string &meshName, Color color, float 
 	index_buffer_data.push_back(2);
 	index_buffer_data.push_back(0);
 	
-	Mesh *mesh = new Mesh(meshName);
+	Mesh *mesh = new GLMesh(meshName);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(Vertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
@@ -259,7 +260,7 @@ Mesh* MeshBuilder::GenerateCube(const std::string &meshName, Color color, float 
 	index_buffer_data.push_back(0);
 	index_buffer_data.push_back(5);
 	
-	Mesh *mesh = new Mesh(meshName);
+	Mesh *mesh = new GLMesh(meshName);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(Vertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
@@ -303,7 +304,7 @@ Mesh* MeshBuilder::GenerateRing(const std::string &meshName, Color color, unsign
 		//index_buffer_data.push_back(2 * slice + 2);
 	}
 
-	Mesh *mesh = new Mesh(meshName);
+	Mesh *mesh = new GLMesh(meshName);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(Vertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
@@ -365,7 +366,7 @@ Mesh* MeshBuilder::GenerateSphere(const std::string &meshName, Color color, unsi
 		}
 	}
 
-	Mesh *mesh = new Mesh(meshName);
+	Mesh *mesh = new GLMesh(meshName);
 
 	mesh->mode = Mesh::DRAW_TRIANGLE_STRIP;
 	
@@ -409,7 +410,7 @@ Mesh* MeshBuilder::GenerateCone(const std::string &meshName, Color color, unsign
 		index_buffer_data.push_back(slice * 2 + 1);
 	}
 
-	Mesh *mesh = new Mesh(meshName);
+	Mesh *mesh = new GLMesh(meshName);
 
 	mesh->mode = Mesh::DRAW_TRIANGLE_STRIP;
 	
@@ -437,7 +438,7 @@ Mesh* MeshBuilder::GenerateOBJ(const std::string &meshName, const std::string &f
 	
 	IndexVBO(vertices, uvs, normals, index_buffer_data, vertex_buffer_data);
 
-	Mesh *mesh = new Mesh(meshName);
+	Mesh *mesh = new GLMesh(meshName);
 	
 	mesh->mode = Mesh::DRAW_TRIANGLES;
 	
@@ -492,7 +493,7 @@ Mesh* MeshBuilder::GenerateText(const std::string &meshName, unsigned numRow, un
 		}
 	}
 	
-	Mesh *mesh = new Mesh(meshName);
+	Mesh *mesh = new GLMesh(meshName);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(Vertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
@@ -553,7 +554,7 @@ Mesh* MeshBuilder::GenerateMinimap(const std::string &meshName, Color color, flo
 	index_buffer_data.push_back(2);
 	index_buffer_data.push_back(0);
 
-	Mesh *mesh = new Mesh(meshName);
+	Mesh *mesh = new GLMesh(meshName);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(Vertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
@@ -609,7 +610,7 @@ Mesh* MeshBuilder::GenerateMinimapBorder(const std::string &meshName, Color colo
 	index_buffer_data.push_back(3);
 	index_buffer_data.push_back(0);
 
-	Mesh *mesh = new Mesh(meshName);
+	Mesh *mesh = new GLMesh(meshName);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(Vertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
@@ -662,7 +663,7 @@ Mesh* MeshBuilder::GenerateMinimapAvatar(const std::string &meshName, Color colo
 	index_buffer_data.push_back(1);
 	index_buffer_data.push_back(2);
 
-	Mesh *mesh = new Mesh(meshName);
+	Mesh *mesh = new GLMesh(meshName);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(Vertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
@@ -727,7 +728,7 @@ Mesh* MeshBuilder::Generate2DMesh(const std::string &meshName, Color color, int 
 	index_buffer_data.push_back(2);
 	index_buffer_data.push_back(0);
 
-	Mesh *mesh = new Mesh(meshName);
+	Mesh *mesh = new GLMesh(meshName);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(Vertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
@@ -782,7 +783,7 @@ Mesh* MeshBuilder::GeneratePartOfSpriteSheet2D(const std::string &meshName, int 
 	index_buffer_data.push_back(2);
 	index_buffer_data.push_back(0);
 
-	Mesh *mesh = new Mesh(meshName);
+	Mesh *mesh = new GLMesh(meshName);
 
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(Vertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
