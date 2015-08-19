@@ -79,28 +79,8 @@ void SceneSP3::UpdateInputs(double dt)
 			if(this->theHero->GetCurrentState() == this->theHero->PLAYING)
 			{
 				GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x(), this->theHero->GetPos_y() + this->theHero->GetMovementSpeed() * dt));
-				if(goCollidedWith)
-				{
-					switch (goCollidedWith->type)
-					{
-					case GameObject::WALL:
-						break;
-					case GameObject::DOOR:
-						{
-							this->theHero->SetPos_x(goCollidedWith->pos.x);
-							this->theHero->SetPos_y(goCollidedWith->pos.y);
-							this->theHero->SetCurrentState( this->theHero->EXITING );
-						}
-						break;
-					default :
-						this->theHero->MoveUpDown( true, dt, currentLevel->m_cMap);
-						break;
-					}
-				}
-				else
-				{
-					this->theHero->MoveUpDown( true, dt, currentLevel->m_cMap);
-				}
+
+				HeroColision(goCollidedWith, true, true, dt);
 			}
 		}
 		// Check Collision of th hero before moving down
@@ -109,28 +89,8 @@ void SceneSP3::UpdateInputs(double dt)
 			if(this->theHero->GetCurrentState() == this->theHero->PLAYING)
 			{
 				GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x(), this->theHero->GetPos_y() - this->theHero->GetMovementSpeed() * dt));
-				if(goCollidedWith)
-				{
-					switch (goCollidedWith->type)
-					{
-					case GameObject::WALL:
-						break;
-					case GameObject::DOOR:
-						{
-							this->theHero->SetPos_x(goCollidedWith->pos.x);
-							this->theHero->SetPos_y(goCollidedWith->pos.y);
-							this->theHero->SetCurrentState( this->theHero->EXITING );
-						}
-						break;
-					default :
-						this->theHero->MoveUpDown( false, dt, currentLevel->m_cMap);
-						break;
-					}
-				}
-				else
-				{
-					this->theHero->MoveUpDown( false, dt, currentLevel->m_cMap);
-				}
+
+				HeroColision(goCollidedWith, true, false, dt);
 			}
 		}
 
@@ -140,28 +100,8 @@ void SceneSP3::UpdateInputs(double dt)
 			if(this->theHero->GetCurrentState() == this->theHero->PLAYING)
 			{
 				GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x() - this->theHero->GetMovementSpeed() * dt, this->theHero->GetPos_y()));
-				if(goCollidedWith)
-				{
-					switch (goCollidedWith->type)
-					{
-					case GameObject::WALL:
-						break;
-					case GameObject::DOOR:
-						{
-							this->theHero->SetPos_x(goCollidedWith->pos.x);
-							this->theHero->SetPos_y(goCollidedWith->pos.y);
-							this->theHero->SetCurrentState( this->theHero->EXITING );
-						}
-						break;
-					default :
-						this->theHero->MoveLeftRight( true, dt, currentLevel->m_cMap);
-						break;
-					}
-				}
-				else
-				{
-					this->theHero->MoveLeftRight( true, dt, currentLevel->m_cMap);
-				}
+
+				HeroColision(goCollidedWith, false, true, dt);
 			}
 		}
 		// Check Collision of th hero before moving right
@@ -170,28 +110,8 @@ void SceneSP3::UpdateInputs(double dt)
 			if(this->theHero->GetCurrentState() == this->theHero->PLAYING)
 			{
 				GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x() + this->theHero->GetMovementSpeed() * dt, this->theHero->GetPos_y()));
-				if(goCollidedWith)
-				{
-					switch (goCollidedWith->type)
-					{
-					case GameObject::WALL:
-						break;
-					case GameObject::DOOR:
-						{
-							this->theHero->SetPos_x(goCollidedWith->pos.x);
-							this->theHero->SetPos_y(goCollidedWith->pos.y);
-							this->theHero->SetCurrentState( this->theHero->EXITING );
-						}
-						break;
-					default :
-						this->theHero->MoveLeftRight( false, dt, currentLevel->m_cMap);
-						break;
-					}
-				}
-				else
-				{
-					this->theHero->MoveLeftRight( false, dt, currentLevel->m_cMap);
-				}
+
+				HeroColision(goCollidedWith, false, false, dt);
 			}
 		}
 	}
@@ -581,4 +501,47 @@ void SceneSP3::RenderGUI()
 	ss.precision(3);
 	ss << "X" << theHero->GetHealth();
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(1, 1, 1), 3, 3, 57);
+}
+
+/********************************************************************************
+Do colision check and response when the hero move
+********************************************************************************/
+void SceneSP3::HeroColision(GameObject* goCollidedWith, bool updown, bool upORleft, double dt)
+{
+	if(goCollidedWith)
+	{
+		switch (goCollidedWith->type)
+		{
+		case GameObject::WALL:
+			break;
+		case GameObject::DOOR:
+			{
+				this->theHero->SetPos_x(goCollidedWith->pos.x);
+				this->theHero->SetPos_y(goCollidedWith->pos.y);
+				this->theHero->SetCurrentState( this->theHero->EXITING );
+			}
+			break;
+		default :
+			if(updown == true && upORleft == true)
+				this->theHero->MoveUpDown( true, dt, currentLevel->m_cMap);
+			else if(updown == true && upORleft == false)
+				this->theHero->MoveUpDown( false, dt, currentLevel->m_cMap);
+			else if(updown == false && upORleft == true)
+				this->theHero->MoveLeftRight( true, dt, currentLevel->m_cMap);
+			else
+				this->theHero->MoveLeftRight( false, dt, currentLevel->m_cMap);
+			break;
+		}
+	}
+	else
+	{
+		if(updown == true && upORleft == true)
+				this->theHero->MoveUpDown( true, dt, currentLevel->m_cMap);
+			else if(updown == true && upORleft == false)
+				this->theHero->MoveUpDown( false, dt, currentLevel->m_cMap);
+			else if(updown == false && upORleft == true)
+				this->theHero->MoveLeftRight( true, dt, currentLevel->m_cMap);
+			else
+				this->theHero->MoveLeftRight( false, dt, currentLevel->m_cMap);
+	}
 }

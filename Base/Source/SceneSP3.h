@@ -51,6 +51,7 @@ private:
 	int highscore;
 
 	void UpdateInputs(double dt);
+	void HeroColision(GameObject* goCollidedWith, bool updown, bool upORleft, double dt);
 };
 
 #endif
