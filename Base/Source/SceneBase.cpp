@@ -230,9 +230,14 @@ void SceneBase::Init()
 	meshList[GEO_MAGMA]->textureID = LoadTGA("Image//tile2_magma.tga");
 	meshList[GEO_DOOR] = MeshBuilder::Generate2DMesh("GEO_DOOR", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f);
 	meshList[GEO_DOOR]->textureID = LoadTGA("Image//tile3_door.tga");
-	meshList[GEO_LIVE] = MeshBuilder::Generate2DMesh("GEO_LIVE", Color(1, 1, 1), 0.0f, 0.0f, 5.0f, 5.0f);
-	meshList[GEO_LIVE]->textureID = LoadTGA("Image//heart.tga");
+	meshList[GEO_LIVE_1] = MeshBuilder::Generate2DMesh("GEO_LIVE_red", Color(5, 0, 0), 0.0f, 0.0f, 5.0f, 5.0f);
+	meshList[GEO_LIVE_2] = MeshBuilder::Generate2DMesh("GEO_LIVE_orange", Color(3, 3, 0), 0.0f, 0.0f, 5.0f, 5.0f);
+	meshList[GEO_LIVE_3] = MeshBuilder::Generate2DMesh("GEO_LIVE_green", Color(0, 5, 0), 0.0f, 0.0f, 5.0f, 5.0f);
+	//meshList[GEO_LIVE]->textureID = LoadTGA("Image//health.tga");
+	meshList[GEO_HEALTH_BAR] = MeshBuilder::Generate2DMesh("GEO_HEALTH_BAR", Color(1, 1, 1), 0.0f, 0.0f, 18.f, 6.f);
+	meshList[GEO_HEALTH_BAR]->textureID = LoadTGA("Image//healthbar.tga");
 	
+
 	meshList[GEO_MAINMENU] = MeshBuilder::Generate2DMesh("GEO_MAINMENU", Color(1, 1, 1), 0.0f, 0.0f, 1024.0f, 800.0f);
 	meshList[GEO_MAINMENU]->textureID = LoadTGA("Image//mainmenu.tga");
 	meshList[GEO_PAUSE] = MeshBuilder::Generate2DMesh("GEO_PAUSE", Color(1, 1, 1), 0.0f, 0.0f, 1024.0f, 800.0f);
@@ -247,6 +252,7 @@ void SceneBase::Init()
 
 	meshList[GEO_LADDER] = MeshBuilder::Generate2DMesh("GEO_LADDER", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f);
 	meshList[GEO_LADDER]->textureID = LoadTGA("Image//tile1_ladder_rear.tga");
+
 
 	
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 1000 units

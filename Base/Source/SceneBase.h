@@ -118,8 +118,11 @@ public:
 		GEO_ALERT,
 		GEO_MAGMA,
 		GEO_DOOR,
-		GEO_LIVE,
-		
+		GEO_LIVE_1,
+		GEO_LIVE_2,
+		GEO_LIVE_3,
+		GEO_HEALTH_BAR,
+
 		// Rear Tiles
 		GEO_LADDER,
 

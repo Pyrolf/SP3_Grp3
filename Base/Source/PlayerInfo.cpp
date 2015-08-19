@@ -12,7 +12,7 @@ CPlayerInfo::CPlayerInfo(void)
 	, heroAnimationDirection(DOWN)
 	, heroAnimationCounter(0.0f)
 	, heroAnimationInvert(false)
-	, health(100)
+	, health(3)
 {
 }
 
@@ -175,7 +175,7 @@ void CPlayerInfo::Reset(void)
 	heroAnimationCounter = 0.0f;
 	heroAnimationInvert = false;
 
-	health = 100;
+	health = 3;
 }
 
 void CPlayerInfo::SetCurrentState(CPlayerInfo::CURRENT_STATE currentState)

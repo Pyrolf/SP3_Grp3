@@ -224,7 +224,6 @@ void SceneSP3::UpdateInputs(double dt)
 void SceneSP3::Update(double dt)
 {
 	UpdateInputs(dt);
-
 	if(gameState == PLAYING)
 	{
 		if(this->theHero->GetCurrentState() != this->theHero->DYING)
@@ -274,7 +273,11 @@ void SceneSP3::Update(double dt)
 				enemy->Update(currentLevel->gameObjectsManager, dt, Vector3(theHero->GetPos_x(), theHero->GetPos_y()));
 				if(enemy->GetHitHero())
 				{
-					this->theHero->SetCurrentState(this->theHero->DYING);
+					if(theHero->GetHealth() == 1)
+					{
+						this->theHero->SetCurrentState(this->theHero->DYING);
+					}
+					this->theHero->SetHealth(theHero->GetHealth() - 1);
 					enemy->SetHitHero(false);
 					break;
 				}
@@ -504,12 +507,22 @@ Render the Enemies. This is a private function for use in this class only
 ********************************************************************************/
 void SceneSP3::RenderGUI()
 {
-	RenderMeshIn2D(meshList[GEO_LIVE], false, 1.0f, -80, 75);
+	RenderMeshIn2D(meshList[GEO_HEALTH_BAR], false, 1.f, -70 , 72);
+	for(int i = 0; i < theHero->GetHealth(); ++i)
+	{
+		if(theHero->GetHealth() == 1)
+			RenderMeshIn2D(meshList[GEO_LIVE_1], false, 1.0f, -70 + 6 * i, 72.5);
+		if(theHero->GetHealth() == 2)
+			RenderMeshIn2D(meshList[GEO_LIVE_2], false, 1.0f, -70 + 6 * i, 72.5);
+		if(theHero->GetHealth() == 3)
+			RenderMeshIn2D(meshList[GEO_LIVE_3], false, 1.0f, -70 + 6 * i, 72.5);
+	}
+	
 	//On screen text
-	std::ostringstream ss;
+	/*std::ostringstream ss;
 	ss.precision(3);
 	ss << "X" << theHero->GetHealth();
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(1, 1, 1), 3, 3, 57);
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(1, 1, 1), 3, 3, 57);*/
 }
 
 /********************************************************************************
