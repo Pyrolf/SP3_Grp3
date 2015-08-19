@@ -9,6 +9,8 @@ CEnemy::CEnemy(void)
 	, maxRangeToDetect(0)
 	, currentMode(RETURN)
 	, idleTime(0)
+	, justAlerted(false)
+	, timeAlerted(0)
 {
 }
 
@@ -94,6 +96,8 @@ void CEnemy::Update(GameObjectFactory* goManager, float timeDiff, Vector3 heroPo
 			if(currentMode != CHASE)
 			{
 				currentMode = CHASE;
+				justAlerted = true;
+				timeAlerted = 1.f;
 			}
 		}
 		else
@@ -110,6 +114,7 @@ void CEnemy::Update(GameObjectFactory* goManager, float timeDiff, Vector3 heroPo
 		if(currentMode != RETURN && currentMode != PATROL && currentMode != IDLE)
 		{
 			currentMode = RETURN;
+			justAlerted = false;
 		}
 	}
 
@@ -166,9 +171,7 @@ void CEnemy::Update(GameObjectFactory* goManager, float timeDiff, Vector3 heroPo
 							y = 0;
 						}
 						patrolTarget = Vector3(theENEMYPosition.x + x, theENEMYPosition.y + y);
-						float disAwayFromInitPos_x = (Vector3(patrolTarget.x - theENEMYInitialPosition.x)).Length();
-						float disAwayFromInitPos_y = (Vector3(patrolTarget.y - theENEMYInitialPosition.y)).Length();
-						if(!CheckCollision(goManager, patrolTarget) && disAwayFromInitPos_x <= maxRangeToDetect && disAwayFromInitPos_y <= maxRangeToDetect && patrolTarget != theENEMYPosition)
+						if(!CheckCollision(goManager, patrolTarget) && patrolTarget != theENEMYPosition)
 							break;
 					}
 				}
@@ -219,9 +222,7 @@ void CEnemy::Update(GameObjectFactory* goManager, float timeDiff, Vector3 heroPo
 							y = 0;
 						}
 						patrolTarget = Vector3(theENEMYPosition.x + x, theENEMYPosition.y + y);
-						float disAwayFromInitPos_x = (Vector3(patrolTarget.x - theENEMYInitialPosition.x)).Length();
-						float disAwayFromInitPos_y = (Vector3(patrolTarget.y - theENEMYInitialPosition.y)).Length();
-						if(!CheckCollision(goManager, patrolTarget) && disAwayFromInitPos_x <= maxRangeToDetect && disAwayFromInitPos_y <= maxRangeToDetect && patrolTarget != theENEMYPosition)
+						if(!CheckCollision(goManager, patrolTarget) && patrolTarget != theENEMYPosition)
 							break;
 					}
 				}
@@ -273,9 +274,7 @@ void CEnemy::Update(GameObjectFactory* goManager, float timeDiff, Vector3 heroPo
 							y = 0;
 						}
 						patrolTarget = Vector3(theENEMYPosition.x + x, theENEMYPosition.y + y);
-						float disAwayFromInitPos_x = (Vector3(patrolTarget.x - theENEMYInitialPosition.x)).Length();
-						float disAwayFromInitPos_y = (Vector3(patrolTarget.y - theENEMYInitialPosition.y)).Length();
-						if(!CheckCollision(goManager, patrolTarget) && disAwayFromInitPos_x <= maxRangeToDetect && disAwayFromInitPos_y <= maxRangeToDetect && patrolTarget != theENEMYPosition)
+						if(!CheckCollision(goManager, patrolTarget) && patrolTarget != theENEMYPosition)
 							break;
 					}
 				}
@@ -288,6 +287,17 @@ void CEnemy::Update(GameObjectFactory* goManager, float timeDiff, Vector3 heroPo
 		break;
 	}
 	UpdateAnimation(theENEMYPosition, theENEMYPrevPosition, timeDiff);
+	if(justAlerted)
+	{
+		if(timeAlerted > 0)
+		{
+			timeAlerted -= timeDiff;
+		}
+		else
+		{
+			justAlerted = false;
+		}
+	}
 }
 
 void CEnemy::SetCurrentMode(CEnemy::CURRENT_MODE currentMode)
@@ -498,4 +508,14 @@ void CEnemy::UpdateAnimation(Vector3 CurrentPos, Vector3 PrevPos, float timeDiff
 CEnemy::ANIMATION_DIRECTION CEnemy::GetAnimationDirection(void)
 {
 	return enemyAnimationDirection;
+}
+
+void CEnemy::SetJustAlerted(bool justAlerted)
+{
+	this->justAlerted = justAlerted;
+}
+
+bool CEnemy::GetJustAlerted(void)
+{
+	return justAlerted;
 }

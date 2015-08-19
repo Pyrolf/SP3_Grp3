@@ -115,6 +115,7 @@ public:
 
 		// Tiles
 		GEO_TILEGROUND,
+		GEO_ALERT,
 		GEO_MAGMA,
 		GEO_DOOR,
 		GEO_LIVE,

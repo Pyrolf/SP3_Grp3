@@ -43,7 +43,7 @@ void GameObjectFactory::generateGO(CMap *map)
 		}
 	}
 
-	tileSize = map->GetTileSize() - 2;
+	tileSize = map->GetTileSize();
 }
 
 GameObject* GameObjectFactory::CheckColision(Vector3 pos)

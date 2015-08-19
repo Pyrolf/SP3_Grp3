@@ -87,6 +87,9 @@ public:
 	void MoveEnemy(GameObjectFactory* goManager, float timeDiff, Vector3 target);
 
 	void UpdateAnimation(Vector3 CurrentPos, Vector3 PrevPos, float timeDiff);
+	
+	void SetJustAlerted(bool justAlerted);
+	bool GetJustAlerted(void);
 
 private:
 	// ENEMY's information
@@ -104,4 +107,7 @@ private:
 
 	bool hitHero;
 	ANIMATION_DIRECTION enemyAnimationDirection;
+
+	bool justAlerted;
+	float timeAlerted;
 };

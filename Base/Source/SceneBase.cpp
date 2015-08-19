@@ -221,6 +221,8 @@ void SceneBase::Init()
 	meshList[GEO_TILEENEMY_FRAME2_BACK]->textureID = LoadTGA("Image//tile_zombie.tga");
 	meshList[GEO_TILEENEMY_FRAME3_BACK] = MeshBuilder::GeneratePartOfSpriteSheet2D("GEO_TILEENEMY_FRAME3_BACK", 32.0f, 32.0f, 4, 4, 3, 0);
 	meshList[GEO_TILEENEMY_FRAME3_BACK]->textureID = LoadTGA("Image//tile_zombie.tga");
+	meshList[GEO_ALERT] = MeshBuilder::Generate2DMesh("GEO_ALERT", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f);
+	meshList[GEO_ALERT]->textureID = LoadTGA("Image//alert_sign.tga");
 	
 	meshList[GEO_TILEGROUND] = MeshBuilder::Generate2DMesh("GEO_TILEGROUND", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f);
 	meshList[GEO_TILEGROUND]->textureID = LoadTGA("Image//tile1_ground.tga");

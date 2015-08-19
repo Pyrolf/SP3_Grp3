@@ -28,7 +28,7 @@ void CAIManager::generateEnemies(CMap *map)
 
 				enemiesList.back()->SetPos_x(k  * map->GetTileSize(), true);
 				enemiesList.back()->SetPos_y((map->getNumOfTiles_MapHeight() - i - 1)  * map->GetTileSize(), true);
-				enemiesList.back()->SetMaxRangeToDetect(map->GetTileSize() * 4);
+				enemiesList.back()->SetMaxRangeToDetect(map->GetTileSize() * 5);
 				enemiesList.back()->SetAnimationCounter(0.f);
 				enemiesList.back()->SetAnimationInvert(false);
 			}

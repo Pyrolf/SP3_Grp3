@@ -281,10 +281,8 @@ void SceneSP3::Update(double dt)
 				CEnemy *enemyCollided = currentLevel->AI_Manager->CheckColisionBetweenEnemies(enemy, currentLevel->gameObjectsManager->tileSize);
 				if(enemyCollided)
 				{
-					enemy->SetPos_x(enemy->GetPos_x() - enemyCollided->GetPos_x());
-					enemy->SetPos_y(enemy->GetPos_y() - enemyCollided->GetPos_y());
-					enemyCollided->SetPos_x(enemyCollided->GetPos_x() - enemy->GetPos_x());
-					enemyCollided->SetPos_y(enemyCollided->GetPos_y() - enemy->GetPos_y());
+					enemy->SetPos_x(enemy->GetPos_x() + enemy->GetPos_x() - enemyCollided->GetPos_x());
+					enemy->SetPos_y(enemy->GetPos_y() + enemy->GetPos_y() - enemyCollided->GetPos_y());
 				}
 			}
 		}
@@ -493,6 +491,10 @@ void SceneSP3::RenderEnemies()
 
 				Render2DMesh(meshList[GEO_TILEENEMY_FRAME0 + (int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos_x(), enemy->GetPos_y(), true);
 			}
+		}
+		if(enemy->GetJustAlerted())
+		{
+			Render2DMesh(meshList[GEO_ALERT], false, 1.0f, enemy->GetPos_x(), enemy->GetPos_y() + currentLevel->gameObjectsManager->tileSize, true);
 		}
 	}
 }
