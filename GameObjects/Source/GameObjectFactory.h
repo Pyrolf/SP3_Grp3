@@ -1,5 +1,5 @@
 #include"Map.h"
-#include"GameObject.h"
+#include"ActiveGameObject.h"
 #include<vector>
 
 using std::vector;
@@ -8,6 +8,7 @@ class GameObjectFactory
 {
 public:
 	vector<GameObject*> GoList;
+	vector<ActiveGameObject*> UpdatableoList;
 	int tileSize;
 
 	GameObjectFactory();

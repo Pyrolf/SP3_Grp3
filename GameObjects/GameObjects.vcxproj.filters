@@ -74,6 +74,9 @@
     <ClInclude Include="Source\GameObjectFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\ActiveGameObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Asteroid2D.cpp">
@@ -125,6 +128,9 @@
       <Filter>Source Files\example</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameObjectFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ActiveGameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

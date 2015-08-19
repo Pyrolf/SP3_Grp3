@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\ActiveGameObject.h" />
     <ClInclude Include="Source\Asteroid2D.h" />
     <ClInclude Include="Source\AsteroidFactory.h" />
     <ClInclude Include="Source\Bullet2D.h" />
@@ -30,6 +31,7 @@
     <ClInclude Include="Source\World2D.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\ActiveGameObject.cpp" />
     <ClCompile Include="Source\Asteroid2D.cpp" />
     <ClCompile Include="Source\AsteroidFactory.cpp" />
     <ClCompile Include="Source\Bullet2D.cpp" />
