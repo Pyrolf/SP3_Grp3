@@ -15,6 +15,15 @@ GameObjectFactory::~GameObjectFactory()
 			GoList[i] = NULL;
 		}
 	}
+
+	for(int i = 0; i < UpdatableGoList.size(); i++)
+	{
+		if(GoList[i])
+		{
+			delete GoList[i];
+			GoList[i] = NULL;
+		}
+	}
 }
 
 void GameObjectFactory::generateGO(CMap *map)

@@ -8,7 +8,7 @@ class GameObjectFactory
 {
 public:
 	vector<GameObject*> GoList;
-	vector<ActiveGameObject*> UpdatableoList;
+	vector<ActiveGameObject*> UpdatableGoList;
 	int tileSize;
 
 	GameObjectFactory();
