@@ -56,7 +56,8 @@ GameObject* GameObjectFactory::CheckColision(Vector3 pos)
 
 		if((min.x > GoList[i]->pos.x && min.x < GoList[i]->pos.x + tileSize) && (min.y > GoList[i]->pos.y && min.y < GoList[i]->pos.y + tileSize) || 
 			(min.x > GoList[i]->pos.x && min.x < GoList[i]->pos.x + tileSize) && (max.y > GoList[i]->pos.y && max.y < GoList[i]->pos.y + tileSize) ||
-			(max.x > GoList[i]->pos.x && max.x < GoList[i]->pos.x + tileSize) && (min.y > GoList[i]->pos.y && min.y < GoList[i]->pos.y + tileSize) ||			(max.x > GoList[i]->pos.x && max.x < GoList[i]->pos.x + tileSize) && (max.y > GoList[i]->pos.y && max.y < GoList[i]->pos.y + tileSize))
+			(max.x > GoList[i]->pos.x && max.x < GoList[i]->pos.x + tileSize) && (min.y > GoList[i]->pos.y && min.y < GoList[i]->pos.y + tileSize) ||
+			(max.x > GoList[i]->pos.x && max.x < GoList[i]->pos.x + tileSize) && (max.y > GoList[i]->pos.y && max.y < GoList[i]->pos.y + tileSize))
 		{
 			return GoList[i];
 		}

@@ -41,6 +41,15 @@ public:
 	// ENEMY Update
 	void Update(GameObjectFactory* goManager, float timeDiff, Vector3 heroPos);
 
+	enum ANIMATION_DIRECTION
+	{
+		UP,
+		DOWN,
+		LEFT,
+		RIGHT,
+		NUM_OF_DIRECTION,
+	};
+
 	// Set Animation Invert status of the enemy
 	void SetAnimationInvert(bool ENEMYAnimationInvert);
 	// Get Animation Invert status of the enemy
@@ -49,6 +58,8 @@ public:
 	void SetAnimationCounter(float ENEMYAnimationCounter);
 	// Get Animation Counter of the enemy
 	float GetAnimationCounter(void);
+	// Get Animation Direction status of the enemy
+	ANIMATION_DIRECTION GetAnimationDirection(void);
 	
 	enum CURRENT_MODE
 	{
@@ -75,6 +86,8 @@ public:
 
 	void MoveEnemy(GameObjectFactory* goManager, float timeDiff, Vector3 target);
 
+	void UpdateAnimation(Vector3 CurrentPos, Vector3 PrevPos, float timeDiff);
+
 private:
 	// ENEMY's information
 	Vector3 theENEMYPosition;
@@ -90,4 +103,5 @@ private:
 	float enemyAnimationCounter;
 
 	bool hitHero;
+	ANIMATION_DIRECTION enemyAnimationDirection;
 };

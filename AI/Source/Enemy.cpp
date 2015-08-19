@@ -2,7 +2,8 @@
 #include <iostream>
 
 CEnemy::CEnemy(void)
-	: enemyAnimationInvert(false)
+	: enemyAnimationDirection(DOWN)
+	, enemyAnimationInvert(false)
 	, enemyAnimationCounter(0.f)
 	, hitHero(false)
 	, maxRangeToDetect(0)
@@ -286,6 +287,7 @@ void CEnemy::Update(GameObjectFactory* goManager, float timeDiff, Vector3 heroPo
 		}
 		break;
 	}
+	UpdateAnimation(theENEMYPosition, theENEMYPrevPosition, timeDiff);
 }
 
 void CEnemy::SetCurrentMode(CEnemy::CURRENT_MODE currentMode)
@@ -455,4 +457,45 @@ void CEnemy::MoveEnemy(GameObjectFactory* goManager, float timeDiff, Vector3 tar
 			}
 		}
 	}
+}
+
+void CEnemy::UpdateAnimation(Vector3 CurrentPos, Vector3 PrevPos, float timeDiff)
+{
+	if(CurrentPos.y > PrevPos.y)
+	{
+		enemyAnimationDirection = UP;
+		enemyAnimationInvert = false;
+		enemyAnimationCounter += 30 * timeDiff;
+		if(enemyAnimationCounter > 3.0f)
+			enemyAnimationCounter = 0.0f;
+	}
+	else if(CurrentPos.y < PrevPos.y)
+	{
+		enemyAnimationDirection = DOWN;
+		enemyAnimationInvert = false;
+		enemyAnimationCounter += 30 * timeDiff;
+		if(enemyAnimationCounter > 3.0f)
+			enemyAnimationCounter = 0.0f;
+	}
+	else if(CurrentPos.x < PrevPos.x)
+	{
+		enemyAnimationDirection = LEFT;
+		enemyAnimationInvert = true;
+		enemyAnimationCounter -= 30 * timeDiff;
+		if(enemyAnimationCounter < 0.0f)
+			enemyAnimationCounter = 3.0f;
+	}
+	else if(CurrentPos.x > PrevPos.x)
+	{
+		enemyAnimationDirection = RIGHT;
+		enemyAnimationInvert = false;
+		enemyAnimationCounter += 30 * timeDiff;
+		if(enemyAnimationCounter > 3.0f)
+			enemyAnimationCounter = 0.0f;
+	}
+}
+
+CEnemy::ANIMATION_DIRECTION CEnemy::GetAnimationDirection(void)
+{
+	return enemyAnimationDirection;
 }

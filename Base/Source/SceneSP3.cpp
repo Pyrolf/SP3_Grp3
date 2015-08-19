@@ -32,9 +32,10 @@ void SceneSP3::Init()
 	// Initialise and load the tile map
 	levelList.push_back(new Level);
 	levelList[0]->m_cMap = new CMap();
-	levelList[0]->m_cMap->Init( 832, 1024, 26, 32, 832, 1024);
+	levelList[0]->m_cMap->Init( 80 + 32, 1024, 25 + 1, 32, 1600 + 32, 1024);
 	levelList[0]->m_cMap->LoadMap( "Image//MapDesignLv1.csv" );
-	levelList[0]->background = meshList[GEO_GROUND_BACKGROUND];
+	levelList[0]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL1", Color(1, 1, 1), 0.0f, 0.0f, 1024.0f, 1600);
+	levelList[0]->background->textureID = LoadTGA("Image//background_level1.tga");
 	levelList[0]->sideView = false;
 
 	levelList[0]->gameObjectsManager = new GameObjectFactory;
@@ -101,7 +102,7 @@ void SceneSP3::UpdateInputs(double dt)
 			}
 		}
 		// Check Collision of th hero before moving down
-		if(Application::IsKeyPressed('S'))
+		else if(Application::IsKeyPressed('S'))
 		{
 			if(this->theHero->GetCurrentState() == this->theHero->PLAYING && gameState == PLAYING)
 			{
@@ -112,7 +113,7 @@ void SceneSP3::UpdateInputs(double dt)
 		}
 
 		// Check Collision of th hero before moving left
-		if(Application::IsKeyPressed('A'))
+		else if(Application::IsKeyPressed('A'))
 		{
 			if(this->theHero->GetCurrentState() == this->theHero->PLAYING && gameState == PLAYING)
 			{
@@ -122,7 +123,8 @@ void SceneSP3::UpdateInputs(double dt)
 			}
 		}
 		// Check Collision of th hero before moving right
-		if(Application::IsKeyPressed('D'))
+		
+		else if(Application::IsKeyPressed('D'))
 		{
 			if(this->theHero->GetCurrentState() == this->theHero->PLAYING && gameState == PLAYING)
 			{
@@ -143,8 +145,8 @@ void SceneSP3::UpdateInputs(double dt)
 				{
 					choice = PLAY;
 				}
+				engine->play2D("../media/click-click-mono.wav");
 			}
-			engine->play2D("../media/click-click-mono.wav");
 			upkey = true;
 			
 		}
@@ -161,6 +163,7 @@ void SceneSP3::UpdateInputs(double dt)
 				{
 					choice = QUIT;
 				}
+				engine->play2D("../media/click-click-mono.wav");
 			}
 			else if(gameState == MAINMENU)
 			{
@@ -168,8 +171,8 @@ void SceneSP3::UpdateInputs(double dt)
 				{
 					choice = EXIT;
 				}
+				engine->play2D("../media/click-click-mono.wav");
 			}
-			engine->play2D("../media/click-click-mono.wav");
 			downkey = true;
 		}
 		else if(Application::IsKeyPressed(VK_DOWN) == false && downkey == true)
@@ -313,7 +316,7 @@ void SceneSP3::Update(double dt)
 void SceneSP3::RenderBackground()
 {
 	// Render the crosshair
-	Render2DMesh(currentLevel->background, false, 1.0f);
+	Render2DMesh(currentLevel->background, false);
 }
 
 void SceneSP3::Render()
@@ -468,40 +471,27 @@ void SceneSP3::RenderEnemies()
 	for(vector<CEnemy *>::iterator it = currentLevel->AI_Manager->enemiesList.begin(); it != currentLevel->AI_Manager->enemiesList.end(); ++it)
 	{
 		CEnemy *enemy = (CEnemy *)*it;
-		int enemy_x = enemy->GetPos_x();
-		int enemy_y = enemy->GetPos_y();
-		if( ((enemy_x >= 0) && (enemy_x < 1024)) &&
-			((enemy_y >= 0) && (enemy_y < 800)) )
-		{
 
+		if(enemy->GetAnimationDirection() == enemy->DOWN)
+		{
+			Render2DMesh(meshList[GEO_TILEENEMY_FRAME0_FRONT + (int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos_x(), enemy->GetPos_y(), true);
+		}
+		else if(enemy->GetAnimationDirection() == enemy->UP)
+		{
+			Render2DMesh(meshList[GEO_TILEENEMY_FRAME0_BACK + (int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos_x(), enemy->GetPos_y(), true);
+		}
+		else
+		{
+			// enemy move right
 			if(enemy->GetAnimationInvert() == false)
 			{
-				// Enemy move right
-				if((int)enemy->GetAnimationCounter() == 0)
-					Render2DMesh(meshList[GEO_TILEENEMY_FRAME0], false, 1.0f, enemy_x, enemy_y);
-				else if((int)enemy->GetAnimationCounter() == 1)
-					Render2DMesh(meshList[GEO_TILEENEMY_FRAME1], false, 1.0f, enemy_x, enemy_y);
-				else if((int)enemy->GetAnimationCounter() == 2)
-					Render2DMesh(meshList[GEO_TILEENEMY_FRAME2], false, 1.0f, enemy_x, enemy_y);
-				else if((int)enemy->GetAnimationCounter() == 3)
-					Render2DMesh(meshList[GEO_TILEENEMY_FRAME3], false, 1.0f, enemy_x, enemy_y);
-				else
-					Render2DMesh(meshList[GEO_TILEENEMY_FRAME0], false, 1.0f, enemy_x, enemy_y);
-
+				Render2DMesh(meshList[GEO_TILEENEMY_FRAME0 + (int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos_x(), enemy->GetPos_y());
 			}
+			// enemy move left
 			else
 			{
-				// Enemy move left
-				if((int)enemy->GetAnimationCounter() == 0)
-					Render2DMesh(meshList[GEO_TILEENEMY_FRAME0], false, 1.0f, enemy_x, enemy_y, true);
-				else if((int)enemy->GetAnimationCounter() == 1)
-					Render2DMesh(meshList[GEO_TILEENEMY_FRAME1], false, 1.0f, enemy_x, enemy_y, true);
-				else if((int)enemy->GetAnimationCounter() == 2)
-					Render2DMesh(meshList[GEO_TILEENEMY_FRAME2], false, 1.0f, enemy_x, enemy_y, true);
-				else if((int)enemy->GetAnimationCounter() == 3)
-					Render2DMesh(meshList[GEO_TILEENEMY_FRAME3], false, 1.0f, enemy_x, enemy_y, true);
-				else
-					Render2DMesh(meshList[GEO_TILEENEMY_FRAME0], false, 1.0f, enemy_x, enemy_y, true);
+
+				Render2DMesh(meshList[GEO_TILEENEMY_FRAME0 + (int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos_x(), enemy->GetPos_y(), true);
 			}
 		}
 	}
