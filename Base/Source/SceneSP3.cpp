@@ -68,7 +68,7 @@ void SceneSP3::UpdateInputs(double dt)
 		// Check Collision of th hero before moving up
 		if(Application::IsKeyPressed('P'))
 		{
-			if(this->theHero->GetCurrentState() == this->theHero->PLAYING)
+			if(this->theHero->GetCurrentState() == this->theHero->PLAYING && gameState == PLAYING)
 			{
 				gameState = PAUSE;
 			}
@@ -76,7 +76,7 @@ void SceneSP3::UpdateInputs(double dt)
 		// Check Collision of th hero before moving up
 		if(Application::IsKeyPressed('W'))
 		{
-			if(this->theHero->GetCurrentState() == this->theHero->PLAYING)
+			if(this->theHero->GetCurrentState() == this->theHero->PLAYING && gameState == PLAYING)
 			{
 				GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x(), this->theHero->GetPos_y() + this->theHero->GetMovementSpeed() * dt));
 
@@ -86,7 +86,7 @@ void SceneSP3::UpdateInputs(double dt)
 		// Check Collision of th hero before moving down
 		if(Application::IsKeyPressed('S'))
 		{
-			if(this->theHero->GetCurrentState() == this->theHero->PLAYING)
+			if(this->theHero->GetCurrentState() == this->theHero->PLAYING && gameState == PLAYING)
 			{
 				GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x(), this->theHero->GetPos_y() - this->theHero->GetMovementSpeed() * dt));
 
@@ -97,7 +97,7 @@ void SceneSP3::UpdateInputs(double dt)
 		// Check Collision of th hero before moving left
 		if(Application::IsKeyPressed('A'))
 		{
-			if(this->theHero->GetCurrentState() == this->theHero->PLAYING)
+			if(this->theHero->GetCurrentState() == this->theHero->PLAYING && gameState == PLAYING)
 			{
 				GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x() - this->theHero->GetMovementSpeed() * dt, this->theHero->GetPos_y()));
 
@@ -107,7 +107,7 @@ void SceneSP3::UpdateInputs(double dt)
 		// Check Collision of th hero before moving right
 		if(Application::IsKeyPressed('D'))
 		{
-			if(this->theHero->GetCurrentState() == this->theHero->PLAYING)
+			if(this->theHero->GetCurrentState() == this->theHero->PLAYING && gameState == PLAYING)
 			{
 				GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x() + this->theHero->GetMovementSpeed() * dt, this->theHero->GetPos_y()));
 
