@@ -3,8 +3,7 @@
 Level::Level()
 	: m_cMap(NULL)
 	, m_cRearMap(NULL)
-	, theEnemy(NULL)
-	, theGoodiesList(NULL)
+	, AI_Manager(NULL)
 	, background(NULL)
 	, sideView(false)
 {
@@ -12,21 +11,16 @@ Level::Level()
 
 Level::~Level()
 {
-	for(int i = 0; i < theEnemy.size(); i++)
+	if(AI_Manager)
 	{
-		if(theEnemy[i])
-		{
-			delete theEnemy[i];
-			theEnemy[i] = NULL;
-		}
+		delete AI_Manager;
+		AI_Manager = NULL;
 	}
-	for(int i = 0; i < theGoodiesList.size(); i++)
+
+	if (gameObjectsManager)
 	{
-		if(theGoodiesList[i])
-		{
-			delete theGoodiesList[i];
-			theGoodiesList[i] = NULL;
-		}
+		delete gameObjectsManager;
+		gameObjectsManager = NULL;
 	}
 
 	if (m_cMap)
@@ -34,6 +28,7 @@ Level::~Level()
 		delete m_cMap;
 		m_cMap = NULL;
 	}
+
 	if(m_cRearMap)
 	{
 		delete m_cRearMap;

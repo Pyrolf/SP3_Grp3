@@ -2,7 +2,7 @@
 #define LEVEL_H
 
 #include "Map.h"
-#include "Enemy.h"
+#include "AIManager.h"
 #include "Vector2.h"
 #include "Goodies.h"
 
@@ -22,9 +22,7 @@ public:
 	GameObjectFactory* gameObjectsManager;
 
 	// Enemies
-	vector<CEnemy*> theEnemy;
-
-	vector<CGoodies*> theGoodiesList;
+	CAIManager* AI_Manager;
 
 	Mesh* background;
 

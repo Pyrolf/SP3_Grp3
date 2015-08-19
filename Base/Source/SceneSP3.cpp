@@ -18,42 +18,6 @@ SceneSP3::SceneSP3()
 
 SceneSP3::~SceneSP3()
 {
-	for(int index = 0; index < levelList.size(); index++)
-	{
-		for(int i = 0; i < levelList[index]->theGoodiesList.size(); i++)
-		{
-			if(levelList[index]->theGoodiesList[i])
-			{
-				delete levelList[index]->theGoodiesList[i];
-				levelList[index]->theGoodiesList[i] = NULL;
-			}
-		}
-
-		for(int i = 0; i < levelList[index]->theEnemy.size(); i++)
-		{
-			if(levelList[index]->theEnemy[i])
-			{
-				delete levelList[index]->theEnemy[i];
-				levelList[index]->theEnemy[i] = NULL;
-			}
-		}
-
-		if (levelList[index]->m_cMap)
-		{
-			delete levelList[index]->m_cMap;
-			levelList[index]->m_cMap = NULL;
-		}
-		if (levelList[index]->m_cRearMap)
-		{
-			delete levelList[index]->m_cRearMap;
-			levelList[index]->m_cRearMap = NULL;
-		}
-		if (levelList[index]->gameObjectsManager)
-		{
-			delete levelList[index]->gameObjectsManager;
-			levelList[index]->gameObjectsManager = NULL;
-		}
-	}
 }
 
 void SceneSP3::Init()
@@ -70,8 +34,12 @@ void SceneSP3::Init()
 	levelList[0]->m_cMap->LoadMap( "Image//MapDesignLv1.csv" );
 	levelList[0]->background = meshList[GEO_GROUND_BACKGROUND];
 	levelList[0]->sideView = false;
+
 	levelList[0]->gameObjectsManager = new GameObjectFactory;
 	levelList[0]->gameObjectsManager->generateGO(levelList[0]->m_cMap);
+
+	levelList[0]->AI_Manager = new CAIManager;
+	levelList[0]->AI_Manager->generateEnemies(levelList[0]->m_cMap);
 
 	for(int index = 0; index < levelList.size(); index++)
 	{
@@ -83,33 +51,12 @@ void SceneSP3::Init()
 				// If we have reached the right side of the Map, then do not display the extra column of tiles.
 				if((k) >= levelList[index]->m_cMap->getNumOfTiles_MapWidth())
 					break;
-				if (levelList[index]->m_cMap->theScreenMap[i][k] == 10)
-				{
-					enemyInitialPos.push_back(Vector3(k, levelList[index]->m_cMap->getNumOfTiles_MapHeight() - i - 1));
-				}
 				else if (levelList[index]->m_cMap->theScreenMap[i][k] == 20)
 				{
 					levelList[index]->HeroStartPos.x = k * levelList[index]->m_cMap->GetTileSize();
 					levelList[index]->HeroStartPos.y = (levelList[index]->m_cMap->getNumOfTiles_MapHeight() - i - 1) * levelList[index]->m_cMap->GetTileSize();
+					break;
 				}
-			}
-		}
-
-		// Enemys
-		if(enemyInitialPos.size() != 0)
-		{
-			for(int i = 0; i < enemyInitialPos.size(); i++)
-			{
-				// Set the strategy for the enemy
-				levelList[index]->theEnemy.push_back(new CEnemy);
-
-				levelList[index]->theEnemy[i]->SetPos_x(enemyInitialPos[i].x  * levelList[index]->m_cMap->GetTileSize(), true);
-				levelList[index]->theEnemy[i]->SetPos_y(enemyInitialPos[i].y  * levelList[index]->m_cMap->GetTileSize(), true);
-
-				levelList[index]->theEnemy[i]->SetMaxRangeToDetect(levelList[index]->m_cMap->GetTileSize() * 4);
-
-				levelList[index]->theEnemy[i]->SetAnimationCounter(0.f);
-				levelList[index]->theEnemy[i]->SetAnimationInvert(false);
 			}
 		}
 	}
@@ -295,12 +242,7 @@ void SceneSP3::UpdateInputs(double dt)
 					gameState = MAINMENU;
 					this->theHero->Reset();
 					this->theHero->SetCurrentState(this->theHero->PLAYING);
-					for(vector<CEnemy *>::iterator it = currentLevel->theEnemy.begin(); it != currentLevel->theEnemy.end(); ++it)
-					{
-						CEnemy *enemy = (CEnemy *)*it;
-						enemy->SetPos_x(enemy->GetInitialPos_x());
-						enemy->SetPos_y(enemy->GetInitialPos_y());
-					}
+					currentLevel->AI_Manager->Reset();
 				}
 				choice = NONE;
 			}
@@ -322,12 +264,7 @@ void SceneSP3::UpdateInputs(double dt)
 				gameState = MAINMENU;
 				this->theHero->Reset();
 				this->theHero->SetCurrentState(this->theHero->PLAYING);
-				for(vector<CEnemy *>::iterator it = currentLevel->theEnemy.begin(); it != currentLevel->theEnemy.end(); ++it)
-				{
-					CEnemy *enemy = (CEnemy *)*it;
-					enemy->SetPos_x(enemy->GetInitialPos_x());
-					enemy->SetPos_y(enemy->GetInitialPos_y());
-				}
+				currentLevel->AI_Manager->Reset();
 			}
 		}
 	}
@@ -347,12 +284,7 @@ void SceneSP3::Update(double dt)
 				{
 					if(this->theHero->GetTimeElasped() >= 1.f)
 					{
-						for(vector<CEnemy *>::iterator it = currentLevel->theEnemy.begin(); it != currentLevel->theEnemy.end(); ++it)
-						{
-							CEnemy *enemy = (CEnemy *)*it;
-							enemy->SetPos_x(enemy->GetInitialPos_x());
-							enemy->SetPos_y(enemy->GetInitialPos_y());
-						}
+						currentLevel->AI_Manager->Reset();
 						for(int index = 0; index < levelList.size(); index++)
 						{
 							if(currentLevel == levelList[index])
@@ -385,7 +317,7 @@ void SceneSP3::Update(double dt)
 			theHero->HeroUpdate(currentLevel->m_cMap, dt);
 
 			//Enemies
-			for(vector<CEnemy *>::iterator it = currentLevel->theEnemy.begin(); it != currentLevel->theEnemy.end(); ++it)
+			for(vector<CEnemy *>::iterator it = currentLevel->AI_Manager->enemiesList.begin(); it != currentLevel->AI_Manager->enemiesList.end(); ++it)
 			{
 				CEnemy *enemy = (CEnemy *)*it;
 				enemy->Update(currentLevel->gameObjectsManager, dt, Vector3(theHero->GetPos_x(), theHero->GetPos_y()));
@@ -394,6 +326,14 @@ void SceneSP3::Update(double dt)
 					this->theHero->SetCurrentState(this->theHero->DYING);
 					enemy->SetHitHero(false);
 					break;
+				}
+				CEnemy *enemyCollided = currentLevel->AI_Manager->CheckColisionBetweenEnemies(enemy, currentLevel->gameObjectsManager->tileSize);
+				if(enemyCollided)
+				{
+					enemy->SetPos_x(enemy->GetPos_x() - enemyCollided->GetPos_x());
+					enemy->SetPos_y(enemy->GetPos_y() - enemyCollided->GetPos_y());
+					enemyCollided->SetPos_x(enemyCollided->GetPos_x() - enemy->GetPos_x());
+					enemyCollided->SetPos_y(enemyCollided->GetPos_y() - enemy->GetPos_y());
 				}
 			}
 		}
@@ -410,12 +350,7 @@ void SceneSP3::Update(double dt)
 					// Reset informations
 					theHero->Reset();
 					this->theHero->SetCurrentState(this->theHero->PLAYING);
-					for(vector<CEnemy *>::iterator it = currentLevel->theEnemy.begin(); it != currentLevel->theEnemy.end(); ++it)
-					{
-						CEnemy *enemy = (CEnemy *)*it;
-						enemy->SetPos_x(enemy->GetInitialPos_x());
-						enemy->SetPos_y(enemy->GetInitialPos_y());
-					}
+					currentLevel->AI_Manager->Reset();
 				}
 				else
 				{
@@ -581,7 +516,7 @@ Render the Enemies. This is a private function for use in this class only
 void SceneSP3::RenderEnemies()
 {
 	// Render the enemies
-	for(vector<CEnemy *>::iterator it = currentLevel->theEnemy.begin(); it != currentLevel->theEnemy.end(); ++it)
+	for(vector<CEnemy *>::iterator it = currentLevel->AI_Manager->enemiesList.begin(); it != currentLevel->AI_Manager->enemiesList.end(); ++it)
 	{
 		CEnemy *enemy = (CEnemy *)*it;
 		int enemy_x = enemy->GetPos_x();

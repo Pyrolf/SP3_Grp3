@@ -14,5 +14,7 @@ public:
 	vector<CEnemy*> enemiesList;
 	
 	void generateEnemies(CMap *map);
-	bool CheckColisionBetweenEnemies(CEnemy* enemy);
+	CEnemy* CheckColisionBetweenEnemies(CEnemy* enemy, int tileSize);
+
+	void Reset(void);
 };
