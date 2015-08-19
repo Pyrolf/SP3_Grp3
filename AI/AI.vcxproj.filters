@@ -11,18 +11,18 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\AI.cpp">
+    <ClCompile Include="Source\Enemy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Enemy.cpp">
+    <ClCompile Include="Source\AIManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\AI.h">
+    <ClInclude Include="Source\Enemy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Enemy.h">
+    <ClInclude Include="Source\AIManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -4,7 +4,7 @@
 CEnemy::CEnemy(void)
 	: enemyAnimationInvert(false)
 	, enemyAnimationCounter(0.f)
-	, killedHero(false)
+	, hitHero(false)
 	, maxRangeToDetect(0)
 	, currentMode(RETURN)
 	, idleTime(0)
@@ -86,9 +86,9 @@ Hero Update
 void CEnemy::Update(GameObjectFactory* goManager, float timeDiff, Vector3 heroPos)
 {
 	float DistFromHeroToEnemy = (theENEMYPosition - heroPos).Length();
-	if(DistFromHeroToEnemy < maxRangeToDetect)
+	if(DistFromHeroToEnemy <= maxRangeToDetect)
 	{
-		if(DistFromHeroToEnemy > goManager->tileSize)
+		if(DistFromHeroToEnemy >= goManager->tileSize)
 		{
 			if(currentMode != CHASE)
 			{
@@ -100,7 +100,7 @@ void CEnemy::Update(GameObjectFactory* goManager, float timeDiff, Vector3 heroPo
 			if(currentMode != ATTACK)
 			{
 				currentMode = ATTACK;
-				killedHero = true;
+				hitHero = true;
 			}
 		}
 	}
@@ -120,6 +120,12 @@ void CEnemy::Update(GameObjectFactory* goManager, float timeDiff, Vector3 heroPo
 			MoveEnemy(goManager, timeDiff, heroPos);
 		}
 		break;
+	case ATTACK:
+		{
+			theENEMYPosition.x += theENEMYPosition.x - heroPos.x;
+			theENEMYPosition.y += theENEMYPosition.y - heroPos.y;
+		}
+		break;
 	case RETURN:
 		{
 			MoveEnemy(goManager, timeDiff, theENEMYInitialPosition);
@@ -130,8 +136,38 @@ void CEnemy::Update(GameObjectFactory* goManager, float timeDiff, Vector3 heroPo
 					currentMode = PATROL;
 					while(true)
 					{
-						patrolTarget = Vector3(Math::RandFloatMinMax(theENEMYInitialPosition.x - maxRangeToDetect, theENEMYInitialPosition.x + maxRangeToDetect), Math::RandFloatMinMax(theENEMYInitialPosition.y - maxRangeToDetect, theENEMYInitialPosition.y + maxRangeToDetect));
-						if(!CheckCollision(goManager, patrolTarget))
+						int temp = rand() % 3;
+						float x;
+						if(temp == 0)
+						{
+							x = goManager->tileSize;
+						}
+						else if(temp == 1)
+						{
+							x = -goManager->tileSize;
+						}
+						else
+						{
+							x = 0;
+						}
+						temp = rand() % 3;
+						float y;
+						if(temp == 0)
+						{
+							y = goManager->tileSize;
+						}
+						else if(temp == 1)
+						{
+							y = -goManager->tileSize;
+						}
+						else
+						{
+							y = 0;
+						}
+						patrolTarget = Vector3(theENEMYPosition.x + x, theENEMYPosition.y + y);
+						float disAwayFromInitPos_x = (Vector3(patrolTarget.x - theENEMYInitialPosition.x)).Length();
+						float disAwayFromInitPos_y = (Vector3(patrolTarget.y - theENEMYInitialPosition.y)).Length();
+						if(!CheckCollision(goManager, patrolTarget) && disAwayFromInitPos_x <= maxRangeToDetect && disAwayFromInitPos_y <= maxRangeToDetect && patrolTarget != theENEMYPosition)
 							break;
 					}
 				}
@@ -152,8 +188,39 @@ void CEnemy::Update(GameObjectFactory* goManager, float timeDiff, Vector3 heroPo
 				{
 					while(true)
 					{
-						patrolTarget = Vector3(Math::RandFloatMinMax(theENEMYInitialPosition.x - maxRangeToDetect, theENEMYInitialPosition.x + maxRangeToDetect), Math::RandFloatMinMax(theENEMYInitialPosition.y - maxRangeToDetect, theENEMYInitialPosition.y + maxRangeToDetect));
-						if(!CheckCollision(goManager, patrolTarget))
+						
+						int temp = rand() % 3;
+						float x;
+						if(temp == 0)
+						{
+							x = goManager->tileSize;
+						}
+						else if(temp == 1)
+						{
+							x = -goManager->tileSize;
+						}
+						else
+						{
+							x = 0;
+						}
+						temp = rand() % 3;
+						float y;
+						if(temp == 0)
+						{
+							y = goManager->tileSize;
+						}
+						else if(temp == 1)
+						{
+							y = -goManager->tileSize;
+						}
+						else
+						{
+							y = 0;
+						}
+						patrolTarget = Vector3(theENEMYPosition.x + x, theENEMYPosition.y + y);
+						float disAwayFromInitPos_x = (Vector3(patrolTarget.x - theENEMYInitialPosition.x)).Length();
+						float disAwayFromInitPos_y = (Vector3(patrolTarget.y - theENEMYInitialPosition.y)).Length();
+						if(!CheckCollision(goManager, patrolTarget) && disAwayFromInitPos_x <= maxRangeToDetect && disAwayFromInitPos_y <= maxRangeToDetect && patrolTarget != theENEMYPosition)
 							break;
 					}
 				}
@@ -175,8 +242,39 @@ void CEnemy::Update(GameObjectFactory* goManager, float timeDiff, Vector3 heroPo
 					currentMode = PATROL;
 					while(true)
 					{
-						patrolTarget = Vector3(Math::RandFloatMinMax(theENEMYInitialPosition.x - maxRangeToDetect, theENEMYInitialPosition.x + maxRangeToDetect), Math::RandFloatMinMax(theENEMYInitialPosition.y - maxRangeToDetect, theENEMYInitialPosition.y + maxRangeToDetect));
-						if(!CheckCollision(goManager, patrolTarget))
+						
+						int temp = rand() % 3;
+						float x;
+						if(temp == 0)
+						{
+							x = goManager->tileSize;
+						}
+						else if(temp == 1)
+						{
+							x = -goManager->tileSize;
+						}
+						else
+						{
+							x = 0;
+						}
+						temp = rand() % 3;
+						float y;
+						if(temp == 0)
+						{
+							y = goManager->tileSize;
+						}
+						else if(temp == 1)
+						{
+							y = -goManager->tileSize;
+						}
+						else
+						{
+							y = 0;
+						}
+						patrolTarget = Vector3(theENEMYPosition.x + x, theENEMYPosition.y + y);
+						float disAwayFromInitPos_x = (Vector3(patrolTarget.x - theENEMYInitialPosition.x)).Length();
+						float disAwayFromInitPos_y = (Vector3(patrolTarget.y - theENEMYInitialPosition.y)).Length();
+						if(!CheckCollision(goManager, patrolTarget) && disAwayFromInitPos_x <= maxRangeToDetect && disAwayFromInitPos_y <= maxRangeToDetect && patrolTarget != theENEMYPosition)
 							break;
 					}
 				}
@@ -210,14 +308,14 @@ float CEnemy::GetInitialPos_y(void)
 	return theENEMYInitialPosition.y;
 }
 
-void CEnemy::SetKilledHero(bool killedHero)
+void CEnemy::SetHitHero(bool hitHero)
 {
-	this->killedHero = killedHero;
+	this->hitHero = hitHero;
 }
 
-bool CEnemy::GetKilledHero(void)
+bool CEnemy::GetHitHero(void)
 {
-	return killedHero;
+	return hitHero;
 }
 
 void CEnemy::SetMaxRangeToDetect(int maxRangeToDetect)

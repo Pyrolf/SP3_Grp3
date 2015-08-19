@@ -65,8 +65,8 @@ public:
 	float GetInitialPos_x(void);
 	float GetInitialPos_y(void);
 
-	void SetKilledHero(bool killedHero);
-	bool GetKilledHero(void);
+	void SetHitHero(bool hitHero);
+	bool GetHitHero(void);
 
 	void SetMaxRangeToDetect(int maxRangeToDetect);
 	int GetMaxRangeToDetect(void);
@@ -89,5 +89,5 @@ private:
 	bool enemyAnimationInvert;
 	float enemyAnimationCounter;
 
-	bool killedHero;
+	bool hitHero;
 };

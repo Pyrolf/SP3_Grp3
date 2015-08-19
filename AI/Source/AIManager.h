@@ -5,12 +5,14 @@
 
 using std::vector;
 
-class AI
+class CAIManager
 {
 public:
-	AI();
-	~AI();
+	CAIManager();
+	~CAIManager();
 
 	vector<CEnemy*> enemiesList;
+	
+	void generateEnemies(CMap *map);
 	bool CheckColisionBetweenEnemies(CEnemy* enemy);
 };

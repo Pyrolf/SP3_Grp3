@@ -11,11 +11,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\AI.cpp" />
+    <ClCompile Include="Source\AIManager.cpp" />
     <ClCompile Include="Source\Enemy.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\AI.h" />
+    <ClInclude Include="Source\AIManager.h" />
     <ClInclude Include="Source\Enemy.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

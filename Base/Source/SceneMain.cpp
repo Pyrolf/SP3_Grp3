@@ -328,9 +328,9 @@
 //						CEnemy *enemy = (CEnemy *)*it;
 //						enemy->SetPos_x(enemy->GetInitialPos_x());
 //						enemy->SetPos_y(enemy->GetInitialPos_y());
-//						if(enemy->GetKilledHero())
+//						if(enemy->GetHitHero())
 //						{
-//							enemy->SetKilledHero(false);
+//							enemy->SetHitHero(false);
 //						}
 //					}
 //				}
@@ -360,9 +360,9 @@
 //					CEnemy *enemy = (CEnemy *)*it;
 //					enemy->SetPos_x(enemy->GetInitialPos_x());
 //					enemy->SetPos_y(enemy->GetInitialPos_y());
-//					if(enemy->GetKilledHero())
+//					if(enemy->GetHitHero())
 //					{
-//						enemy->SetKilledHero(false);
+//						enemy->SetHitHero(false);
 //					}
 //				}
 //			}
@@ -527,7 +527,7 @@
 //					}
 //					break;
 //				}
-//				if(enemy->GetKilledHero())
+//				if(enemy->GetHitHero())
 //				{
 //					this->theHero->SetCurrentState(this->theHero->DYING);
 //					break;
@@ -587,9 +587,9 @@
 //						CEnemy *enemy = (CEnemy *)*it;
 //						enemy->SetPos_x(enemy->GetInitialPos_x());
 //						enemy->SetPos_y(enemy->GetInitialPos_y());
-//						if(enemy->GetKilledHero())
+//						if(enemy->GetHitHero())
 //						{
-//							enemy->SetKilledHero(false);
+//							enemy->SetHitHero(false);
 //							break;
 //						}
 //					}

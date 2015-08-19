@@ -300,10 +300,6 @@ void SceneSP3::UpdateInputs(double dt)
 						CEnemy *enemy = (CEnemy *)*it;
 						enemy->SetPos_x(enemy->GetInitialPos_x());
 						enemy->SetPos_y(enemy->GetInitialPos_y());
-						if(enemy->GetKilledHero())
-						{
-							enemy->SetKilledHero(false);
-						}
 					}
 				}
 				choice = NONE;
@@ -331,10 +327,6 @@ void SceneSP3::UpdateInputs(double dt)
 					CEnemy *enemy = (CEnemy *)*it;
 					enemy->SetPos_x(enemy->GetInitialPos_x());
 					enemy->SetPos_y(enemy->GetInitialPos_y());
-					if(enemy->GetKilledHero())
-					{
-						enemy->SetKilledHero(false);
-					}
 				}
 			}
 		}
@@ -397,9 +389,10 @@ void SceneSP3::Update(double dt)
 			{
 				CEnemy *enemy = (CEnemy *)*it;
 				enemy->Update(currentLevel->gameObjectsManager, dt, Vector3(theHero->GetPos_x(), theHero->GetPos_y()));
-				if(enemy->GetKilledHero())
+				if(enemy->GetHitHero())
 				{
 					this->theHero->SetCurrentState(this->theHero->DYING);
+					enemy->SetHitHero(false);
 					break;
 				}
 			}
@@ -422,11 +415,6 @@ void SceneSP3::Update(double dt)
 						CEnemy *enemy = (CEnemy *)*it;
 						enemy->SetPos_x(enemy->GetInitialPos_x());
 						enemy->SetPos_y(enemy->GetInitialPos_y());
-						if(enemy->GetKilledHero())
-						{
-							enemy->SetKilledHero(false);
-							break;
-						}
 					}
 				}
 				else
