@@ -497,7 +497,7 @@ void SceneSP3::Render()
 		{
 			modelStack.PushMatrix();
 
-			modelStack.Translate( currentLevel->m_cMap->GetNumOfTiles_Width() * currentLevel->m_cMap->GetTileSize() * 0.5 - theHero->GetPos_x() * 2,  currentLevel->m_cMap->GetNumOfTiles_Height() * currentLevel->m_cMap->GetTileSize() * 0.5 - theHero->GetPos_y() * 2, 0);
+			modelStack.Translate( currentLevel->m_cMap->GetNumOfTiles_Width() * currentLevel->m_cMap->GetTileSize() * 0.5 - theHero->GetPos_x() * 2 - currentLevel->m_cMap->GetTileSize(),  currentLevel->m_cMap->GetNumOfTiles_Height() * currentLevel->m_cMap->GetTileSize() * 0.5 - theHero->GetPos_y() * 2 - currentLevel->m_cMap->GetTileSize(), 0);
 			modelStack.Scale(2,2,2);
 
 			// Render the background image

@@ -11,6 +11,8 @@ public:
 	vector<ActiveGameObject*> UpdatableGoList;
 	int tileSize;
 
+	std::vector<Mesh*> wallMesh, HoleMesh, HealthMesh, doorMesh, wetFloorMesh, timmingDoorMesh, lockedDoorMesh, hackMesh;
+
 	GameObjectFactory();
 	~GameObjectFactory();
 

@@ -5,6 +5,7 @@ GameObjectFactory::GameObjectFactory()
 	tileSize(0)
 {
 }
+
 GameObjectFactory::~GameObjectFactory()
 {
 	for(int i = 0; i < GoList.size(); i++)
@@ -15,13 +16,72 @@ GameObjectFactory::~GameObjectFactory()
 			GoList[i] = NULL;
 		}
 	}
-
 	for(int i = 0; i < UpdatableGoList.size(); i++)
 	{
-		if(GoList[i])
+		UpdatableGoList[i] = NULL;
+	}
+	for(int i = 0; i < wallMesh.size(); i++)
+	{
+		if(wallMesh[i])
 		{
-			delete GoList[i];
-			GoList[i] = NULL;
+			delete wallMesh[i];
+			wallMesh[i] = NULL;
+		}
+	}
+	for(int i = 0; i < HoleMesh.size(); i++)
+	{
+		if(HoleMesh[i])
+		{
+			delete HoleMesh[i];
+			HoleMesh[i] = NULL;
+		}
+	}
+	for(int i = 0; i < HealthMesh.size(); i++)
+	{
+		if(HealthMesh[i])
+		{
+			delete HealthMesh[i];
+			HealthMesh[i] = NULL;
+		}
+	}
+	for(int i = 0; i < doorMesh.size(); i++)
+	{
+		if(doorMesh[i])
+		{
+			delete doorMesh[i];
+			doorMesh[i] = NULL;
+		}
+	}
+	for(int i = 0; i < wetFloorMesh.size(); i++)
+	{
+		if(wetFloorMesh[i])
+		{
+			delete wetFloorMesh[i];
+			wetFloorMesh[i] = NULL;
+		}
+	}
+	for(int i = 0; i < timmingDoorMesh.size(); i++)
+	{
+		if(timmingDoorMesh[i])
+		{
+			delete timmingDoorMesh[i];
+			timmingDoorMesh[i] = NULL;
+		}
+	}
+	for(int i = 0; i < lockedDoorMesh.size(); i++)
+	{
+		if(lockedDoorMesh[i])
+		{
+			delete lockedDoorMesh[i];
+			lockedDoorMesh[i] = NULL;
+		}
+	}
+	for(int i = 0; i < hackMesh.size(); i++)
+	{
+		if(hackMesh[i])
+		{
+			delete hackMesh[i];
+			hackMesh[i] = NULL;
 		}
 	}
 }
@@ -38,7 +98,12 @@ void GameObjectFactory::generateGO(CMap *map)
 			}
 			else if(map->theScreenMap[i][k] > GameObject::TOTAL_NON_ACTIVE && map->theScreenMap[i][k] < GameObject::TOTAL)
 			{
-				GoList.push_back(new ActiveGameObject(map->theScreenMap[i][k], Vector3(k * map->GetTileSize(), ((map->getNumOfTiles_MapHeight() - i) * map->GetTileSize()) - map->GetTileSize(), 0)));
+				ActiveGameObject* temp = (new ActiveGameObject(map->theScreenMap[i][k], Vector3(k * map->GetTileSize(), ((map->getNumOfTiles_MapHeight() - i) * map->GetTileSize()) - map->GetTileSize(), 0)));
+
+				GoList.push_back(temp);
+				UpdatableGoList.push_back(temp);
+
+				temp = NULL;
 			}
 		}
 	}
