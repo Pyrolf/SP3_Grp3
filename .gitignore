@@ -13,6 +13,7 @@ Others/Release/
 Debug/Base.exe
 Debug/Base.ilk
 Debug/Base.pdb
+Debug/Common.lib
 Debug/AI.lib
 Debug/GameObjects.lib
 Debug/Others.lib

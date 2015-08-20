@@ -4,8 +4,9 @@
 static float GRAVITY = 3000.f;
 
 CPlayerInfo::CPlayerInfo(void)
-	: theHeroPosition(0, 0)
-	, theHeroInitialPosition(0, 0)
+	: theHeroPosition(Vector3(0, 0, 0))
+	, theHeroInitialPosition(Vector3(0, 0, 0))
+	, theHeroTargetPosition(Vector3(0, 0, 0))
 	, movementSpeed(200.0f)
 	, currentState(PLAYING)
 	, timeElasped(0.f)
@@ -56,27 +57,39 @@ CPlayerInfo::~CPlayerInfo(void)
 }
 
 // Set position x of the player
-void CPlayerInfo::SetPos_x(int pos_x)
+void CPlayerInfo::SetPos_x(float pos_x)
 {
 	theHeroPosition.x = pos_x;
 }
 
 // Set position y of the player
-void CPlayerInfo::SetPos_y(int pos_y)
+void CPlayerInfo::SetPos_y(float pos_y)
 {
 	theHeroPosition.y = pos_y;
 }
 
 // Set initial position x of the player
-void CPlayerInfo::SetInitialPos_x(int pos_x)
+void CPlayerInfo::SetInitialPos_x(float pos_x)
 {
 	theHeroInitialPosition.x = pos_x;
 }
 
 // Set initial position y of the player
-void CPlayerInfo::SetInitialPos_y(int pos_y)
+void CPlayerInfo::SetInitialPos_y(float pos_y)
 {
 	theHeroInitialPosition.y = pos_y;
+}
+
+// Set target position x of the player
+void CPlayerInfo::SetTargetPos_x(float pos_x)
+{
+	theHeroTargetPosition.x = pos_x;
+}
+
+// Set target position y of the player
+void CPlayerInfo::SetTargetPos_y(float pos_y)
+{
+	theHeroTargetPosition.y = pos_y;
 }
 
 /********************************************************************************
@@ -86,21 +99,11 @@ void CPlayerInfo::MoveUpDown(const bool mode, const float timeDiff, CMap* m_cMap
 {
 	if (mode)
 	{
-		theHeroPosition.y = theHeroPosition.y + (int) (movementSpeed * timeDiff);
-		heroAnimationDirection = UP;
-		heroAnimationInvert = false;
-		heroAnimationCounter += 30 * timeDiff;
-		if(heroAnimationCounter > 8.0f)
-			heroAnimationCounter = 1.0f;
+		theHeroTargetPosition.y += m_cMap->GetTileSize();
 	}
 	else
 	{
-		theHeroPosition.y = theHeroPosition.y - (int) (movementSpeed * timeDiff);
-		heroAnimationDirection = DOWN;
-		heroAnimationInvert = false;
-		heroAnimationCounter += 30 * timeDiff;
-		if(heroAnimationCounter > 8.0f)
-			heroAnimationCounter = 1.0f;
+		theHeroTargetPosition.y -= m_cMap->GetTileSize();
 	}
 }
 
@@ -111,34 +114,36 @@ void CPlayerInfo::MoveLeftRight(const bool mode, const float timeDiff, CMap* m_c
 {
 	if (mode)
 	{
-		theHeroPosition.x = theHeroPosition.x - (int) (movementSpeed * timeDiff);
-		heroAnimationDirection = LEFT;
-		heroAnimationInvert = true;
-		heroAnimationCounter -= 15 * timeDiff;
-		if(heroAnimationCounter < 0.0f)
-			heroAnimationCounter = 8.0f;
+		theHeroTargetPosition.x -= m_cMap->GetTileSize();
 	}
 	else
 	{
-		theHeroPosition.x = theHeroPosition.x + (int) (movementSpeed * timeDiff);
-		heroAnimationDirection = RIGHT;
-		heroAnimationInvert = false;
-		heroAnimationCounter += 15 * timeDiff;
-		if(heroAnimationCounter > 8.0f)
-			heroAnimationCounter = 0.0f;
+		theHeroTargetPosition.x += m_cMap->GetTileSize();
 	}
 }
 
 // Get position x of the player
-int CPlayerInfo::GetPos_x(void)
+float CPlayerInfo::GetPos_x(void)
 {
 	return theHeroPosition.x;
 }
 
 // Get position y of the player
-int CPlayerInfo::GetPos_y(void)
+float CPlayerInfo::GetPos_y(void)
 {
 	return theHeroPosition.y;
+}
+
+// Get target position x of the player
+float CPlayerInfo::GetTargetPos_x(void)
+{
+	return theHeroTargetPosition.x;
+}
+
+// Get target position y of the player
+float CPlayerInfo::GetTargetPos_y(void)
+{
+	return theHeroTargetPosition.y;
 }
 
 // Set Animation Direction status of the player
@@ -199,11 +204,62 @@ void CPlayerInfo::HeroUpdate(CMap* m_cMap, float timeDiff)
 	{
 		knockingBack(timeDiff);
 	}
+	else if(theHeroTargetPosition != theHeroPosition)
+	{
+		Vector3 HeroPrevPos = theHeroPosition;
+		theHeroPosition += (theHeroTargetPosition - theHeroPosition).Normalized() * movementSpeed * timeDiff;
+
+		if(theHeroTargetPosition.y > HeroPrevPos.y)
+		{
+			heroAnimationDirection = UP;
+			heroAnimationInvert = false;
+			heroAnimationCounter += 30 * timeDiff;
+			if(heroAnimationCounter > 8.0f)
+				heroAnimationCounter = 1.0f;
+
+			if(theHeroTargetPosition.y < theHeroPosition.y)
+				theHeroPosition.y = theHeroTargetPosition.y;
+		}
+		else if(theHeroTargetPosition.y < HeroPrevPos.y)
+		{
+			heroAnimationDirection = DOWN;
+			heroAnimationInvert = false;
+			heroAnimationCounter += 30 * timeDiff;
+			if(heroAnimationCounter > 8.0f)
+				heroAnimationCounter = 1.0f;
+
+			if(theHeroTargetPosition.y > theHeroPosition.y)
+				theHeroPosition.y = theHeroTargetPosition.y;
+		}
+		else if(theHeroTargetPosition.x > HeroPrevPos.x)
+		{
+			heroAnimationDirection = RIGHT;
+			heroAnimationInvert = false;
+			heroAnimationCounter += 15 * timeDiff;
+			if(heroAnimationCounter > 8.0f)
+				heroAnimationCounter = 0.0f;
+
+			if(theHeroTargetPosition.x < theHeroPosition.x)
+				theHeroPosition.x = theHeroTargetPosition.x;
+		}
+		else if(theHeroTargetPosition.x < HeroPrevPos.x)
+		{
+			heroAnimationDirection = LEFT;
+			heroAnimationInvert = true;
+			heroAnimationCounter -= 15 * timeDiff;
+			if(heroAnimationCounter < 0.0f)
+				heroAnimationCounter = 8.0f;
+
+			if(theHeroTargetPosition.x > theHeroPosition.x)
+				theHeroPosition.x = theHeroTargetPosition.x;
+		}
+	}
 }
 
 void CPlayerInfo::Reset(void)
 {
 	theHeroPosition = theHeroInitialPosition;
+	theHeroTargetPosition = theHeroPosition;
 
 	currentState = CPlayerInfo::PLAYING;
 

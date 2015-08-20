@@ -200,9 +200,12 @@ void SceneSP3::UpdateInputs(double dt)
 		// Check Collision of th hero before moving up
 		if(Application::IsKeyPressed('W'))
 		{
-			if(this->theHero->GetCurrentState() == this->theHero->PLAYING && gameState == PLAYING && !this->theHero->GetIsKnockingBack())
+			if(this->theHero->GetCurrentState() == this->theHero->PLAYING 
+				&& gameState == PLAYING
+				&& !this->theHero->GetIsKnockingBack()
+				&& Vector3(this->theHero->GetPos_x(),this->theHero->GetPos_y()) == Vector3(this->theHero->GetTargetPos_x(),this->theHero->GetTargetPos_y()))
 			{
-				GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x(), this->theHero->GetPos_y() + this->theHero->GetMovementSpeed() * dt));
+				GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x(), this->theHero->GetPos_y() + currentLevel->gameObjectsManager->tileSize));
 
 				HeroColision(goCollidedWith, true, true, dt);
 			}
@@ -210,9 +213,12 @@ void SceneSP3::UpdateInputs(double dt)
 		// Check Collision of th hero before moving down
 		else if(Application::IsKeyPressed('S'))
 		{
-			if(this->theHero->GetCurrentState() == this->theHero->PLAYING && gameState == PLAYING && !this->theHero->GetIsKnockingBack())
+			if(this->theHero->GetCurrentState() == this->theHero->PLAYING
+				&& gameState == PLAYING
+				&& !this->theHero->GetIsKnockingBack()
+				&& Vector3(this->theHero->GetPos_x(),this->theHero->GetPos_y()) == Vector3(this->theHero->GetTargetPos_x(),this->theHero->GetTargetPos_y()))
 			{
-				GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x(), this->theHero->GetPos_y() - this->theHero->GetMovementSpeed() * dt));
+				GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x(), this->theHero->GetPos_y() - currentLevel->gameObjectsManager->tileSize));
 
 				HeroColision(goCollidedWith, true, false, dt);
 			}
@@ -221,9 +227,12 @@ void SceneSP3::UpdateInputs(double dt)
 		// Check Collision of th hero before moving left
 		else if(Application::IsKeyPressed('A'))
 		{
-			if(this->theHero->GetCurrentState() == this->theHero->PLAYING && gameState == PLAYING && !this->theHero->GetIsKnockingBack())
+			if(this->theHero->GetCurrentState() == this->theHero->PLAYING
+				&& gameState == PLAYING
+				&& !this->theHero->GetIsKnockingBack()
+				&& Vector3(this->theHero->GetPos_x(),this->theHero->GetPos_y()) == Vector3(this->theHero->GetTargetPos_x(),this->theHero->GetTargetPos_y()))
 			{
-				GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x() - this->theHero->GetMovementSpeed() * dt, this->theHero->GetPos_y()));
+				GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x() - currentLevel->gameObjectsManager->tileSize, this->theHero->GetPos_y()));
 
 				HeroColision(goCollidedWith, false, true, dt);
 			}
@@ -232,9 +241,12 @@ void SceneSP3::UpdateInputs(double dt)
 		
 		else if(Application::IsKeyPressed('D'))
 		{
-			if(this->theHero->GetCurrentState() == this->theHero->PLAYING && gameState == PLAYING && !this->theHero->GetIsKnockingBack())
+			if(this->theHero->GetCurrentState() == this->theHero->PLAYING
+				&& gameState == PLAYING
+				&& !this->theHero->GetIsKnockingBack()
+				&& Vector3(this->theHero->GetPos_x(),this->theHero->GetPos_y()) == Vector3(this->theHero->GetTargetPos_x(),this->theHero->GetTargetPos_y()))
 			{
-				GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x() + this->theHero->GetMovementSpeed() * dt, this->theHero->GetPos_y()));
+				GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x() + currentLevel->gameObjectsManager->tileSize, this->theHero->GetPos_y()));
 
 				HeroColision(goCollidedWith, false, false, dt);
 			}
@@ -314,6 +326,8 @@ void SceneSP3::UpdateInputs(double dt)
 					theHero->SetPos_y(currentLevel->HeroStartPos.y);
 					theHero->SetInitialPos_x(currentLevel->HeroStartPos.x);
 					theHero->SetInitialPos_y(currentLevel->HeroStartPos.y);
+					theHero->SetTargetPos_x(currentLevel->HeroStartPos.x);
+					theHero->SetTargetPos_y(currentLevel->HeroStartPos.y);
 				}
 			}
 			else if(gameState == GAMEOVER)
@@ -352,6 +366,8 @@ void SceneSP3::Update(double dt)
 									theHero->SetPos_y(currentLevel->HeroStartPos.y);
 									theHero->SetInitialPos_x(currentLevel->HeroStartPos.x);
 									theHero->SetInitialPos_y(currentLevel->HeroStartPos.y);
+									theHero->SetTargetPos_x(currentLevel->HeroStartPos.x);
+									theHero->SetTargetPos_x(currentLevel->HeroStartPos.y);
 									this->theHero->SetCurrentState(this->theHero->PLAYING);
 									this->theHero->SetTimeElasped( 0.f );
 									break;

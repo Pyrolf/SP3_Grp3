@@ -17,22 +17,30 @@ public:
 	};
 	
 	// Set position x of the player
-	void SetPos_x(int pos_x);
+	void SetPos_x(float pos_x);
 	// Set position y of the player
-	void SetPos_y(int pos_y);
+	void SetPos_y(float pos_y);
 	// Set initial position x of the player
-	void SetInitialPos_x(int pos_x);
+	void SetInitialPos_x(float pos_x);
 	// Set initial position y of the player
-	void SetInitialPos_y(int pos_y);
+	void SetInitialPos_y(float pos_y);
+	// Set target position x of the player
+	void SetTargetPos_x(float pos_x);
+	// Set target position y of the player
+	void SetTargetPos_y(float pos_y);
 
 	// Update Movements
 	void MoveUpDown(const bool mode, const float timeDiff, CMap* m_cMap);
 	void MoveLeftRight(const bool mode, const float timeDiff, CMap* m_cMap);
 
 	// Get position x of the player
-	int GetPos_x(void);
+	float GetPos_x(void);
 	// Get position y of the player
-	int GetPos_y(void);
+	float GetPos_y(void);
+	// Get target position x of the player
+	float GetTargetPos_x(void);
+	// Get target position y of the player
+	float GetTargetPos_y(void);
 
 	// Hero Update
 	void HeroUpdate(CMap* m_cMap, float timeDiff);
@@ -101,6 +109,7 @@ private:
 	// Hero's information
 	Vector3 theHeroPosition;
 	Vector3 theHeroInitialPosition;
+	Vector3 theHeroTargetPosition;
 
 	float movementSpeed;
 
