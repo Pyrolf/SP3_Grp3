@@ -251,6 +251,13 @@ void SceneSP3::UpdateInputs(double dt)
 				HeroColision(goCollidedWith, false, false, dt);
 			}
 		}
+		if(!Application::IsKeyPressed('W') && !Application::IsKeyPressed('A') && !Application::IsKeyPressed('S') && !Application::IsKeyPressed('D')
+			&& gameState == PLAYING
+			&& !this->theHero->GetIsKnockingBack()
+			&& Vector3(this->theHero->GetPos_x(),this->theHero->GetPos_y()) == Vector3(this->theHero->GetTargetPos_x(),this->theHero->GetTargetPos_y()))
+		{
+			this->theHero->SetAnimationCounter(0.0f);
+		}
 	}
 	// Others
 	{

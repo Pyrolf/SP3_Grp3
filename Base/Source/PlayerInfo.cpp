@@ -203,17 +203,21 @@ void CPlayerInfo::HeroUpdate(CMap* m_cMap, float timeDiff)
 	if(isKnockingBack)
 	{
 		knockingBack(timeDiff);
+		theHeroTargetPosition = theHeroPosition;
 	}
-	else if(theHeroTargetPosition != theHeroPosition)
+
+	if(theHeroTargetPosition != theHeroPosition)
 	{
 		Vector3 HeroPrevPos = theHeroPosition;
+		int heroAnimationSpeed = 20;
+
 		theHeroPosition += (theHeroTargetPosition - theHeroPosition).Normalized() * movementSpeed * timeDiff;
 
 		if(theHeroTargetPosition.y > HeroPrevPos.y)
 		{
 			heroAnimationDirection = UP;
 			heroAnimationInvert = false;
-			heroAnimationCounter += 30 * timeDiff;
+			heroAnimationCounter += heroAnimationSpeed * timeDiff;
 			if(heroAnimationCounter > 8.0f)
 				heroAnimationCounter = 1.0f;
 
@@ -224,7 +228,7 @@ void CPlayerInfo::HeroUpdate(CMap* m_cMap, float timeDiff)
 		{
 			heroAnimationDirection = DOWN;
 			heroAnimationInvert = false;
-			heroAnimationCounter += 30 * timeDiff;
+			heroAnimationCounter += heroAnimationSpeed * timeDiff;
 			if(heroAnimationCounter > 8.0f)
 				heroAnimationCounter = 1.0f;
 
@@ -235,7 +239,7 @@ void CPlayerInfo::HeroUpdate(CMap* m_cMap, float timeDiff)
 		{
 			heroAnimationDirection = RIGHT;
 			heroAnimationInvert = false;
-			heroAnimationCounter += 15 * timeDiff;
+			heroAnimationCounter += heroAnimationSpeed * timeDiff;
 			if(heroAnimationCounter > 8.0f)
 				heroAnimationCounter = 0.0f;
 
@@ -246,7 +250,7 @@ void CPlayerInfo::HeroUpdate(CMap* m_cMap, float timeDiff)
 		{
 			heroAnimationDirection = LEFT;
 			heroAnimationInvert = true;
-			heroAnimationCounter -= 15 * timeDiff;
+			heroAnimationCounter -= heroAnimationSpeed * timeDiff;
 			if(heroAnimationCounter < 0.0f)
 				heroAnimationCounter = 8.0f;
 
