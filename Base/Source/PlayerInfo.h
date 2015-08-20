@@ -79,14 +79,24 @@ public:
 	// Get Animation Invert status of the player
 	bool GetAnimationInvert(void);
 	// Set Animation Counter of the player
-	void SetAnimationCounter(int heroAnimationCounter);
+	void SetAnimationCounter(float heroAnimationCounter);
 	// Get Animation Counter of the player
-	int GetAnimationCounter(void);
+	float GetAnimationCounter(void);
 	void Reset(void);
 	
+	// Set DeathRotate of the player
+	void SetDeathRotate(float deathRotate);
+	// Get Death Rotate of the player
+	float GetDeathRotate(void);
+	
+	void knockBackEnabled(Vector3 knockBackPos);
+	void knockingBack(float timeDiff);
+	bool GetIsKnockingBack();
+
 	std::vector<Mesh*> frontMeshes;
 	std::vector<Mesh*> backMeshes;
 	std::vector<Mesh*> sideMeshes;
+	std::vector<Mesh*> deathMeshes;
 private:
 	// Hero's information
 	Vector3 theHeroPosition;
@@ -96,6 +106,8 @@ private:
 
 	int health;
 
+	float deathRotate;
+
 	CPlayerInfo::CURRENT_STATE currentState;
 
 	float timeElasped;
@@ -103,4 +115,8 @@ private:
 	ANIMATION_DIRECTION heroAnimationDirection;
 	bool heroAnimationInvert;
 	float heroAnimationCounter;
+
+	// For KnockBack
+	bool isKnockingBack;
+	Vector3 knockBackPos;
 };

@@ -13,6 +13,8 @@ CPlayerInfo::CPlayerInfo(void)
 	, heroAnimationCounter(0.0f)
 	, heroAnimationInvert(false)
 	, health(3)
+	, deathRotate(0)
+	, isKnockingBack(false)
 {
 }
 
@@ -41,6 +43,14 @@ CPlayerInfo::~CPlayerInfo(void)
 		{
 			delete sideMeshes[i];
 			sideMeshes[i] = NULL;
+		}
+	}
+	for(int i = 0; i < deathMeshes.size(); ++i)
+	{
+		if(deathMeshes[i])
+		{
+			delete deathMeshes[i];
+			deathMeshes[i] = NULL;
 		}
 	}
 }
@@ -156,13 +166,13 @@ bool CPlayerInfo::GetAnimationInvert(void)
 }
 
 // Set Animation Counter of the player
-void CPlayerInfo::SetAnimationCounter(int heroAnimationCounter)
+void CPlayerInfo::SetAnimationCounter(float heroAnimationCounter)
 {
 	this->heroAnimationCounter = heroAnimationCounter;
 }
 
 // Get Animation Counter of the player
-int CPlayerInfo::GetAnimationCounter(void)
+float CPlayerInfo::GetAnimationCounter(void)
 {
 	return heroAnimationCounter;
 }
@@ -185,6 +195,10 @@ Hero Update
 void CPlayerInfo::HeroUpdate(CMap* m_cMap, float timeDiff)
 {
 	// Update Hero's info
+	if(isKnockingBack)
+	{
+		knockingBack(timeDiff);
+	}
 }
 
 void CPlayerInfo::Reset(void)
@@ -200,6 +214,10 @@ void CPlayerInfo::Reset(void)
 	heroAnimationInvert = false;
 
 	health = 3;
+
+	deathRotate = 0;
+
+	isKnockingBack = false;
 }
 
 void CPlayerInfo::SetCurrentState(CPlayerInfo::CURRENT_STATE currentState)
@@ -230,4 +248,54 @@ void CPlayerInfo::SetHealth(int health)
 int CPlayerInfo::GetHealth(void)
 {
 	return health;
+}
+
+// Set DeathRotate of the player
+void CPlayerInfo::SetDeathRotate(float deathRotate)
+{
+	this->deathRotate = deathRotate;
+}
+
+// Get Death Rotate of the player
+float CPlayerInfo::GetDeathRotate(void)
+{
+	return deathRotate;
+}
+
+void CPlayerInfo::knockBackEnabled(Vector3 knockBackPos)
+{
+	this->knockBackPos = knockBackPos;
+	this->isKnockingBack = true;
+}
+
+void CPlayerInfo::knockingBack(float timeDiff)
+{
+	Vector3 HeroPrevPos = theHeroPosition;
+	theHeroPosition += (knockBackPos - theHeroPosition).Normalized() * movementSpeed * 2 * timeDiff;
+
+	if(knockBackPos.x > HeroPrevPos.x && knockBackPos.x < theHeroPosition.x)
+	{
+		knockBackPos.x = theHeroPosition.x;
+	}
+	else if(knockBackPos.x < HeroPrevPos.x && knockBackPos.x > theHeroPosition.x)
+	{
+		knockBackPos.x = theHeroPosition.x;
+	}
+	if(knockBackPos.y > HeroPrevPos.y && knockBackPos.y < theHeroPosition.y)
+	{
+		knockBackPos.y = theHeroPosition.y;
+	}
+	else if(knockBackPos.y < HeroPrevPos.y && knockBackPos.y > theHeroPosition.y)
+	{
+		knockBackPos.y = theHeroPosition.y;
+	}
+	if(theHeroPosition == knockBackPos)
+	{
+		this->isKnockingBack = false;
+	}
+}
+
+bool CPlayerInfo::GetIsKnockingBack()
+{
+	return isKnockingBack;
 }

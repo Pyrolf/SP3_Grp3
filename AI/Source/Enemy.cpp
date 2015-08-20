@@ -291,7 +291,7 @@ void CEnemy::Update(GameObjectFactory* goManager, float timeDiff, Vector3 heroPo
 	{
 		if(timeAlerted > 0)
 		{
-			timeAlerted -= timeDiff;
+			//timeAlerted -= timeDiff;
 		}
 		else
 		{

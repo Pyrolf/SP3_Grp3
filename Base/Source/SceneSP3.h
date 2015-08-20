@@ -30,7 +30,6 @@ public:
 	};
 	CHOICE choice;
 
-	int soundinit();
 private:
 
 	vector<Level*> levelList;
@@ -38,6 +37,10 @@ private:
 
 	// Hero's information
 	CPlayerInfo* theHero;
+	
+	void InitHero();
+	void InitLevels();
+	int InitSound();
 
 	// Render functions
 	void RenderBackground();

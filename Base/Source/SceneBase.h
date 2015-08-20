@@ -75,25 +75,8 @@ public:
 		GEO_GROUND_BACKGROUND,
 		GEO_ICECAVE_BACKGROUND,
 		
-		// Enemy
-		GEO_TILEENEMY_FRAME0,
-		GEO_TILEENEMY_FRAME1,
-		GEO_TILEENEMY_FRAME2,
-		GEO_TILEENEMY_FRAME3,
-
-		GEO_TILEENEMY_FRAME0_FRONT,
-		GEO_TILEENEMY_FRAME1_FRONT,
-		GEO_TILEENEMY_FRAME2_FRONT,
-		GEO_TILEENEMY_FRAME3_FRONT,
-
-		GEO_TILEENEMY_FRAME0_BACK,
-		GEO_TILEENEMY_FRAME1_BACK,
-		GEO_TILEENEMY_FRAME2_BACK,
-		GEO_TILEENEMY_FRAME3_BACK,
-
 		// Tiles
 		GEO_TILEGROUND,
-		GEO_ALERT,
 		GEO_MAGMA,
 		GEO_DOOR,
 		GEO_LIVE_1,
@@ -134,7 +117,7 @@ public:
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshIn2D(Mesh *mesh, bool enableLight, float size=1.0f, float x=0.0f, float y=0.0f, bool rotate=false);
 	void RenderMesh(Mesh *mesh, bool enableLight);
-	void Render2DMesh(Mesh *mesh, const bool enableLight, const float size=1.0f, const float x=0.0f, const float y=0.0f, const bool rotate=false);
+	void Render2DMesh(Mesh *mesh, const bool enableLight, const float size=1.0f, const float x=0.0f, const float y=0.0f, const bool rotateY=false, const float rotateZ = 0.0f);
 
 	MS modelStack;
 	MS viewStack;
