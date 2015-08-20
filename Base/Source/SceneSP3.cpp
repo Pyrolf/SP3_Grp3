@@ -633,15 +633,16 @@ Render the Enemies. This is a private function for use in this class only
 ********************************************************************************/
 void SceneSP3::RenderGUI()
 {
-	RenderMeshIn2D(meshList[GEO_HEALTH_BAR], false, 1.f, -70 , 72);
+	RenderMeshIn2D(meshList[GEO_HEALTH_BAR], false, 2.f, -75 , 63);
+
 	for(int i = 0; i < theHero->GetHealth(); ++i)
 	{
 		if(theHero->GetHealth() == 1)
-			RenderMeshIn2D(meshList[GEO_LIVE_1], false, 1.0f, -70 + 6 * i, 72.5);
+			RenderMeshIn2D(meshList[GEO_LIVE_1], false, 1.0f, -68 + 6 * i, 70);
 		if(theHero->GetHealth() == 2)
-			RenderMeshIn2D(meshList[GEO_LIVE_2], false, 1.0f, -70 + 6 * i, 72.5);
+			RenderMeshIn2D(meshList[GEO_LIVE_2], false, 1.0f, -68 + 6 * i, 70);
 		if(theHero->GetHealth() == 3)
-			RenderMeshIn2D(meshList[GEO_LIVE_3], false, 1.0f, -70 + 6 * i, 72.5);
+			RenderMeshIn2D(meshList[GEO_LIVE_3], false, 1.0f, -68 + 6 * i, 70);
 	}
 	
 	//On screen text
