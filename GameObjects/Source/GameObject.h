@@ -10,20 +10,20 @@ public:
 	{
 		WALL = 1,
 		HOLE,
-		HEALTH,
 		DOOR,
 		TOTAL_NON_ACTIVE,
 		WET_FLOOR,
 		TIMING_DOOR,
 		LOCKED_DOOR,
 		HACK_SYS,
+		HEALTH,
 		TOTAL
 	};
 
 	int type;
 	Vector3 pos;
-	float currentFrame;
-	std::vector<Mesh*> meshes;
+	int currentFrame;
+	float frameTime, currentFrameTime;
 
 	GameObject();
 	GameObject(int type, Vector3 pos);

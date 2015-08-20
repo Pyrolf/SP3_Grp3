@@ -20,7 +20,20 @@ void ActiveGameObject::InitRanodmVars()
 {
 	switch(type)
 	{
-
+	case TIMING_DOOR:
+		{
+			randomInt = new int;
+			randomFloat = new float;
+			
+			*randomInt = Math::RandIntMinMax(3,6);
+			*randomFloat = 0;
+			break;
+		}
+	case HEALTH:
+		{
+			active = true;
+			break;
+		}
 	}
 }
 
@@ -46,18 +59,51 @@ void ActiveGameObject::update(double dt)
 		{
 			if(active)
 			{
-				currentFrame += dt;
-				//if(currentFrame >= numofsprite)
+				currentFrameTime += dt;
+				//if(currentFrameTime >= FrameTime)
 				//{
-				//		currentFrame = 0;
-				//		active = false;
+				//		currentFrame += 1;
+				//		currentFrameTime = 0;
+				//}
+				//if(currentFrame > numofFrames)
+				//{
+				//	currentFrame = 0;
+				//  active = false;
 				//}
 			}
 			break;
 		}
 	case TIMING_DOOR:
 		{
-
+			*randomFloat += dt;
+			if(*randomFloat > *randomInt)
+			{
+				*randomFloat = 0;
+				if(active)
+				{
+					currentFrame = 0;
+					active = false;
+				}
+				else
+				{
+					currentFrame = 1;
+					active = true;
+				}
+			}
+			break;
+		}
+	case LOCKED_DOOR:
+		{
+			if(active)
+				{
+					currentFrame = 0;
+					active = false;
+				}
+				else
+				{
+					currentFrame = 1;
+					active = true;
+				}
 			break;
 		}
 	}
