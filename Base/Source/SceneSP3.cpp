@@ -638,11 +638,11 @@ void SceneSP3::RenderGUI()
 	for(int i = 0; i < theHero->GetHealth(); ++i)
 	{
 		if(theHero->GetHealth() == 1)
-			RenderMeshIn2D(meshList[GEO_LIVE_1], false, 1.0f, -68 + 6 * i, 70);
+			RenderMeshIn2D(meshList[GEO_LIVE_1], false, 1.0f, -69 + 7 * i, 69.5);
 		if(theHero->GetHealth() == 2)
-			RenderMeshIn2D(meshList[GEO_LIVE_2], false, 1.0f, -68 + 6 * i, 70);
+			RenderMeshIn2D(meshList[GEO_LIVE_2], false, 1.0f, -69 + 7 * i, 69.5);
 		if(theHero->GetHealth() == 3)
-			RenderMeshIn2D(meshList[GEO_LIVE_3], false, 1.0f, -68 + 6 * i, 70);
+			RenderMeshIn2D(meshList[GEO_LIVE_3], false, 1.0f, -69 + 7 * i, 69.5);
 	}
 	
 	//On screen text
