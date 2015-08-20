@@ -13,9 +13,11 @@ CPlayerInfo::CPlayerInfo(void)
 	, heroAnimationDirection(DOWN)
 	, heroAnimationCounter(0.0f)
 	, heroAnimationInvert(false)
+	, heroAnimationSpeed(20)
 	, health(3)
 	, deathRotate(0)
 	, isKnockingBack(false)
+	, isAttacking(false)
 {
 }
 
@@ -52,6 +54,30 @@ CPlayerInfo::~CPlayerInfo(void)
 		{
 			delete deathMeshes[i];
 			deathMeshes[i] = NULL;
+		}
+	}
+	for(int i = 0; i < attackFrontMeshes.size(); ++i)
+	{
+		if(attackFrontMeshes[i])
+		{
+			delete attackFrontMeshes[i];
+			attackFrontMeshes[i] = NULL;
+		}
+	}
+	for(int i = 0; i < attackBackMeshes.size(); ++i)
+	{
+		if(attackBackMeshes[i])
+		{
+			delete attackBackMeshes[i];
+			attackBackMeshes[i] = NULL;
+		}
+	}
+	for(int i = 0; i < attackSideMeshes.size(); ++i)
+	{
+		if(attackSideMeshes[i])
+		{
+			delete attackSideMeshes[i];
+			attackSideMeshes[i] = NULL;
 		}
 	}
 }
@@ -197,7 +223,7 @@ float CPlayerInfo::GetMovementSpeed(void)
 /********************************************************************************
 Hero Update
 ********************************************************************************/
-void CPlayerInfo::HeroUpdate(CMap* m_cMap, float timeDiff)
+void CPlayerInfo::HeroUpdate(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager)
 {
 	// Update Hero's info
 	if(isKnockingBack)
@@ -205,57 +231,62 @@ void CPlayerInfo::HeroUpdate(CMap* m_cMap, float timeDiff)
 		knockingBack(timeDiff);
 		theHeroTargetPosition = theHeroPosition;
 	}
-
-	if(theHeroTargetPosition != theHeroPosition)
+	if(isAttacking)
 	{
-		Vector3 HeroPrevPos = theHeroPosition;
-		int heroAnimationSpeed = 20;
-
-		theHeroPosition += (theHeroTargetPosition - theHeroPosition).Normalized() * movementSpeed * timeDiff;
-
-		if(theHeroTargetPosition.y > HeroPrevPos.y)
+		Attacking(timeDiff, ai_manager, go_manager);
+	}
+	else
+	{
+		if(theHeroTargetPosition != theHeroPosition)
 		{
-			heroAnimationDirection = UP;
-			heroAnimationInvert = false;
-			heroAnimationCounter += heroAnimationSpeed * timeDiff;
-			if(heroAnimationCounter > 8.0f)
-				heroAnimationCounter = 1.0f;
+			Vector3 HeroPrevPos = theHeroPosition;
 
-			if(theHeroTargetPosition.y < theHeroPosition.y)
-				theHeroPosition.y = theHeroTargetPosition.y;
-		}
-		else if(theHeroTargetPosition.y < HeroPrevPos.y)
-		{
-			heroAnimationDirection = DOWN;
-			heroAnimationInvert = false;
-			heroAnimationCounter += heroAnimationSpeed * timeDiff;
-			if(heroAnimationCounter > 8.0f)
-				heroAnimationCounter = 1.0f;
+			theHeroPosition += (theHeroTargetPosition - theHeroPosition).Normalized() * movementSpeed * timeDiff;
 
-			if(theHeroTargetPosition.y > theHeroPosition.y)
-				theHeroPosition.y = theHeroTargetPosition.y;
-		}
-		else if(theHeroTargetPosition.x > HeroPrevPos.x)
-		{
-			heroAnimationDirection = RIGHT;
-			heroAnimationInvert = false;
-			heroAnimationCounter += heroAnimationSpeed * timeDiff;
-			if(heroAnimationCounter > 8.0f)
-				heroAnimationCounter = 0.0f;
+			if(theHeroTargetPosition.y > HeroPrevPos.y)
+			{
+				heroAnimationDirection = UP;
+				heroAnimationInvert = false;
+				heroAnimationCounter += heroAnimationSpeed * timeDiff;
+				if(heroAnimationCounter > backMeshes.size() - 1)
+					heroAnimationCounter = 1.0f;
 
-			if(theHeroTargetPosition.x < theHeroPosition.x)
-				theHeroPosition.x = theHeroTargetPosition.x;
-		}
-		else if(theHeroTargetPosition.x < HeroPrevPos.x)
-		{
-			heroAnimationDirection = LEFT;
-			heroAnimationInvert = true;
-			heroAnimationCounter -= heroAnimationSpeed * timeDiff;
-			if(heroAnimationCounter < 0.0f)
-				heroAnimationCounter = 8.0f;
+				if(theHeroTargetPosition.y < theHeroPosition.y)
+					theHeroPosition.y = theHeroTargetPosition.y;
+			}
+			else if(theHeroTargetPosition.y < HeroPrevPos.y)
+			{
+				heroAnimationDirection = DOWN;
+				heroAnimationInvert = false;
+				heroAnimationCounter += heroAnimationSpeed * timeDiff;
+				if(heroAnimationCounter > frontMeshes.size() - 1)
+					heroAnimationCounter = 1.0f;
 
-			if(theHeroTargetPosition.x > theHeroPosition.x)
-				theHeroPosition.x = theHeroTargetPosition.x;
+				if(theHeroTargetPosition.y > theHeroPosition.y)
+					theHeroPosition.y = theHeroTargetPosition.y;
+			}
+			else if(theHeroTargetPosition.x > HeroPrevPos.x)
+			{
+				heroAnimationDirection = RIGHT;
+				heroAnimationInvert = false;
+				heroAnimationCounter += heroAnimationSpeed * timeDiff;
+				if(heroAnimationCounter > sideMeshes.size() - 1)
+					heroAnimationCounter = 0.0f;
+
+				if(theHeroTargetPosition.x < theHeroPosition.x)
+					theHeroPosition.x = theHeroTargetPosition.x;
+			}
+			else if(theHeroTargetPosition.x < HeroPrevPos.x)
+			{
+				heroAnimationDirection = LEFT;
+				heroAnimationInvert = true;
+				heroAnimationCounter -= heroAnimationSpeed * timeDiff;
+				if(heroAnimationCounter < 0.0f)
+					heroAnimationCounter = sideMeshes.size() - 1;
+
+				if(theHeroTargetPosition.x > theHeroPosition.x)
+					theHeroPosition.x = theHeroTargetPosition.x;
+			}
 		}
 	}
 }
@@ -272,12 +303,14 @@ void CPlayerInfo::Reset(void)
 	heroAnimationDirection = DOWN;
 	heroAnimationCounter = 0.0f;
 	heroAnimationInvert = false;
+	heroAnimationSpeed = 20;
 
 	health = 3;
 
 	deathRotate = 0;
-
+	
 	isKnockingBack = false;
+	isAttacking = false;
 }
 
 void CPlayerInfo::SetCurrentState(CPlayerInfo::CURRENT_STATE currentState)
@@ -358,4 +391,53 @@ void CPlayerInfo::knockingBack(float timeDiff)
 bool CPlayerInfo::GetIsKnockingBack()
 {
 	return isKnockingBack;
+}
+
+void CPlayerInfo::attackingEnabled(Vector3 attackTargetPos)
+{
+	this->attackTargetPos = attackTargetPos;
+	this->isAttacking = true;
+	this->heroAnimationCounter = 0.0f;
+}
+
+void CPlayerInfo::Attacking(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager)
+{
+	float PrevHeroAnimationCounter = heroAnimationCounter;
+	heroAnimationCounter += heroAnimationSpeed * timeDiff;
+	if(PrevHeroAnimationCounter <= (attackFrontMeshes.size() - 1) * 0.5 && heroAnimationCounter >= (attackFrontMeshes.size() - 1) * 0.5)
+	{
+		Vector3 min(attackTargetPos.x * 0.2, attackTargetPos.y * 0.2, 0);
+		Vector3 max(attackTargetPos.x + go_manager->tileSize * 0.2, attackTargetPos.y + go_manager->tileSize * 0.2, 0);
+
+		for(int i = 0; i < ai_manager->enemiesList.size(); ++i)
+		{
+			if((min.x > ai_manager->enemiesList[i]->GetPos_x() && min.x < ai_manager->enemiesList[i]->GetPos_x() + go_manager->tileSize) && (min.y > ai_manager->enemiesList[i]->GetPos_y() && min.y < ai_manager->enemiesList[i]->GetPos_y() + go_manager->tileSize) || 
+				(min.x > ai_manager->enemiesList[i]->GetPos_x() && min.x < ai_manager->enemiesList[i]->GetPos_x() + go_manager->tileSize) && (max.y > ai_manager->enemiesList[i]->GetPos_y() && max.y < ai_manager->enemiesList[i]->GetPos_y() + go_manager->tileSize) ||
+				(max.x > ai_manager->enemiesList[i]->GetPos_x() && max.x < ai_manager->enemiesList[i]->GetPos_x() + go_manager->tileSize) && (min.y > ai_manager->enemiesList[i]->GetPos_y() && min.y < ai_manager->enemiesList[i]->GetPos_y() + go_manager->tileSize) ||
+				(max.x > ai_manager->enemiesList[i]->GetPos_x() && max.x < ai_manager->enemiesList[i]->GetPos_x() + go_manager->tileSize) && (max.y > ai_manager->enemiesList[i]->GetPos_y() && max.y < ai_manager->enemiesList[i]->GetPos_y() + go_manager->tileSize))
+			{
+				Vector3 enemyPrev = Vector3(ai_manager->enemiesList[i]->GetPos_x(), ai_manager->enemiesList[i]->GetPos_y());
+				if(ai_manager->enemiesList[i]->GetPos_x() != attackTargetPos.x)
+					ai_manager->enemiesList[i]->SetPos_x(ai_manager->enemiesList[i]->GetPos_x() + Vector3(ai_manager->enemiesList[i]->GetPos_x() - theHeroPosition.x).Normalized().x * go_manager->tileSize);
+				if(ai_manager->enemiesList[i]->GetPos_y() != attackTargetPos.y)
+					ai_manager->enemiesList[i]->SetPos_y(ai_manager->enemiesList[i]->GetPos_y() + Vector3(0, ai_manager->enemiesList[i]->GetPos_y() - theHeroPosition.y).Normalized().y * go_manager->tileSize);
+				GameObject* go = go_manager->CheckColision(Vector3(ai_manager->enemiesList[i]->GetPos_x(), ai_manager->enemiesList[i]->GetPos_y()));
+				if(go)
+				{
+					ai_manager->enemiesList[i]->SetPos_x(enemyPrev.x);
+					ai_manager->enemiesList[i]->SetPos_y(enemyPrev.y);
+				}
+			}
+		}
+	}
+	else if(heroAnimationCounter > attackFrontMeshes.size() - 1)
+	{
+		isAttacking = false;
+		heroAnimationCounter = 0.0f;
+	}
+}
+
+bool CPlayerInfo::GetIsAttacking()
+{
+	return isAttacking;
 }

@@ -91,7 +91,7 @@ void CEnemy::Update(GameObjectFactory* goManager, float timeDiff, Vector3 heroPo
 	float DistFromHeroToEnemy = (theENEMYPosition - heroPos).Length();
 	if(DistFromHeroToEnemy <= maxRangeToDetect)
 	{
-		if(DistFromHeroToEnemy >= goManager->tileSize)
+		if(DistFromHeroToEnemy >= goManager->tileSize * 0.5)
 		{
 			if(currentMode != CHASE)
 			{

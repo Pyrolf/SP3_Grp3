@@ -104,6 +104,45 @@ void SceneSP3::InitHero()
 	theHero->deathMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
 	theHero->deathMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME5_DEATH", 32.0f, 32.0f, 21, 13, 5, 20));
 	theHero->deathMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
+
+	theHero->attackFrontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME0_ATTACK_FRONT", 32.0f, 32.0f, 4, 6, 0, 2));
+	theHero->attackFrontMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
+	theHero->attackFrontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME1_ATTACK_FRONT", 32.0f, 32.0f, 4, 6, 1, 2));
+	theHero->attackFrontMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
+	theHero->attackFrontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME2_ATTACK_FRONT", 32.0f, 32.0f, 4, 6, 2, 2));
+	theHero->attackFrontMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
+	theHero->attackFrontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME3_ATTACK_FRONT", 32.0f, 32.0f, 4, 6, 3, 2));
+	theHero->attackFrontMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
+	theHero->attackFrontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME4_ATTACK_FRONT", 32.0f, 32.0f, 4, 6, 4, 2));
+	theHero->attackFrontMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
+	theHero->attackFrontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME5_ATTACK_FRONT", 32.0f, 32.0f, 4, 6, 5, 2));
+	theHero->attackFrontMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
+
+	theHero->attackBackMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME0_ATTACK_BACK", 32.0f, 32.0f, 4, 6, 0, 0));
+	theHero->attackBackMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
+	theHero->attackBackMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME1_ATTACK_BACK", 32.0f, 32.0f, 4, 6, 1, 0));
+	theHero->attackBackMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
+	theHero->attackBackMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME2_ATTACK_BACK", 32.0f, 32.0f, 4, 6, 2, 0));
+	theHero->attackBackMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
+	theHero->attackBackMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME3_ATTACK_BACK", 32.0f, 32.0f, 4, 6, 3, 0));
+	theHero->attackBackMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
+	theHero->attackBackMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME4_ATTACK_BACK", 32.0f, 32.0f, 4, 6, 4, 0));
+	theHero->attackBackMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
+	theHero->attackBackMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME5_ATTACK_BACK", 32.0f, 32.0f, 4, 6, 5, 0));
+	theHero->attackBackMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
+
+	theHero->attackSideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME0_ATTACK_SIDE", 32.0f, 32.0f, 4, 6, 0, 3));
+	theHero->attackSideMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
+	theHero->attackSideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME1_ATTACK_SIDE", 32.0f, 32.0f, 4, 6, 1, 3));
+	theHero->attackSideMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
+	theHero->attackSideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME2_ATTACK_SIDE", 32.0f, 32.0f, 4, 6, 2, 3));
+	theHero->attackSideMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
+	theHero->attackSideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME3_ATTACK_SIDE", 32.0f, 32.0f, 4, 6, 3, 3));
+	theHero->attackSideMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
+	theHero->attackSideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME4_ATTACK_SIDE", 32.0f, 32.0f, 4, 6, 4, 3));
+	theHero->attackSideMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
+	theHero->attackSideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME5_ATTACK_SIDE", 32.0f, 32.0f, 4, 6, 5, 3));
+	theHero->attackSideMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
 }
 
 void SceneSP3::InitLevels()
@@ -197,12 +236,43 @@ void SceneSP3::UpdateInputs(double dt)
 				gameState = PAUSE;
 			}
 		}
+
+		if(Application::IsKeyPressed('F'))
+		{
+			if(this->theHero->GetCurrentState() == this->theHero->PLAYING
+				&& gameState == PLAYING
+				&& !this->theHero->GetIsKnockingBack()
+				&& !this->theHero->GetIsAttacking()
+				&& Vector3(this->theHero->GetPos_x(),this->theHero->GetPos_y()) == Vector3(this->theHero->GetTargetPos_x(),this->theHero->GetTargetPos_y()))
+			{
+				Vector3 attackPos = Vector3(this->theHero->GetPos_x(), this->theHero->GetPos_y());
+				if(this->theHero->GetAnimationDirection() == this->theHero->UP)
+				{
+					attackPos.y += currentLevel->gameObjectsManager->tileSize;
+				}
+				else if(this->theHero->GetAnimationDirection() == this->theHero->DOWN)
+				{
+					attackPos.y -= currentLevel->gameObjectsManager->tileSize;
+				}
+				else if(this->theHero->GetAnimationDirection() == this->theHero->RIGHT)
+				{
+					attackPos.x += currentLevel->gameObjectsManager->tileSize;
+				}
+				else if(this->theHero->GetAnimationDirection() == this->theHero->LEFT)
+				{
+					attackPos.x -= currentLevel->gameObjectsManager->tileSize;
+				}
+				this->theHero->attackingEnabled(attackPos);
+			}
+		}
+
 		// Check Collision of th hero before moving up
 		if(Application::IsKeyPressed('W'))
 		{
 			if(this->theHero->GetCurrentState() == this->theHero->PLAYING 
 				&& gameState == PLAYING
 				&& !this->theHero->GetIsKnockingBack()
+				&& !this->theHero->GetIsAttacking()
 				&& Vector3(this->theHero->GetPos_x(),this->theHero->GetPos_y()) == Vector3(this->theHero->GetTargetPos_x(),this->theHero->GetTargetPos_y()))
 			{
 				GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x(), this->theHero->GetPos_y() + currentLevel->gameObjectsManager->tileSize));
@@ -216,6 +286,7 @@ void SceneSP3::UpdateInputs(double dt)
 			if(this->theHero->GetCurrentState() == this->theHero->PLAYING
 				&& gameState == PLAYING
 				&& !this->theHero->GetIsKnockingBack()
+				&& !this->theHero->GetIsAttacking()
 				&& Vector3(this->theHero->GetPos_x(),this->theHero->GetPos_y()) == Vector3(this->theHero->GetTargetPos_x(),this->theHero->GetTargetPos_y()))
 			{
 				GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x(), this->theHero->GetPos_y() - currentLevel->gameObjectsManager->tileSize));
@@ -230,6 +301,7 @@ void SceneSP3::UpdateInputs(double dt)
 			if(this->theHero->GetCurrentState() == this->theHero->PLAYING
 				&& gameState == PLAYING
 				&& !this->theHero->GetIsKnockingBack()
+				&& !this->theHero->GetIsAttacking()
 				&& Vector3(this->theHero->GetPos_x(),this->theHero->GetPos_y()) == Vector3(this->theHero->GetTargetPos_x(),this->theHero->GetTargetPos_y()))
 			{
 				GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x() - currentLevel->gameObjectsManager->tileSize, this->theHero->GetPos_y()));
@@ -251,10 +323,13 @@ void SceneSP3::UpdateInputs(double dt)
 				HeroColision(goCollidedWith, false, false, dt);
 			}
 		}
-		if(!Application::IsKeyPressed('W') && !Application::IsKeyPressed('A') && !Application::IsKeyPressed('S') && !Application::IsKeyPressed('D')
+
+		if(!Application::IsKeyPressed('W') && !Application::IsKeyPressed('A') && !Application::IsKeyPressed('S') && !Application::IsKeyPressed('D') && !Application::IsKeyPressed('F')
 			&& gameState == PLAYING
 			&& !this->theHero->GetIsKnockingBack()
-			&& Vector3(this->theHero->GetPos_x(),this->theHero->GetPos_y()) == Vector3(this->theHero->GetTargetPos_x(),this->theHero->GetTargetPos_y()))
+			&& !this->theHero->GetIsAttacking()
+			&& Vector3(this->theHero->GetPos_x(),this->theHero->GetPos_y()) == Vector3(this->theHero->GetTargetPos_x(),this->theHero->GetTargetPos_y())
+			&& this->theHero->GetCurrentState() != this->theHero->DYING)
 		{
 			this->theHero->SetAnimationCounter(0.0f);
 		}
@@ -393,7 +468,7 @@ void SceneSP3::Update(double dt)
 				break;
 			}
 
-			theHero->HeroUpdate(currentLevel->m_cMap, dt);
+			theHero->HeroUpdate(dt, currentLevel->AI_Manager, currentLevel->gameObjectsManager);
 
 			//Enemies
 			for(vector<CEnemy *>::iterator it = currentLevel->AI_Manager->enemiesList.begin(); it != currentLevel->AI_Manager->enemiesList.end(); ++it)
@@ -419,7 +494,21 @@ void SceneSP3::Update(double dt)
 						{
 							knockBackPos.y = this->theHero->GetPos_y() + ((Vector3(0, this->theHero->GetPos_y()) - Vector3(0, enemy->GetPos_y())).Normalized() * currentLevel->gameObjectsManager->tileSize).y;
 						}
-						this->theHero->knockBackEnabled(knockBackPos);
+						GameObject* go = currentLevel->gameObjectsManager->CheckColision(knockBackPos);
+						if(!go)
+							this->theHero->knockBackEnabled(knockBackPos);
+						else
+						{
+							switch(go->type)
+							{
+							case GameObject::DOOR:
+								{
+									this->theHero->knockBackEnabled(knockBackPos);
+									this->theHero->SetCurrentState(theHero->EXITING);
+								}
+								break;
+							}
+						}
 					}
 					enemy->SetHitHero(false);
 					break;
@@ -556,26 +645,52 @@ void SceneSP3::RenderHero()
 	{
 	case this->theHero->PLAYING:
 		{
-			if(theHero->GetAnimationDirection() == theHero->DOWN)
+			if(theHero->GetIsAttacking())
 			{
-				Render2DMesh(theHero->frontMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos_x(), theHero->GetPos_y());
-			}
-			else if(theHero->GetAnimationDirection() == theHero->UP)
-			{
-				Render2DMesh(theHero->backMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos_x(), theHero->GetPos_y());
+				if(theHero->GetAnimationDirection() == theHero->DOWN)
+				{
+					Render2DMesh(theHero->attackFrontMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos_x(), theHero->GetPos_y());
+				}
+				else if(theHero->GetAnimationDirection() == theHero->UP)
+				{
+					Render2DMesh(theHero->attackBackMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos_x(), theHero->GetPos_y());
+				}
+				else
+				{
+					// Hero move right
+					if(theHero->GetAnimationInvert() == false)
+					{
+						Render2DMesh(theHero->attackSideMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos_x(), theHero->GetPos_y());
+					}
+					// Hero move left
+					else
+					{
+						Render2DMesh(theHero->attackSideMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos_x(), theHero->GetPos_y(), true);
+					}
+				}
 			}
 			else
 			{
-				// Hero move right
-				if(theHero->GetAnimationInvert() == false)
+				if(theHero->GetAnimationDirection() == theHero->DOWN)
 				{
-					Render2DMesh(theHero->sideMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos_x(), theHero->GetPos_y());
+					Render2DMesh(theHero->frontMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos_x(), theHero->GetPos_y());
 				}
-				// Hero move left
+				else if(theHero->GetAnimationDirection() == theHero->UP)
+				{
+					Render2DMesh(theHero->backMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos_x(), theHero->GetPos_y());
+				}
 				else
 				{
-
-					Render2DMesh(theHero->sideMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos_x(), theHero->GetPos_y(), true);
+					// Hero move right
+					if(theHero->GetAnimationInvert() == false)
+					{
+						Render2DMesh(theHero->sideMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos_x(), theHero->GetPos_y());
+					}
+					// Hero move left
+					else
+					{
+						Render2DMesh(theHero->sideMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos_x(), theHero->GetPos_y(), true);
+					}
 				}
 			}
 		}

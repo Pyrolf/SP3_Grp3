@@ -2,6 +2,8 @@
 #include "Vector3.h"
 #include "Map.h"
 #include "Mesh.h"
+#include "AIManager.h"
+
 class CPlayerInfo
 {
 public:
@@ -43,7 +45,7 @@ public:
 	float GetTargetPos_y(void);
 
 	// Hero Update
-	void HeroUpdate(CMap* m_cMap, float timeDiff);
+	void HeroUpdate(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager);
 
 	// Set Movement Speed of the player
 	void SetMovementSpeed(float movementSpeed);
@@ -100,11 +102,18 @@ public:
 	void knockBackEnabled(Vector3 knockBackPos);
 	void knockingBack(float timeDiff);
 	bool GetIsKnockingBack();
+	
+	void attackingEnabled(Vector3 attackTargetPos);
+	void Attacking(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager);
+	bool GetIsAttacking();
 
 	std::vector<Mesh*> frontMeshes;
 	std::vector<Mesh*> backMeshes;
 	std::vector<Mesh*> sideMeshes;
 	std::vector<Mesh*> deathMeshes;
+	std::vector<Mesh*> attackFrontMeshes;
+	std::vector<Mesh*> attackBackMeshes;
+	std::vector<Mesh*> attackSideMeshes;
 private:
 	// Hero's information
 	Vector3 theHeroPosition;
@@ -124,8 +133,13 @@ private:
 	ANIMATION_DIRECTION heroAnimationDirection;
 	bool heroAnimationInvert;
 	float heroAnimationCounter;
-
+	int heroAnimationSpeed;
+	
 	// For KnockBack
 	bool isKnockingBack;
 	Vector3 knockBackPos;
+
+	// For KnockBack
+	bool isAttacking;
+	Vector3 attackTargetPos;
 };
