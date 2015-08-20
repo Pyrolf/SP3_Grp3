@@ -25,8 +25,9 @@ SceneSP3::~SceneSP3()
 void SceneSP3::Init()
 {
 	SceneBase::Init();
-	
+
 	InitHero();
+	InitGoMeshes();
 	InitLevels();
 	InitSound();
 }
@@ -53,7 +54,7 @@ void SceneSP3::InitHero()
 	theHero->sideMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
 	theHero->sideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME8_SIDE", 32.0f, 32.0f, 21, 13, 8, 11));
 	theHero->sideMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
-	
+
 	theHero->frontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME0_FRONT", 32.0f, 32.0f, 21, 13, 0, 10));
 	theHero->frontMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
 	theHero->frontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME1_FRONT", 32.0f, 32.0f, 21, 13, 1, 10));
@@ -72,7 +73,7 @@ void SceneSP3::InitHero()
 	theHero->frontMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
 	theHero->frontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME8_FRONT", 32.0f, 32.0f, 21, 13, 8, 10));
 	theHero->frontMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
-	
+
 	theHero->backMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME0_BACK", 32.0f, 32.0f, 21, 13, 0, 8));
 	theHero->backMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
 	theHero->backMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME1_BACK", 32.0f, 32.0f, 21, 13, 1, 8));
@@ -169,7 +170,7 @@ void SceneSP3::InitLevels()
 	levelList[0]->AI_Manager->sideMeshes.back()->textureID = LoadTGA("Image//tile_zombie.tga");
 	levelList[0]->AI_Manager->sideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_ENEMY_FRAME3_SIDE", 32.0f, 32.0f, 4, 4, 3, 3));
 	levelList[0]->AI_Manager->sideMeshes.back()->textureID = LoadTGA("Image//tile_zombie.tga");
-	
+
 	levelList[0]->AI_Manager->frontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_ENEMY_FRAME0_FRONT", 32.0f, 32.0f, 4, 4, 0, 1));
 	levelList[0]->AI_Manager->frontMeshes.back()->textureID = LoadTGA("Image//tile_zombie.tga");
 	levelList[0]->AI_Manager->frontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_ENEMY_FRAME1_FRONT", 32.0f, 32.0f, 4, 4, 1, 1));
@@ -178,7 +179,7 @@ void SceneSP3::InitLevels()
 	levelList[0]->AI_Manager->frontMeshes.back()->textureID = LoadTGA("Image//tile_zombie.tga");
 	levelList[0]->AI_Manager->frontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_ENEMY_FRAME3_FRONT", 32.0f, 32.0f, 4, 4, 3, 1));
 	levelList[0]->AI_Manager->frontMeshes.back()->textureID = LoadTGA("Image//tile_zombie.tga");
-	
+
 	levelList[0]->AI_Manager->backMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_ENEMY_FRAME0_BACK", 32.0f, 32.0f, 4, 4, 0, 0));
 	levelList[0]->AI_Manager->backMeshes.back()->textureID = LoadTGA("Image//tile_zombie.tga");
 	levelList[0]->AI_Manager->backMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_ENEMY_FRAME1_BACK", 32.0f, 32.0f, 4, 4, 1, 0));
@@ -187,7 +188,7 @@ void SceneSP3::InitLevels()
 	levelList[0]->AI_Manager->backMeshes.back()->textureID = LoadTGA("Image//tile_zombie.tga");
 	levelList[0]->AI_Manager->backMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_ENEMY_FRAME3_BACK", 32.0f, 32.0f, 4, 4, 3, 0));
 	levelList[0]->AI_Manager->backMeshes.back()->textureID = LoadTGA("Image//tile_zombie.tga");
-	
+
 	levelList[0]->AI_Manager->alertSign = MeshBuilder::Generate2DMesh("GEO_ALERT", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f);
 	levelList[0]->AI_Manager->alertSign->textureID = LoadTGA("Image//alert_sign.tga");
 
@@ -216,10 +217,10 @@ int SceneSP3::InitSound()
 {
 	engine = createIrrKlangDevice();
 
-   if (!engine)
-      return 0;
+	if (!engine)
+		return 0;
 
-   return 0;
+	return 0;
 }
 
 void SceneSP3::UpdateInputs(double dt)
@@ -310,7 +311,7 @@ void SceneSP3::UpdateInputs(double dt)
 			}
 		}
 		// Check Collision of th hero before moving right
-		
+
 		else if(Application::IsKeyPressed('D'))
 		{
 			if(this->theHero->GetCurrentState() == this->theHero->PLAYING
@@ -348,7 +349,7 @@ void SceneSP3::UpdateInputs(double dt)
 				engine->play2D("../media/click-click-mono.wav");
 			}
 			upkey = true;
-			
+
 		}
 		else if(Application::IsKeyPressed(VK_UP) == false && upkey == true)
 		{
@@ -634,6 +635,7 @@ void SceneSP3::Exit()
 {
 	delete theHero;
 	engine->stopAllSounds();
+	DeleteGoMeshes();
 }
 
 /********************************************************************************
@@ -716,13 +718,27 @@ void SceneSP3::RenderGameObjects()
 	for(vector<GameObject *>::iterator it = currentLevel->gameObjectsManager->GoList.begin(); it != currentLevel->gameObjectsManager->GoList.end(); ++it)
 	{
 		GameObject* go = (GameObject*)*it;
-		if(go->type == GameObject::WALL)
+		switch(go->type)
 		{
-			Render2DMesh(meshList[GEO_TILEGROUND], false, 1.0f, go->pos.x, go->pos.y);
-		}
-		else if(go->type == GameObject::DOOR)
-		{
-			Render2DMesh(meshList[GEO_DOOR], false, 1.0f, go->pos.x, go->pos.y);
+		case GameObject::WALL:
+			{
+				Render2DMesh(wallMesh[go->currentFrame], false, 1.0f, go->pos.x, go->pos.y);
+				break;
+			}
+		case  GameObject::HOLE:
+			{
+				Render2DMesh(holeMesh[go->currentFrame], false, 1.0f, go->pos.x, go->pos.y);
+				break;
+			}
+		case  GameObject::DOOR:
+			{
+				Render2DMesh(doorMesh[go->currentFrame], false, 1.0f, go->pos.x, go->pos.y);
+				break;
+			}
+		case  GameObject::WET_FLOOR:
+			{
+				Render2DMesh(wetFloorMesh[go->currentFrame], false, 1.0f, go->pos.x, go->pos.y);
+			}
 		}
 	}
 }
@@ -782,7 +798,7 @@ void SceneSP3::RenderGUI()
 		if(theHero->GetHealth() == 3)
 			RenderMeshIn2D(meshList[GEO_LIVE_3], false, 1.0f, -69 + 7 * i, 69.5);
 	}
-	
+
 	//On screen text
 	/*std::ostringstream ss;
 	ss.precision(3);
@@ -823,12 +839,99 @@ void SceneSP3::HeroColision(GameObject* goCollidedWith, bool updown, bool upORle
 	else
 	{
 		if(updown == true && upORleft == true)
-				this->theHero->MoveUpDown( true, dt, currentLevel->m_cMap);
-			else if(updown == true && upORleft == false)
-				this->theHero->MoveUpDown( false, dt, currentLevel->m_cMap);
-			else if(updown == false && upORleft == true)
-				this->theHero->MoveLeftRight( true, dt, currentLevel->m_cMap);
-			else
-				this->theHero->MoveLeftRight( false, dt, currentLevel->m_cMap);
+			this->theHero->MoveUpDown( true, dt, currentLevel->m_cMap);
+		else if(updown == true && upORleft == false)
+			this->theHero->MoveUpDown( false, dt, currentLevel->m_cMap);
+		else if(updown == false && upORleft == true)
+			this->theHero->MoveLeftRight( true, dt, currentLevel->m_cMap);
+		else
+			this->theHero->MoveLeftRight( false, dt, currentLevel->m_cMap);
+	}
+}
+
+void SceneSP3::InitGoMeshes()
+{
+	wallMesh.push_back(MeshBuilder::Generate2DMesh("GEO_TILEGROUND", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f));
+	wallMesh.back()->textureID = LoadTGA("Image//tile1_ground.tga");
+
+	holeMesh.push_back(MeshBuilder::Generate2DMesh("hole", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f));
+	holeMesh.back()->textureID = LoadTGA("Image//hole.tga");
+
+	doorMesh.push_back(MeshBuilder::Generate2DMesh("door open", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f));
+	doorMesh.back()->textureID = LoadTGA("Image//door open.tga");
+
+	wetFloorMesh.push_back(MeshBuilder::Generate2DMesh("water 0", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f));
+	wetFloorMesh.back()->textureID = LoadTGA("Image//water 0.tga");
+	wetFloorMesh.push_back(MeshBuilder::Generate2DMesh("water 1", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f));
+	wetFloorMesh.back()->textureID = LoadTGA("Image//water 1.tga");
+	wetFloorMesh.push_back(MeshBuilder::Generate2DMesh("water 2", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f));
+	wetFloorMesh.back()->textureID = LoadTGA("Image//water 2.tga");
+}
+
+void SceneSP3::DeleteGoMeshes()
+{
+	for(int i = 0; i < wallMesh.size(); i++)
+	{
+		if(wallMesh[i])
+		{
+			delete wallMesh[i];
+			wallMesh[i] = NULL;
+		}
+	}
+	for(int i = 0; i < holeMesh.size(); i++)
+	{
+		if(holeMesh[i])
+		{
+			delete holeMesh[i];
+			holeMesh[i] = NULL;
+		}
+	}
+	for(int i = 0; i < healthMesh.size(); i++)
+	{
+		if(healthMesh[i])
+		{
+			delete healthMesh[i];
+			healthMesh[i] = NULL;
+		}
+	}
+	for(int i = 0; i < doorMesh.size(); i++)
+	{
+		if(doorMesh[i])
+		{
+			delete doorMesh[i];
+			doorMesh[i] = NULL;
+		}
+	}
+	for(int i = 0; i < wetFloorMesh.size(); i++)
+	{
+		if(wetFloorMesh[i])
+		{
+			delete wetFloorMesh[i];
+			wetFloorMesh[i] = NULL;
+		}
+	}
+	for(int i = 0; i < timmingDoorMesh.size(); i++)
+	{
+		if(timmingDoorMesh[i])
+		{
+			delete timmingDoorMesh[i];
+			timmingDoorMesh[i] = NULL;
+		}
+	}
+	for(int i = 0; i < lockedDoorMesh.size(); i++)
+	{
+		if(lockedDoorMesh[i])
+		{
+			delete lockedDoorMesh[i];
+			lockedDoorMesh[i] = NULL;
+		}
+	}
+	for(int i = 0; i < hackMesh.size(); i++)
+	{
+		if(hackMesh[i])
+		{
+			delete hackMesh[i];
+			hackMesh[i] = NULL;
+		}
 	}
 }

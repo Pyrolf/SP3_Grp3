@@ -24,7 +24,7 @@ public:
 	Vector3 pos;
 	int currentFrame;
 	float frameTime, currentFrameTime;
-
+	
 	GameObject();
 	GameObject(int type, Vector3 pos);
 	~GameObject();
