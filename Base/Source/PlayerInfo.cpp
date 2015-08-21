@@ -430,7 +430,7 @@ void CPlayerInfo::knockBackEnabled(Vector3 AI_Pos)
 	else
 	{
 		swap(theHeroTargetPosNode, theHeroCurrentPosNode);
-		if(theHeroCurrentPosNode->up = theHeroTargetPosNode)
+		if(theHeroCurrentPosNode->up == theHeroTargetPosNode)
 		{
 				vel.Set(0, movementSpeed * 2, 0);
 
@@ -438,7 +438,7 @@ void CPlayerInfo::knockBackEnabled(Vector3 AI_Pos)
 				heroAnimationInvert = false;
 				heroAnimationCounter = 0.0f;
 		}
-		else if(theHeroCurrentPosNode->down = theHeroTargetPosNode)
+		else if(theHeroCurrentPosNode->down == theHeroTargetPosNode)
 		{
 				vel.Set(0, -movementSpeed * 2, 0);
 
@@ -446,7 +446,7 @@ void CPlayerInfo::knockBackEnabled(Vector3 AI_Pos)
 				heroAnimationInvert = false;
 				heroAnimationCounter = 0.0f;
 		}
-		else if(theHeroCurrentPosNode->left = theHeroTargetPosNode)
+		else if(theHeroCurrentPosNode->left == theHeroTargetPosNode)
 		{
 				vel.Set(-movementSpeed * 2, 0,0);
 
@@ -454,7 +454,7 @@ void CPlayerInfo::knockBackEnabled(Vector3 AI_Pos)
 				heroAnimationInvert = false;
 				heroAnimationCounter = 0.0f;
 		}
-		else if(theHeroCurrentPosNode->right = theHeroTargetPosNode)
+		else if(theHeroCurrentPosNode->right == theHeroTargetPosNode)
 		{
 				vel.Set(movementSpeed * 2, 0,0);
 
