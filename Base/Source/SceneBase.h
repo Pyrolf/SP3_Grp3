@@ -101,6 +101,8 @@ public:
 
 		GEO_TEXT,
 		
+		GEO_HACK_WINDOW,
+
 		NUM_GEOMETRY,
 	};
 

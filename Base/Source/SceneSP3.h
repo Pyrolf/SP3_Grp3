@@ -65,7 +65,9 @@ private:
 	vector<Mesh*> wallMesh, holeMesh, doorMesh, wetFloorMesh, timmingDoorMesh, lockedDoorMesh, hackMesh, healthMesh;
 	void InitGoMeshes();
 	void DeleteGoMeshes();
-	void updateActiveGO(double dt);
+	void UpdateActiveGO(double dt);
+
+	void RenderHackGame();
 };
 
 #endif

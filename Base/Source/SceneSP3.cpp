@@ -566,6 +566,8 @@ void SceneSP3::Render()
 		{
 			Render2DMesh(meshList[GEO_MAINMENU], false);
 
+			RenderHackGame();
+
 			//On screen text
 			RenderTextOnScreen(meshList[GEO_TEXT], "START GAME", Color(1, 1, 1), 5, 25, 15);
 			RenderTextOnScreen(meshList[GEO_TEXT], "EXIT", Color(1, 1, 1), 5, 25, 10);
@@ -951,7 +953,7 @@ void SceneSP3::DeleteGoMeshes()
 	}
 }
 
-void SceneSP3::updateActiveGO(double dt)
+void SceneSP3::UpdateActiveGO(double dt)
 {
 	for(int i = 0; i < currentLevel->gameObjectsManager->UpdatableGoList.size(); ++i)
 	{
@@ -969,4 +971,9 @@ void SceneSP3::updateActiveGO(double dt)
 		}
 		currentLevel->gameObjectsManager->UpdatableGoList[i]->update(dt);
 	}
+}
+
+void SceneSP3::RenderHackGame()
+{
+	Render2DMesh(meshList[GEO_HACK_WINDOW], false, 1.0f, 112, 100);
 }

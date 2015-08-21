@@ -185,6 +185,9 @@ void SceneBase::Init()
 	meshList[GEO_LADDER] = MeshBuilder::Generate2DMesh("GEO_LADDER", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f);
 	meshList[GEO_LADDER]->textureID = LoadTGA("Image//tile1_ladder_rear.tga");
 
+	meshList[GEO_HACK_WINDOW] = MeshBuilder::Generate2DMesh("GEO_HACK_WINDOW", Color(1, 1, 1), 0.0f, 0.0f, 800.0f, 600.0f);
+	meshList[GEO_HACK_WINDOW]->textureID = LoadTGA("Image//hack window.tga");
+
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 1000 units
 	Mtx44 perspective;
 	perspective.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);
