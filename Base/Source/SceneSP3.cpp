@@ -578,18 +578,7 @@ void SceneSP3::Update(double dt)
 				}
 			}
 		}
-		for(int i = 0; i < currentLevel->gameObjectsManager->UpdatableGoList.size(); ++i)
-		{
-			
-			if(currentLevel->gameObjectsManager->UpdatableGoList[i]->type == GameObject::WET_FLOOR)
-			{
-				if(currentLevel->gameObjectsManager->UpdatableGoList[i]->CheckColision(Vector3(theHero->GetPos_x(), theHero->GetPos_y(), 0), currentLevel->gameObjectsManager->tileSize))
-					currentLevel->gameObjectsManager->UpdatableGoList[i]->active = true;
-				else
-					currentLevel->gameObjectsManager->UpdatableGoList[i]->canActivate = true;
-				currentLevel->gameObjectsManager->UpdatableGoList[i]->update(dt);
-			}
-		}
+		updateActiveGO(dt);
 	}
 }
 
@@ -779,6 +768,17 @@ void SceneSP3::RenderGameObjects()
 		case  GameObject::WET_FLOOR:
 			{
 				Render2DMesh(wetFloorMesh[go->currentFrame], false, 1.0f, go->pos.x, go->pos.y);
+				break;
+			}
+		case  GameObject::TIMING_DOOR:
+			{
+				Render2DMesh(timmingDoorMesh[go->currentFrame], false, 1.0f, go->pos.x, go->pos.y);
+				break;
+			}
+		case  GameObject::LOCKED_DOOR:
+			{
+				Render2DMesh(lockedDoorMesh[go->currentFrame], false, 1.0f, go->pos.x, go->pos.y);
+				break;
 			}
 		}
 	}
@@ -991,6 +991,16 @@ void SceneSP3::InitGoMeshes()
 	wetFloorMesh.back()->textureID = LoadTGA("Image//water 1.tga");
 	wetFloorMesh.push_back(MeshBuilder::Generate2DMesh("water 2", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f));
 	wetFloorMesh.back()->textureID = LoadTGA("Image//water 2.tga");
+
+	timmingDoorMesh.push_back(MeshBuilder::Generate2DMesh("door open", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f));
+	timmingDoorMesh.back()->textureID = LoadTGA("Image//door open.tga");
+	timmingDoorMesh.push_back(MeshBuilder::Generate2DMesh("door closed", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f));
+	timmingDoorMesh.back()->textureID = LoadTGA("Image//door closed.tga");
+	
+	lockedDoorMesh.push_back(MeshBuilder::Generate2DMesh("door open", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f));
+	lockedDoorMesh.back()->textureID = LoadTGA("Image//door open.tga");
+	lockedDoorMesh.push_back(MeshBuilder::Generate2DMesh("door locked", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f));
+	lockedDoorMesh.back()->textureID = LoadTGA("Image//door locked.tga");
 }
 
 void SceneSP3::DeleteGoMeshes()
@@ -1058,5 +1068,25 @@ void SceneSP3::DeleteGoMeshes()
 			delete hackMesh[i];
 			hackMesh[i] = NULL;
 		}
+	}
+}
+
+void SceneSP3::updateActiveGO(double dt)
+{
+	for(int i = 0; i < currentLevel->gameObjectsManager->UpdatableGoList.size(); ++i)
+	{
+		switch(currentLevel->gameObjectsManager->UpdatableGoList[i]->type)
+		{
+		case GameObject::WET_FLOOR:
+			{
+				if(currentLevel->gameObjectsManager->UpdatableGoList[i]->CheckColision(Vector3(theHero->GetPos_x(), theHero->GetPos_y(), 0), currentLevel->gameObjectsManager->tileSize))
+					currentLevel->gameObjectsManager->UpdatableGoList[i]->active = true;
+				else
+					currentLevel->gameObjectsManager->UpdatableGoList[i]->canActivate = true;
+
+				break;
+			}
+		}
+		currentLevel->gameObjectsManager->UpdatableGoList[i]->update(dt);
 	}
 }
