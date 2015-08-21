@@ -192,25 +192,10 @@ void SceneSP3::InitLevels()
 	levelList[0]->AI_Manager->alertSign = MeshBuilder::Generate2DMesh("GEO_ALERT", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f);
 	levelList[0]->AI_Manager->alertSign->textureID = LoadTGA("Image//alert_sign.tga");
 
-	for(int index = 0; index < levelList.size(); index++)
-	{
-		vector<Vector3> enemyInitialPos;
-		for(int i = 0; i < levelList[index]->m_cMap->getNumOfTiles_MapHeight(); i ++)
-		{
-			for(int k = 0; k < levelList[index]->m_cMap->getNumOfTiles_MapWidth() + 1; k ++)
-			{
-				// If we have reached the right side of the Map, then do not display the extra column of tiles.
-				if((k) >= levelList[index]->m_cMap->getNumOfTiles_MapWidth())
-					break;
-				else if (levelList[index]->m_cMap->theScreenMap[i][k] == 20)
-				{
-					levelList[index]->HeroStartPos.x = k * levelList[index]->m_cMap->GetTileSize();
-					levelList[index]->HeroStartPos.y = (levelList[index]->m_cMap->getNumOfTiles_MapHeight() - i - 1) * levelList[index]->m_cMap->GetTileSize();
-					break;
-				}
-			}
-		}
-	}
+	levelList[0]->LevelMap_Nodes = new CLevelMap_Nodes;
+	levelList[0]->LevelMap_Nodes->GenerateNodes(levelList[0]->m_cMap, levelList[0]->AI_Manager);
+
+	levelList[0]->HeroStartPosNode = levelList[0]->LevelMap_Nodes->FindHeroInitialNode();
 }
 
 int SceneSP3::InitSound()
@@ -232,7 +217,7 @@ void SceneSP3::UpdateInputs(double dt)
 		// Check Collision of th hero before moving up
 		if(Application::IsKeyPressed('P'))
 		{
-			if(this->theHero->GetCurrentState() == this->theHero->PLAYING && gameState == PLAYING)
+			if(this->theHero->GetCurrentState() == this->theHero->NIL && gameState == PLAYING)
 			{
 				gameState = PAUSE;
 			}
@@ -240,12 +225,9 @@ void SceneSP3::UpdateInputs(double dt)
 
 		if(Application::IsKeyPressed('F'))
 		{
-			if(this->theHero->GetCurrentState() == this->theHero->PLAYING
-				&& gameState == PLAYING
-				&& !this->theHero->GetIsKnockingBack()
-				&& !this->theHero->GetIsAttacking()
-				&& Vector3(this->theHero->GetPos_x(),this->theHero->GetPos_y()) == Vector3(this->theHero->GetTargetPos_x(),this->theHero->GetTargetPos_y()))
-			{
+			if(this->theHero->GetCurrentState() == this->theHero->NIL
+				&& gameState == PLAYING)
+			{/*
 				Vector3 attackPos = Vector3(this->theHero->GetPos_x(), this->theHero->GetPos_y());
 				if(this->theHero->GetAnimationDirection() == this->theHero->UP)
 				{
@@ -262,75 +244,65 @@ void SceneSP3::UpdateInputs(double dt)
 				else if(this->theHero->GetAnimationDirection() == this->theHero->LEFT)
 				{
 					attackPos.x -= currentLevel->gameObjectsManager->tileSize;
-				}
-				this->theHero->attackingEnabled(attackPos);
+				}*/
+				this->theHero->attackingEnabled();
 			}
 		}
 
 		// Check Collision of th hero before moving up
 		if(Application::IsKeyPressed('W'))
 		{
-			if(this->theHero->GetCurrentState() == this->theHero->PLAYING 
-				&& gameState == PLAYING
-				&& !this->theHero->GetIsKnockingBack()
-				&& !this->theHero->GetIsAttacking()
-				&& Vector3(this->theHero->GetPos_x(),this->theHero->GetPos_y()) == Vector3(this->theHero->GetTargetPos_x(),this->theHero->GetTargetPos_y()))
+			if(this->theHero->GetCurrentState() == this->theHero->NIL 
+				&& gameState == PLAYING)
 			{
-				GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x(), this->theHero->GetPos_y() + currentLevel->gameObjectsManager->tileSize));
+				//GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x(), this->theHero->GetPos_y() + currentLevel->gameObjectsManager->tileSize));
 
-				HeroColision(goCollidedWith, true, true, dt);
+				//HeroColision(goCollidedWith, true, true, dt);
+				this->theHero->MoveUpDown(true);
 			}
 		}
 		// Check Collision of th hero before moving down
 		else if(Application::IsKeyPressed('S'))
 		{
-			if(this->theHero->GetCurrentState() == this->theHero->PLAYING
-				&& gameState == PLAYING
-				&& !this->theHero->GetIsKnockingBack()
-				&& !this->theHero->GetIsAttacking()
-				&& Vector3(this->theHero->GetPos_x(),this->theHero->GetPos_y()) == Vector3(this->theHero->GetTargetPos_x(),this->theHero->GetTargetPos_y()))
+			if(this->theHero->GetCurrentState() == this->theHero->NIL
+				&& gameState == PLAYING)
 			{
-				GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x(), this->theHero->GetPos_y() - currentLevel->gameObjectsManager->tileSize));
+				/*GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x(), this->theHero->GetPos_y() - currentLevel->gameObjectsManager->tileSize));
 
-				HeroColision(goCollidedWith, true, false, dt);
+				HeroColision(goCollidedWith, true, false, dt);*/
+				this->theHero->MoveUpDown(false);
 			}
 		}
 
 		// Check Collision of th hero before moving left
 		else if(Application::IsKeyPressed('A'))
 		{
-			if(this->theHero->GetCurrentState() == this->theHero->PLAYING
-				&& gameState == PLAYING
-				&& !this->theHero->GetIsKnockingBack()
-				&& !this->theHero->GetIsAttacking()
-				&& Vector3(this->theHero->GetPos_x(),this->theHero->GetPos_y()) == Vector3(this->theHero->GetTargetPos_x(),this->theHero->GetTargetPos_y()))
+			if(this->theHero->GetCurrentState() == this->theHero->NIL
+				&& gameState == PLAYING)
 			{
-				GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x() - currentLevel->gameObjectsManager->tileSize, this->theHero->GetPos_y()));
+				/*GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x() - currentLevel->gameObjectsManager->tileSize, this->theHero->GetPos_y()));
 
-				HeroColision(goCollidedWith, false, true, dt);
+				HeroColision(goCollidedWith, false, true, dt);*/
+				this->theHero->MoveLeftRight(true);
 			}
 		}
 		// Check Collision of th hero before moving right
 
 		else if(Application::IsKeyPressed('D'))
 		{
-			if(this->theHero->GetCurrentState() == this->theHero->PLAYING
-				&& gameState == PLAYING
-				&& !this->theHero->GetIsKnockingBack()
-				&& Vector3(this->theHero->GetPos_x(),this->theHero->GetPos_y()) == Vector3(this->theHero->GetTargetPos_x(),this->theHero->GetTargetPos_y()))
+			if(this->theHero->GetCurrentState() == this->theHero->NIL
+				&& gameState == PLAYING)
 			{
-				GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x() + currentLevel->gameObjectsManager->tileSize, this->theHero->GetPos_y()));
+				/*GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x() + currentLevel->gameObjectsManager->tileSize, this->theHero->GetPos_y()));
 
-				HeroColision(goCollidedWith, false, false, dt);
+				HeroColision(goCollidedWith, false, false, dt);*/
+				this->theHero->MoveLeftRight(false);
 			}
 		}
 
 		if(!Application::IsKeyPressed('W') && !Application::IsKeyPressed('A') && !Application::IsKeyPressed('S') && !Application::IsKeyPressed('D') && !Application::IsKeyPressed('F')
 			&& gameState == PLAYING
-			&& !this->theHero->GetIsKnockingBack()
-			&& !this->theHero->GetIsAttacking()
-			&& Vector3(this->theHero->GetPos_x(),this->theHero->GetPos_y()) == Vector3(this->theHero->GetTargetPos_x(),this->theHero->GetTargetPos_y())
-			&& this->theHero->GetCurrentState() != this->theHero->DYING)
+			&& this->theHero->GetCurrentState() == this->theHero->NIL)
 		{
 			this->theHero->SetAnimationCounter(0.0f);
 		}
@@ -393,7 +365,7 @@ void SceneSP3::UpdateInputs(double dt)
 				{
 					gameState = MAINMENU;
 					this->theHero->Reset();
-					this->theHero->SetCurrentState(this->theHero->PLAYING);
+					this->theHero->SetCurrentState(this->theHero->NIL);
 					currentLevel->AI_Manager->Reset();
 				}
 				choice = NONE;
@@ -405,19 +377,17 @@ void SceneSP3::UpdateInputs(double dt)
 					choice = NONE;
 					gameState = PLAYING;
 					currentLevel = levelList[0];
-					theHero->SetPos_x(currentLevel->HeroStartPos.x);
-					theHero->SetPos_y(currentLevel->HeroStartPos.y);
-					theHero->SetInitialPos_x(currentLevel->HeroStartPos.x);
-					theHero->SetInitialPos_y(currentLevel->HeroStartPos.y);
-					theHero->SetTargetPos_x(currentLevel->HeroStartPos.x);
-					theHero->SetTargetPos_y(currentLevel->HeroStartPos.y);
+					theHero->SetPos(currentLevel->HeroStartPosNode->pos);
+					theHero->SetInitialPosNode(currentLevel->HeroStartPosNode);
+					theHero->SetCurrentPosNode(currentLevel->HeroStartPosNode);
+					theHero->SetTargetPosNode(currentLevel->HeroStartPosNode);
 				}
 			}
 			else if(gameState == GAMEOVER)
 			{
 				gameState = MAINMENU;
 				this->theHero->Reset();
-				this->theHero->SetCurrentState(this->theHero->PLAYING);
+				this->theHero->SetCurrentState(this->theHero->NIL);
 				currentLevel->AI_Manager->Reset();
 			}
 		}
@@ -445,13 +415,11 @@ void SceneSP3::Update(double dt)
 								if(index + 1 < levelList.size())
 								{
 									currentLevel = levelList[index + 1];
-									theHero->SetPos_x(currentLevel->HeroStartPos.x);
-									theHero->SetPos_y(currentLevel->HeroStartPos.y);
-									theHero->SetInitialPos_x(currentLevel->HeroStartPos.x);
-									theHero->SetInitialPos_y(currentLevel->HeroStartPos.y);
-									theHero->SetTargetPos_x(currentLevel->HeroStartPos.x);
-									theHero->SetTargetPos_x(currentLevel->HeroStartPos.y);
-									this->theHero->SetCurrentState(this->theHero->PLAYING);
+									theHero->SetPos(currentLevel->HeroStartPosNode->pos);
+									theHero->SetInitialPosNode(currentLevel->HeroStartPosNode);
+									theHero->SetCurrentPosNode(currentLevel->HeroStartPosNode);
+									theHero->SetTargetPosNode(currentLevel->HeroStartPosNode);
+									this->theHero->SetCurrentState(this->theHero->NIL);
 									this->theHero->SetTimeElasped( 0.f );
 									break;
 								}
@@ -475,7 +443,7 @@ void SceneSP3::Update(double dt)
 			for(vector<CEnemy *>::iterator it = currentLevel->AI_Manager->enemiesList.begin(); it != currentLevel->AI_Manager->enemiesList.end(); ++it)
 			{
 				CEnemy *enemy = (CEnemy *)*it;
-				enemy->Update(currentLevel->gameObjectsManager, dt, Vector3(theHero->GetPos_x(), theHero->GetPos_y()));
+				enemy->Update(currentLevel->gameObjectsManager, dt, theHero->GetPos());
 				if(enemy->GetHitHero())
 				{
 					this->theHero->SetHealth(theHero->GetHealth() - 1);
@@ -486,29 +454,29 @@ void SceneSP3::Update(double dt)
 					}
 					else
 					{
-						Vector3 knockBackPos = Vector3(this->theHero->GetPos_x(), this->theHero->GetPos_y());
-						if(this->theHero->GetPos_x() > enemy->GetPos_x())
+						Vector3 knockBackPos = this->theHero->GetPos();
+						if(this->theHero->GetPos().x > enemy->GetPos_x())
 						{
-							knockBackPos.x = this->theHero->GetPos_x() + currentLevel->gameObjectsManager->tileSize;
+							knockBackPos.x = this->theHero->GetPos().x + currentLevel->gameObjectsManager->tileSize;
 						}
-						else if(this->theHero->GetPos_x() < enemy->GetPos_x())
+						else if(this->theHero->GetPos().x < enemy->GetPos_x())
 						{
-							knockBackPos.x = this->theHero->GetPos_x() - currentLevel->gameObjectsManager->tileSize;
+							knockBackPos.x = this->theHero->GetPos().x - currentLevel->gameObjectsManager->tileSize;
 						}
 						knockBackPos.x = (int)(knockBackPos.x / currentLevel->gameObjectsManager->tileSize) * currentLevel->gameObjectsManager->tileSize;
-						if(this->theHero->GetPos_y() > enemy->GetPos_y())
+						if(this->theHero->GetPos().y > enemy->GetPos_y())
 						{
-							knockBackPos.y = this->theHero->GetPos_y() + currentLevel->gameObjectsManager->tileSize;
+							knockBackPos.y = this->theHero->GetPos().y + currentLevel->gameObjectsManager->tileSize;
 						}
-						else if(this->theHero->GetPos_y() < enemy->GetPos_y())
+						else if(this->theHero->GetPos().y < enemy->GetPos_y())
 						{
-							knockBackPos.y = this->theHero->GetPos_y() - currentLevel->gameObjectsManager->tileSize;
+							knockBackPos.y = this->theHero->GetPos().y - currentLevel->gameObjectsManager->tileSize;
 						}
 						knockBackPos.y = (int)(knockBackPos.y / currentLevel->gameObjectsManager->tileSize) * currentLevel->gameObjectsManager->tileSize;
 						GameObject* go = currentLevel->gameObjectsManager->CheckColision(knockBackPos);
 						if(!go)
 						{
-							this->theHero->knockBackEnabled(knockBackPos);
+							this->theHero->knockBackEnabled(Vector3(enemy->GetPos_x(), enemy->GetPos_y()));
 							enemy->SetTargetPosition(knockBackPos.x, knockBackPos.y);
 						}
 						else
@@ -539,11 +507,11 @@ void SceneSP3::Update(double dt)
 						enemyCollided->SetPos_x(enemyCollided->GetPos_x() - currentLevel->gameObjectsManager->tileSize);
 					}
 					enemyCollided->SetPos_x((int)(enemyCollided->GetPos_x() / currentLevel->gameObjectsManager->tileSize) * currentLevel->gameObjectsManager->tileSize);
-					if(this->theHero->GetPos_y() > enemy->GetPos_y())
+					if(enemyCollided->GetPos_y() > enemy->GetPos_y())
 					{
 						enemyCollided->SetPos_y(enemyCollided->GetPos_y() + currentLevel->gameObjectsManager->tileSize);
 					}
-					else if(this->theHero->GetPos_y() < enemy->GetPos_y())
+					else if(enemyCollided->GetPos_y() < enemy->GetPos_y())
 					{
 						enemyCollided->SetPos_y(enemyCollided->GetPos_y() - currentLevel->gameObjectsManager->tileSize);
 					}
@@ -568,7 +536,7 @@ void SceneSP3::Update(double dt)
 				{
 					// Reset informations
 					theHero->Reset();
-					this->theHero->SetCurrentState(this->theHero->PLAYING);
+					this->theHero->SetCurrentState(this->theHero->NIL);
 					currentLevel->AI_Manager->Reset();
 				}
 				else
@@ -576,18 +544,6 @@ void SceneSP3::Update(double dt)
 					// Gameover
 					gameState = GAMEOVER;
 				}
-			}
-		}
-		for(int i = 0; i < currentLevel->gameObjectsManager->UpdatableGoList.size(); ++i)
-		{
-			
-			if(currentLevel->gameObjectsManager->UpdatableGoList[i]->type == GameObject::WET_FLOOR)
-			{
-				if(currentLevel->gameObjectsManager->UpdatableGoList[i]->CheckColision(Vector3(theHero->GetPos_x(), theHero->GetPos_y(), 0), currentLevel->gameObjectsManager->tileSize))
-					currentLevel->gameObjectsManager->UpdatableGoList[i]->active = true;
-				else
-					currentLevel->gameObjectsManager->UpdatableGoList[i]->canActivate = true;
-				currentLevel->gameObjectsManager->UpdatableGoList[i]->update(dt);
 			}
 		}
 	}
@@ -651,7 +607,7 @@ void SceneSP3::Render()
 		{
 			modelStack.PushMatrix();
 
-			modelStack.Translate( currentLevel->m_cMap->GetNumOfTiles_Width() * currentLevel->m_cMap->GetTileSize() * 0.5 - theHero->GetPos_x() * 2 - currentLevel->m_cMap->GetTileSize(),  currentLevel->m_cMap->GetNumOfTiles_Height() * currentLevel->m_cMap->GetTileSize() * 0.5 - theHero->GetPos_y() * 2 - currentLevel->m_cMap->GetTileSize(), 0);
+			modelStack.Translate( currentLevel->m_cMap->GetNumOfTiles_Width() * currentLevel->m_cMap->GetTileSize() * 0.5 - theHero->GetPos().x * 2 - currentLevel->m_cMap->GetTileSize(),  currentLevel->m_cMap->GetNumOfTiles_Height() * currentLevel->m_cMap->GetTileSize() * 0.5 - theHero->GetPos().y * 2 - currentLevel->m_cMap->GetTileSize(), 0);
 			modelStack.Scale(2,2,2);
 
 			// Render the background image
@@ -686,68 +642,65 @@ void SceneSP3::RenderHero()
 {
 	switch (this->theHero->GetCurrentState())
 	{
-	case this->theHero->PLAYING:
-		{
-			if(theHero->GetIsAttacking())
-			{
-				if(theHero->GetAnimationDirection() == theHero->DOWN)
-				{
-					Render2DMesh(theHero->attackFrontMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos_x(), theHero->GetPos_y());
-				}
-				else if(theHero->GetAnimationDirection() == theHero->UP)
-				{
-					Render2DMesh(theHero->attackBackMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos_x(), theHero->GetPos_y());
-				}
-				else
-				{
-					// Hero move right
-					if(theHero->GetAnimationInvert() == false)
-					{
-						Render2DMesh(theHero->attackSideMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos_x(), theHero->GetPos_y());
-					}
-					// Hero move left
-					else
-					{
-						Render2DMesh(theHero->attackSideMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos_x(), theHero->GetPos_y(), true);
-					}
-				}
-			}
-			else
-			{
-				if(theHero->GetAnimationDirection() == theHero->DOWN)
-				{
-					Render2DMesh(theHero->frontMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos_x(), theHero->GetPos_y());
-				}
-				else if(theHero->GetAnimationDirection() == theHero->UP)
-				{
-					Render2DMesh(theHero->backMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos_x(), theHero->GetPos_y());
-				}
-				else
-				{
-					// Hero move right
-					if(theHero->GetAnimationInvert() == false)
-					{
-						Render2DMesh(theHero->sideMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos_x(), theHero->GetPos_y());
-					}
-					// Hero move left
-					else
-					{
-						Render2DMesh(theHero->sideMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos_x(), theHero->GetPos_y(), true);
-					}
-				}
-			}
-		}
-		break;
 	case this->theHero->EXITING:
 		{
-			Render2DMesh(theHero->backMeshes[0], false, 1.0f, theHero->GetPos_x(), theHero->GetPos_y(), false);
+			Render2DMesh(theHero->backMeshes[0], false, 1.0f, theHero->GetPos().x, theHero->GetPos().y, false);
 		}
 		break;
 	case this->theHero->DYING:
 		{
-			Render2DMesh(theHero->deathMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos_x(), theHero->GetPos_y(), false);
+			Render2DMesh(theHero->deathMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos().x, theHero->GetPos().y, false);
 		}
 		break;
+	case this->theHero->ATTACKING:
+		{
+			if(theHero->GetAnimationDirection() == theHero->DOWN)
+			{
+				Render2DMesh(theHero->attackFrontMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos().x, theHero->GetPos().y);
+			}
+			else if(theHero->GetAnimationDirection() == theHero->UP)
+			{
+				Render2DMesh(theHero->attackBackMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos().x, theHero->GetPos().y);
+			}
+			else
+			{
+				// Hero move right
+				if(theHero->GetAnimationInvert() == false)
+				{
+					Render2DMesh(theHero->attackSideMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos().x, theHero->GetPos().y);
+				}
+				// Hero move left
+				else
+				{
+					Render2DMesh(theHero->attackSideMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos().x, theHero->GetPos().y, true);
+				}
+			}
+		}
+		break;
+	default:
+		{
+			if(theHero->GetAnimationDirection() == theHero->DOWN)
+			{
+				Render2DMesh(theHero->frontMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos().x, theHero->GetPos().y);
+			}
+			else if(theHero->GetAnimationDirection() == theHero->UP)
+			{
+				Render2DMesh(theHero->backMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos().x, theHero->GetPos().y);
+			}
+			else
+			{
+				// Hero move right
+				if(theHero->GetAnimationInvert() == false)
+				{
+					Render2DMesh(theHero->sideMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos().x, theHero->GetPos().y);
+				}
+				// Hero move left
+				else
+				{
+					Render2DMesh(theHero->sideMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos().x, theHero->GetPos().y, true);
+				}
+			}
+		}
 	}
 }
 
@@ -860,117 +813,33 @@ void SceneSP3::HeroColision(GameObject* goCollidedWith, bool updown, bool upORle
 			break;
 		case GameObject::DOOR:
 			{
-				/*this->theHero->SetPos_x(goCollidedWith->pos.x);
-				this->theHero->SetPos_y(goCollidedWith->pos.y);*/
+				this->theHero->SetPos_x(goCollidedWith->pos.x);
+				this->theHero->SetPos_y(goCollidedWith->pos.y);
 				this->theHero->SetCurrentState( this->theHero->EXITING );
-				this->theHero->SetTargetPos_x(goCollidedWith->pos.x);
-				this->theHero->SetTargetPos_y(goCollidedWith->pos.y);
-			}
-			break;
-		case GameObject::WET_FLOOR:
-			{
-				/*ActiveGameObject* active = dynamic_cast<ActiveGameObject*>(goCollidedWith);
-					active->active = true;*/
-				if(updown == true && upORleft == true)// up
-				{
-					Vector3 temp(this->theHero->GetTargetPos_x(), this->theHero->GetTargetPos_y(), 0);
-
-					temp.y += currentLevel->gameObjectsManager->tileSize;
-					while(currentLevel->gameObjectsManager->CheckColision((temp)) != NULL)
-					{
-						if(currentLevel->gameObjectsManager->CheckColision((temp))->type == GameObject::WET_FLOOR)
-						{
-							temp.y += currentLevel->gameObjectsManager->tileSize;
-						}
-						else if(currentLevel->gameObjectsManager->CheckColision((temp)) != NULL && currentLevel->gameObjectsManager->CheckColision((temp))->type != GameObject::WET_FLOOR)
-						{
-							temp.y -= currentLevel->gameObjectsManager->tileSize;
-								break;
-						}
-					}
-					this->theHero->SetTargetPos_y(temp.y);
-				}
-				else if(updown == true && upORleft == false)// down
-				{
-					Vector3 temp(this->theHero->GetTargetPos_x(), this->theHero->GetTargetPos_y(), 0);
-
-					temp.y -= currentLevel->gameObjectsManager->tileSize;
-					while(currentLevel->gameObjectsManager->CheckColision((temp)) != NULL)
-					{
-						if(currentLevel->gameObjectsManager->CheckColision((temp))->type == GameObject::WET_FLOOR)
-						{
-							temp.y -= currentLevel->gameObjectsManager->tileSize;
-						}
-						else if(currentLevel->gameObjectsManager->CheckColision((temp)) != NULL && currentLevel->gameObjectsManager->CheckColision((temp))->type != GameObject::WET_FLOOR)
-						{
-							temp.y += currentLevel->gameObjectsManager->tileSize;
-								break;
-						}
-					}
-					this->theHero->SetTargetPos_y(temp.y);
-				}
-				else if(updown == false && upORleft == true)// left
-				{
-					Vector3 temp(this->theHero->GetTargetPos_x(), this->theHero->GetTargetPos_y(), 0);
-
-					temp.x -= currentLevel->gameObjectsManager->tileSize;
-					while(currentLevel->gameObjectsManager->CheckColision((temp)) != NULL)
-					{
-						if(currentLevel->gameObjectsManager->CheckColision((temp))->type == GameObject::WET_FLOOR)
-						{
-							temp.x -= currentLevel->gameObjectsManager->tileSize;
-						}
-						else if(currentLevel->gameObjectsManager->CheckColision((temp)) != NULL && currentLevel->gameObjectsManager->CheckColision((temp))->type != GameObject::WET_FLOOR)
-						{
-							temp.x += currentLevel->gameObjectsManager->tileSize;
-								break;
-						}
-					}
-					this->theHero->SetTargetPos_x(temp.x);
-				}
-				else if(updown == false && upORleft == false)// fight
-				{
-					Vector3 temp(this->theHero->GetTargetPos_x(), this->theHero->GetTargetPos_y(), 0);
-
-					temp.x += currentLevel->gameObjectsManager->tileSize;
-					while(currentLevel->gameObjectsManager->CheckColision((temp)) != NULL)
-					{
-						if(currentLevel->gameObjectsManager->CheckColision((temp))->type == GameObject::WET_FLOOR)
-						{
-							temp.x += currentLevel->gameObjectsManager->tileSize;
-						}
-						else if(currentLevel->gameObjectsManager->CheckColision((temp)) != NULL && currentLevel->gameObjectsManager->CheckColision((temp))->type != GameObject::WET_FLOOR)
-						{
-							temp.x -= currentLevel->gameObjectsManager->tileSize;
-								break;
-						}
-					}
-					this->theHero->SetTargetPos_x(temp.x);
-				}
 			}
 			break;
 		default :
 			if(updown == true && upORleft == true)
-				this->theHero->MoveUpDown( true, dt, currentLevel->m_cMap);
+				this->theHero->MoveUpDown( true);
 			else if(updown == true && upORleft == false)
-				this->theHero->MoveUpDown( false, dt, currentLevel->m_cMap);
+				this->theHero->MoveUpDown( false);
 			else if(updown == false && upORleft == true)
-				this->theHero->MoveLeftRight( true, dt, currentLevel->m_cMap);
+				this->theHero->MoveLeftRight( true);
 			else
-				this->theHero->MoveLeftRight( false, dt, currentLevel->m_cMap);
+				this->theHero->MoveLeftRight( false);
 			break;
 		}
 	}
 	else
 	{
 		if(updown == true && upORleft == true)
-			this->theHero->MoveUpDown( true, dt, currentLevel->m_cMap);
+			this->theHero->MoveUpDown( true);
 		else if(updown == true && upORleft == false)
-			this->theHero->MoveUpDown( false, dt, currentLevel->m_cMap);
+			this->theHero->MoveUpDown( false);
 		else if(updown == false && upORleft == true)
-			this->theHero->MoveLeftRight( true, dt, currentLevel->m_cMap);
+			this->theHero->MoveLeftRight( true);
 		else
-			this->theHero->MoveLeftRight( false, dt, currentLevel->m_cMap);
+			this->theHero->MoveLeftRight( false);
 	}
 }
 

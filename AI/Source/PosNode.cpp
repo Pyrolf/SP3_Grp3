@@ -12,7 +12,7 @@ CPosNode::CPosNode(void)
 	right = NULL;
 }
 
-CPosNode:: CPosNode(Vector3 newPos, POS_TYPE newPosType)
+CPosNode:: CPosNode(Vector3 newPos, int newPosType)
 {
 	pos = newPos;
 	posType = newPosType;

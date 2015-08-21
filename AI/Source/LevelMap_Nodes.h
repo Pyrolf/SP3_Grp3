@@ -14,6 +14,6 @@ public:
 	~CLevelMap_Nodes(void);
 
 	void GenerateNodes(CMap* map, CAIManager* ai_manager);
-	CPosNode FindHeroInitialNode(void);
+	CPosNode* FindHeroInitialNode(void);
 };
 

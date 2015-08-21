@@ -2,8 +2,7 @@
 #define LEVEL_H
 
 #include "Map.h"
-#include "AIManager.h"
-#include "Vector2.h"
+#include "LevelMap_Nodes.h"
 #include "Goodies.h"
 
 struct Level
@@ -20,13 +19,16 @@ public:
 	
 	// GameObj vector
 	GameObjectFactory* gameObjectsManager;
-
+	
 	// Enemies
 	CAIManager* AI_Manager;
 
+	// Enemies
+	CLevelMap_Nodes* LevelMap_Nodes;
+
 	Mesh* background;
 
-	Vector2 HeroStartPos;
+	CPosNode* HeroStartPosNode;
 
 	bool sideView;
 };

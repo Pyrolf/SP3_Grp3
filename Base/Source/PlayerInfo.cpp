@@ -5,25 +5,36 @@ static float GRAVITY = 3000.f;
 
 CPlayerInfo::CPlayerInfo(void)
 	: theHeroPosition(Vector3(0, 0, 0))
-	, theHeroInitialPosition(Vector3(0, 0, 0))
-	, theHeroTargetPosition(Vector3(0, 0, 0))
 	, movementSpeed(200.0f)
-	, currentState(PLAYING)
+	, currentState(NIL)
 	, timeElasped(0.f)
 	, heroAnimationDirection(DOWN)
 	, heroAnimationCounter(0.0f)
 	, heroAnimationInvert(false)
 	, heroAnimationSpeed(20)
 	, health(3)
-	, deathRotate(0)
-	, isKnockingBack(false)
-	, isAttacking(false)
+	, theHeroInitialPosNode(NULL)
+	, theHeroCurrentPosNode(NULL)
+	, theHeroTargetPosNode(NULL)
+	, vel(Vector3(0,0,0))
 {
 }
 
 
 CPlayerInfo::~CPlayerInfo(void)
 {
+	if(theHeroInitialPosNode)
+	{
+		theHeroInitialPosNode = NULL;
+	}
+	if(theHeroCurrentPosNode)
+	{
+		theHeroCurrentPosNode = NULL;
+	}
+	if(theHeroTargetPosNode)
+	{
+		theHeroTargetPosNode = NULL;
+	}
 	for(int i = 0; i < frontMeshes.size(); ++i)
 	{
 		if(frontMeshes[i])
@@ -94,82 +105,115 @@ void CPlayerInfo::SetPos_y(float pos_y)
 	theHeroPosition.y = pos_y;
 }
 
-// Set initial position x of the player
-void CPlayerInfo::SetInitialPos_x(float pos_x)
+// Set position of the player
+void CPlayerInfo::SetPos(Vector3 pos)
 {
-	theHeroInitialPosition.x = pos_x;
+	theHeroPosition.x = pos.x;
+	theHeroPosition.y = pos.y;
 }
 
-// Set initial position y of the player
-void CPlayerInfo::SetInitialPos_y(float pos_y)
+
+// Set initial position node of the player
+void CPlayerInfo::SetInitialPosNode(CPosNode* posNode)
 {
-	theHeroInitialPosition.y = pos_y;
+	this->theHeroInitialPosNode = posNode;
 }
 
-// Set target position x of the player
-void CPlayerInfo::SetTargetPos_x(float pos_x)
+// Set current position node of the player
+void CPlayerInfo::SetCurrentPosNode(CPosNode* posNode)
 {
-	theHeroTargetPosition.x = pos_x;
+	this->theHeroCurrentPosNode = posNode;
 }
 
-// Set target position y of the player
-void CPlayerInfo::SetTargetPos_y(float pos_y)
+// Set target position node of the player
+void CPlayerInfo::SetTargetPosNode(CPosNode* posNode)
 {
-	theHeroTargetPosition.y = pos_y;
+	this->theHeroTargetPosNode = posNode;
 }
+
 
 /********************************************************************************
 Hero Move Up Down
 ********************************************************************************/
-void CPlayerInfo::MoveUpDown(const bool mode, const float timeDiff, CMap* m_cMap)
+void CPlayerInfo::MoveUpDown(const bool mode)
 {
 	if (mode)
 	{
-		theHeroTargetPosition.y += m_cMap->GetTileSize();
+		theHeroTargetPosNode = theHeroTargetPosNode->up;
+		if(!CPlayerInfo::CheckCollisionTarget())
+		{
+			vel.Set(0, movementSpeed, 0);
+			currentState = MOVING;
+		}
+		else
+		{
+			theHeroTargetPosNode = theHeroCurrentPosNode;
+		}
 	}
 	else
 	{
-		theHeroTargetPosition.y -= m_cMap->GetTileSize();
+		theHeroTargetPosNode = theHeroTargetPosNode->down;
+		if(!CPlayerInfo::CheckCollisionTarget())
+		{
+			vel.Set(0, -movementSpeed, 0);
+			currentState = MOVING;
+		}
+		else
+		{
+			theHeroTargetPosNode = theHeroCurrentPosNode;
+		}
 	}
 }
 
 /********************************************************************************
 Hero Move Left Right
 ********************************************************************************/
-void CPlayerInfo::MoveLeftRight(const bool mode, const float timeDiff, CMap* m_cMap)
+void CPlayerInfo::MoveLeftRight(const bool mode)
 {
 	if (mode)
 	{
-		theHeroTargetPosition.x -= m_cMap->GetTileSize();
+		theHeroTargetPosNode = theHeroTargetPosNode->left;
+		if(!CPlayerInfo::CheckCollisionTarget())
+		{
+			vel.Set(-movementSpeed, 0, 0);
+			currentState = MOVING;
+		}
+		else
+		{
+			theHeroTargetPosNode = theHeroCurrentPosNode;
+		}
 	}
 	else
 	{
-		theHeroTargetPosition.x += m_cMap->GetTileSize();
+		theHeroTargetPosNode = theHeroTargetPosNode->right;
+		if(!CPlayerInfo::CheckCollisionTarget())
+		{
+			vel.Set(movementSpeed, 0, 0);
+			currentState = MOVING;
+		}
+		else
+		{
+			theHeroTargetPosNode = theHeroCurrentPosNode;
+		}
 	}
 }
 
-// Get position x of the player
-float CPlayerInfo::GetPos_x(void)
+// Get position of the player
+Vector3 CPlayerInfo::GetPos(void)
 {
-	return theHeroPosition.x;
+	return theHeroPosition;
 }
 
-// Get position y of the player
-float CPlayerInfo::GetPos_y(void)
+// Get current position node of the player
+CPosNode* CPlayerInfo::GetCurrentPosNode(void)
 {
-	return theHeroPosition.y;
+	return theHeroCurrentPosNode;
 }
 
-// Get target position x of the player
-float CPlayerInfo::GetTargetPos_x(void)
+// Get target position node of the player
+CPosNode* CPlayerInfo::GetTargetPosNode(void)
 {
-	return theHeroTargetPosition.x;
-}
-
-// Get target position y of the player
-float CPlayerInfo::GetTargetPos_y(void)
-{
-	return theHeroTargetPosition.y;
+	return theHeroTargetPosNode;
 }
 
 // Set Animation Direction status of the player
@@ -226,77 +270,39 @@ Hero Update
 void CPlayerInfo::HeroUpdate(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager)
 {
 	// Update Hero's info
-	if(isKnockingBack)
+	switch(currentState)
 	{
-		knockingBack(timeDiff);
-		theHeroTargetPosition = theHeroPosition;
-	}
-	if(isAttacking)
-	{
-		Attacking(timeDiff, ai_manager, go_manager);
-	}
-	else
-	{
-		if(theHeroTargetPosition != theHeroPosition)
+	case CPlayerInfo::KNOCKED_BACKING:
+		{
+			moving(timeDiff);
+		}
+		break;
+	case CPlayerInfo::ATTACKING:
+		{
+			Attacking(timeDiff, ai_manager, go_manager);
+		}
+		break;
+	default:
 		{
 			Vector3 HeroPrevPos = theHeroPosition;
-
-			theHeroPosition += (theHeroTargetPosition - theHeroPosition).Normalized() * movementSpeed * timeDiff;
-
-			if(theHeroTargetPosition.y > HeroPrevPos.y)
-			{
-				heroAnimationDirection = UP;
-				heroAnimationInvert = false;
-				heroAnimationCounter += heroAnimationSpeed * timeDiff;
-				if(heroAnimationCounter > backMeshes.size() - 1)
-					heroAnimationCounter = 1.0f;
-
-				if(theHeroTargetPosition.y < theHeroPosition.y)
-					theHeroPosition.y = theHeroTargetPosition.y;
-			}
-			else if(theHeroTargetPosition.y < HeroPrevPos.y)
-			{
-				heroAnimationDirection = DOWN;
-				heroAnimationInvert = false;
-				heroAnimationCounter += heroAnimationSpeed * timeDiff;
-				if(heroAnimationCounter > frontMeshes.size() - 1)
-					heroAnimationCounter = 1.0f;
-
-				if(theHeroTargetPosition.y > theHeroPosition.y)
-					theHeroPosition.y = theHeroTargetPosition.y;
-			}
-			else if(theHeroTargetPosition.x > HeroPrevPos.x)
-			{
-				heroAnimationDirection = RIGHT;
-				heroAnimationInvert = false;
-				heroAnimationCounter += heroAnimationSpeed * timeDiff;
-				if(heroAnimationCounter > sideMeshes.size() - 1)
-					heroAnimationCounter = 0.0f;
-
-				if(theHeroTargetPosition.x < theHeroPosition.x)
-					theHeroPosition.x = theHeroTargetPosition.x;
-			}
-			else if(theHeroTargetPosition.x < HeroPrevPos.x)
-			{
-				heroAnimationDirection = LEFT;
-				heroAnimationInvert = true;
-				heroAnimationCounter -= heroAnimationSpeed * timeDiff;
-				if(heroAnimationCounter < 0.0f)
-					heroAnimationCounter = sideMeshes.size() - 1;
-
-				if(theHeroTargetPosition.x > theHeroPosition.x)
-					theHeroPosition.x = theHeroTargetPosition.x;
-			}
+			moving(timeDiff);
+			moveAnimation(timeDiff, HeroPrevPos);
 		}
+		break;
+	}
+	if(CheckCollisionCurrent())
+	{
+
 	}
 }
 
 void CPlayerInfo::Reset(void)
 {
-	theHeroPosition = theHeroInitialPosition;
-	theHeroTargetPosition = theHeroPosition;
+	theHeroPosition = theHeroInitialPosNode->pos;
+	theHeroCurrentPosNode = theHeroInitialPosNode;
+	theHeroTargetPosNode = theHeroCurrentPosNode;
 
-	currentState = CPlayerInfo::PLAYING;
+	currentState = CPlayerInfo::NIL;
 
 	timeElasped = 0.f;
 
@@ -306,11 +312,6 @@ void CPlayerInfo::Reset(void)
 	heroAnimationSpeed = 20;
 
 	health = 3;
-
-	deathRotate = 0;
-	
-	isKnockingBack = false;
-	isAttacking = false;
 }
 
 void CPlayerInfo::SetCurrentState(CPlayerInfo::CURRENT_STATE currentState)
@@ -343,60 +344,192 @@ int CPlayerInfo::GetHealth(void)
 	return health;
 }
 
-// Set DeathRotate of the player
-void CPlayerInfo::SetDeathRotate(float deathRotate)
+void CPlayerInfo::knockBackEnabled(Vector3 AI_Pos)
 {
-	this->deathRotate = deathRotate;
+	if(theHeroCurrentPosNode == theHeroTargetPosNode)
+	{
+		if(AI_Pos.y > theHeroCurrentPosNode->pos.y)
+		{
+			theHeroTargetPosNode = theHeroTargetPosNode->down;
+			if(!CPlayerInfo::CheckCollisionTarget())
+			{
+				vel.Set(0, -movementSpeed * 2, 0);
+				currentState = KNOCKED_BACKING;
+
+				heroAnimationDirection = UP;
+				heroAnimationInvert = false;
+				heroAnimationCounter = 0.0f;
+			}
+			else
+			{
+				theHeroTargetPosNode = theHeroCurrentPosNode;
+			}
+		}
+		else if(AI_Pos.y < theHeroCurrentPosNode->pos.y)
+		{
+			theHeroTargetPosNode = theHeroTargetPosNode->up;
+			if(!CPlayerInfo::CheckCollisionTarget())
+			{
+				vel.Set(0, movementSpeed * 2, 0);
+				currentState = KNOCKED_BACKING;
+
+				heroAnimationDirection = DOWN;
+				heroAnimationInvert = false;
+				heroAnimationCounter = 0.0f;
+			}
+			else
+			{
+				theHeroTargetPosNode = theHeroCurrentPosNode;
+			}
+		}
+		else if(AI_Pos.x > theHeroCurrentPosNode->pos.x)
+		{
+			theHeroTargetPosNode = theHeroTargetPosNode->left;
+			if(!CPlayerInfo::CheckCollisionTarget())
+			{
+				vel.Set(-movementSpeed * 2, 0, 0);
+				currentState = KNOCKED_BACKING;
+
+				heroAnimationDirection = RIGHT;
+				heroAnimationInvert = false;
+				heroAnimationCounter = 0.0f;
+			}
+			else
+			{
+				theHeroTargetPosNode = theHeroCurrentPosNode;
+			}
+		}
+		else if(AI_Pos.x < theHeroCurrentPosNode->pos.x)
+		{
+			theHeroTargetPosNode = theHeroTargetPosNode->right;
+			if(!CPlayerInfo::CheckCollisionTarget())
+			{
+				vel.Set(movementSpeed * 2, 0, 0);
+				currentState = KNOCKED_BACKING;
+
+				heroAnimationDirection = LEFT;
+				heroAnimationInvert = true;
+				heroAnimationCounter = 0.0f;
+			}
+			else
+			{
+				theHeroTargetPosNode = theHeroCurrentPosNode;
+			}
+		}
+	}
+	else
+	{
+		swap(theHeroTargetPosNode, theHeroCurrentPosNode);
+		if(theHeroCurrentPosNode->up = theHeroTargetPosNode)
+		{
+				vel.Set(0, movementSpeed * 2, 0);
+
+				heroAnimationDirection = DOWN;
+				heroAnimationInvert = false;
+				heroAnimationCounter = 0.0f;
+		}
+		else if(theHeroCurrentPosNode->down = theHeroTargetPosNode)
+		{
+				vel.Set(0, -movementSpeed * 2, 0);
+
+				heroAnimationDirection = UP;
+				heroAnimationInvert = false;
+				heroAnimationCounter = 0.0f;
+		}
+		else if(theHeroCurrentPosNode->left = theHeroTargetPosNode)
+		{
+				vel.Set(-movementSpeed * 2, 0,0);
+
+				heroAnimationDirection = RIGHT;
+				heroAnimationInvert = false;
+				heroAnimationCounter = 0.0f;
+		}
+		else if(theHeroCurrentPosNode->right = theHeroTargetPosNode)
+		{
+				vel.Set(movementSpeed * 2, 0,0);
+
+				heroAnimationDirection = LEFT;
+				heroAnimationInvert = true;
+				heroAnimationCounter = 0.0f;
+		}
+		currentState = KNOCKED_BACKING;
+	}
 }
 
-// Get Death Rotate of the player
-float CPlayerInfo::GetDeathRotate(void)
+void CPlayerInfo::moving(float timeDiff)
 {
-	return deathRotate;
-}
-
-void CPlayerInfo::knockBackEnabled(Vector3 knockBackPos)
-{
-	this->knockBackPos = knockBackPos;
-	this->isKnockingBack = true;
-}
-
-void CPlayerInfo::knockingBack(float timeDiff)
-{
-	Vector3 HeroPrevPos = theHeroPosition;
-	theHeroPosition += (knockBackPos - theHeroPosition).Normalized() * movementSpeed * 2 * timeDiff;
-
-	if(knockBackPos.x > HeroPrevPos.x && knockBackPos.x < theHeroPosition.x)
+	theHeroPosition += vel * timeDiff;
+	if((theHeroPosition - theHeroCurrentPosNode->pos).Length() > (theHeroTargetPosNode->pos - theHeroCurrentPosNode->pos).Length())
 	{
-		theHeroPosition.x = knockBackPos.x;
-	}
-	else if(knockBackPos.x < HeroPrevPos.x && knockBackPos.x > theHeroPosition.x)
-	{
-		theHeroPosition.x = knockBackPos.x;
-	}
-	if(knockBackPos.y > HeroPrevPos.y && knockBackPos.y < theHeroPosition.y)
-	{
-		theHeroPosition.y = knockBackPos.y;
-	}
-	else if(knockBackPos.y < HeroPrevPos.y && knockBackPos.y > theHeroPosition.y)
-	{
-		theHeroPosition.y = knockBackPos.y;
-	}
-	if(theHeroPosition == knockBackPos)
-	{
-		this->isKnockingBack = false;
+		theHeroPosition = theHeroTargetPosNode->pos;
+		theHeroCurrentPosNode = theHeroTargetPosNode;
+		currentState = NIL;
 	}
 }
 
-bool CPlayerInfo::GetIsKnockingBack()
+void CPlayerInfo::moveAnimation(float timeDiff, Vector3 prevPos)
 {
-	return isKnockingBack;
+	if(theHeroPosition.y > prevPos.y)
+	{
+		heroAnimationDirection = UP;
+		heroAnimationInvert = false;
+		heroAnimationCounter += heroAnimationSpeed * timeDiff;
+		if(heroAnimationCounter > backMeshes.size() - 1)
+			heroAnimationCounter = 1.0f;
+	}
+	else if(theHeroPosition.y < prevPos.y)
+	{
+		heroAnimationDirection = DOWN;
+		heroAnimationInvert = false;
+		heroAnimationCounter += heroAnimationSpeed * timeDiff;
+		if(heroAnimationCounter > frontMeshes.size() - 1)
+			heroAnimationCounter = 1.0f;
+	}
+	else if(theHeroPosition.x > prevPos.x)
+	{
+		heroAnimationDirection = RIGHT;
+		heroAnimationInvert = false;
+		heroAnimationCounter += heroAnimationSpeed * timeDiff;
+		if(heroAnimationCounter > sideMeshes.size() - 1)
+			heroAnimationCounter = 0.0f;
+	}
+	else if(theHeroPosition.x < prevPos.x)
+	{
+		heroAnimationDirection = LEFT;
+		heroAnimationInvert = true;
+		heroAnimationCounter -= heroAnimationSpeed * timeDiff;
+		if(heroAnimationCounter < 0.0f)
+			heroAnimationCounter = sideMeshes.size() - 1;
+	}
 }
 
-void CPlayerInfo::attackingEnabled(Vector3 attackTargetPos)
+
+void CPlayerInfo::attackingEnabled()
 {
-	this->attackTargetPos = attackTargetPos;
-	this->isAttacking = true;
+	switch(heroAnimationDirection)
+	{
+	case UP:
+		{
+			theHeroTargetPosNode = theHeroTargetPosNode->up;
+		}
+		break;
+	case DOWN:
+		{
+			theHeroTargetPosNode = theHeroTargetPosNode->down;
+		}
+		break;
+	case LEFT:
+		{
+			theHeroTargetPosNode = theHeroTargetPosNode->left;
+		}
+		break;
+	case RIGHT:
+		{
+			theHeroTargetPosNode = theHeroTargetPosNode->right;
+		}
+		break;
+	}
+	currentState = ATTACKING;
 	this->heroAnimationCounter = 0.0f;
 }
 
@@ -406,8 +539,8 @@ void CPlayerInfo::Attacking(float timeDiff, CAIManager* ai_manager, GameObjectFa
 	heroAnimationCounter += heroAnimationSpeed * timeDiff;
 	if(PrevHeroAnimationCounter <= (attackFrontMeshes.size() - 1) * 0.5 && heroAnimationCounter >= (attackFrontMeshes.size() - 1) * 0.5)
 	{
-		Vector3 min(attackTargetPos.x * 0.2, attackTargetPos.y * 0.2, 0);
-		Vector3 max(attackTargetPos.x + go_manager->tileSize * 0.2, attackTargetPos.y + go_manager->tileSize * 0.2, 0);
+		Vector3 min(theHeroTargetPosNode->pos.x * 0.2, theHeroTargetPosNode->pos.y * 0.2, 0);
+		Vector3 max(theHeroTargetPosNode->pos.x + go_manager->tileSize * 0.2, theHeroTargetPosNode->pos.y + go_manager->tileSize * 0.2, 0);
 
 		for(int i = 0; i < ai_manager->enemiesList.size(); ++i)
 		{
@@ -417,9 +550,9 @@ void CPlayerInfo::Attacking(float timeDiff, CAIManager* ai_manager, GameObjectFa
 				(max.x > ai_manager->enemiesList[i]->GetPos_x() && max.x < ai_manager->enemiesList[i]->GetPos_x() + go_manager->tileSize) && (max.y > ai_manager->enemiesList[i]->GetPos_y() && max.y < ai_manager->enemiesList[i]->GetPos_y() + go_manager->tileSize))
 			{
 				Vector3 enemyPrev = Vector3(ai_manager->enemiesList[i]->GetPos_x(), ai_manager->enemiesList[i]->GetPos_y());
-				if(ai_manager->enemiesList[i]->GetPos_x() != attackTargetPos.x)
+				if(ai_manager->enemiesList[i]->GetPos_x() != theHeroTargetPosNode->pos.x)
 					ai_manager->enemiesList[i]->SetPos_x(ai_manager->enemiesList[i]->GetPos_x() + Vector3(ai_manager->enemiesList[i]->GetPos_x() - theHeroPosition.x).Normalized().x * go_manager->tileSize);
-				if(ai_manager->enemiesList[i]->GetPos_y() != attackTargetPos.y)
+				if(ai_manager->enemiesList[i]->GetPos_y() != theHeroTargetPosNode->pos.y)
 					ai_manager->enemiesList[i]->SetPos_y(ai_manager->enemiesList[i]->GetPos_y() + Vector3(0, ai_manager->enemiesList[i]->GetPos_y() - theHeroPosition.y).Normalized().y * go_manager->tileSize);
 				GameObject* go = go_manager->CheckColision(Vector3(ai_manager->enemiesList[i]->GetPos_x(), ai_manager->enemiesList[i]->GetPos_y()));
 				if(go)
@@ -434,12 +567,44 @@ void CPlayerInfo::Attacking(float timeDiff, CAIManager* ai_manager, GameObjectFa
 	}
 	else if(heroAnimationCounter > attackFrontMeshes.size() - 1)
 	{
-		isAttacking = false;
+		currentState = NIL;
 		heroAnimationCounter = 0.0f;
+		theHeroTargetPosNode = theHeroCurrentPosNode;
 	}
 }
 
-bool CPlayerInfo::GetIsAttacking()
+bool CPlayerInfo::CheckCollisionTarget(void)
 {
-	return isAttacking;
+	switch(theHeroTargetPosNode->posType)
+	{
+	case CPosNode::NONE:
+		return false;
+	case CPosNode::HOLE:
+		return false;
+	case CPosNode::DOOR:
+		return false;
+	case CPosNode::WET_FLOOR:
+		return false;
+	case CPosNode::ENEMY_INITIAL_POS:
+		return false;
+	case CPosNode::HERO_INIT_POS:
+		return false;
+	default:
+			return true;
+	}
+}
+
+bool CPlayerInfo::CheckCollisionCurrent(void)
+{
+	switch(theHeroCurrentPosNode->posType)
+	{
+	case CPosNode::NONE:
+		return false;
+	case CPosNode::ENEMY_INITIAL_POS:
+		return false;
+	case CPosNode::HERO_INIT_POS:
+		return false;
+	default:
+			return true;
+	}
 }

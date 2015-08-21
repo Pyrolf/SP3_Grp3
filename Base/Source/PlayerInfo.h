@@ -1,8 +1,6 @@
 #pragma once
-#include "Vector3.h"
-#include "Map.h"
 #include "Mesh.h"
-#include "AIManager.h"
+#include "LevelMap_Nodes.h"
 
 class CPlayerInfo
 {
@@ -22,27 +20,26 @@ public:
 	void SetPos_x(float pos_x);
 	// Set position y of the player
 	void SetPos_y(float pos_y);
-	// Set initial position x of the player
-	void SetInitialPos_x(float pos_x);
-	// Set initial position y of the player
-	void SetInitialPos_y(float pos_y);
-	// Set target position x of the player
-	void SetTargetPos_x(float pos_x);
-	// Set target position y of the player
-	void SetTargetPos_y(float pos_y);
+	// Set position of the player
+	void SetPos(Vector3 pos);
+
+	// Set initial position node of the player
+	void SetInitialPosNode(CPosNode* posNode);
+	// Set current position node of the player
+	void SetCurrentPosNode(CPosNode* posNode);
+	// Set target position node of the player
+	void SetTargetPosNode(CPosNode* posNode);
 
 	// Update Movements
-	void MoveUpDown(const bool mode, const float timeDiff, CMap* m_cMap);
-	void MoveLeftRight(const bool mode, const float timeDiff, CMap* m_cMap);
+	void MoveUpDown(const bool mode);
+	void MoveLeftRight(const bool mode);
 
-	// Get position x of the player
-	float GetPos_x(void);
-	// Get position y of the player
-	float GetPos_y(void);
-	// Get target position x of the player
-	float GetTargetPos_x(void);
-	// Get target position y of the player
-	float GetTargetPos_y(void);
+	// Get position of the player
+	Vector3 GetPos(void);
+	// Get current position node of the player
+	CPosNode* GetCurrentPosNode(void);
+	// Get target position node of the player
+	CPosNode* GetTargetPosNode(void);
 
 	// Hero Update
 	void HeroUpdate(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager);
@@ -56,7 +53,9 @@ public:
 	enum CURRENT_STATE
 	{
 		NIL,
-		PLAYING,
+		MOVING,
+		ATTACKING,
+		KNOCKED_BACKING,
 		EXITING,
 		DYING,
 		NUM_OF_STATES,
@@ -94,18 +93,15 @@ public:
 	float GetAnimationCounter(void);
 	void Reset(void);
 	
-	// Set DeathRotate of the player
-	void SetDeathRotate(float deathRotate);
-	// Get Death Rotate of the player
-	float GetDeathRotate(void);
+	void knockBackEnabled(Vector3 AI_Pos);
+	void moving(float timeDiff);
+	void moveAnimation(float timeDiff, Vector3 prevPos);
 	
-	void knockBackEnabled(Vector3 knockBackPos);
-	void knockingBack(float timeDiff);
-	bool GetIsKnockingBack();
-	
-	void attackingEnabled(Vector3 attackTargetPos);
+	void attackingEnabled();
 	void Attacking(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager);
-	bool GetIsAttacking();
+	
+	bool CheckCollisionTarget(void);
+	bool CheckCollisionCurrent(void);
 
 	std::vector<Mesh*> frontMeshes;
 	std::vector<Mesh*> backMeshes;
@@ -117,14 +113,14 @@ public:
 private:
 	// Hero's information
 	Vector3 theHeroPosition;
-	Vector3 theHeroInitialPosition;
-	Vector3 theHeroTargetPosition;
+	CPosNode* theHeroInitialPosNode;
+	CPosNode* theHeroCurrentPosNode;
+	CPosNode* theHeroTargetPosNode;
+	Vector3 vel;
 
 	float movementSpeed;
 
 	int health;
-
-	float deathRotate;
 
 	CPlayerInfo::CURRENT_STATE currentState;
 
@@ -134,12 +130,4 @@ private:
 	bool heroAnimationInvert;
 	float heroAnimationCounter;
 	int heroAnimationSpeed;
-	
-	// For KnockBack
-	bool isKnockingBack;
-	Vector3 knockBackPos;
-
-	// For KnockBack
-	bool isAttacking;
-	Vector3 attackTargetPos;
 };

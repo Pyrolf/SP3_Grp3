@@ -17,6 +17,12 @@ Level::~Level()
 		AI_Manager = NULL;
 	}
 
+	if(LevelMap_Nodes)
+	{
+		delete LevelMap_Nodes;
+		LevelMap_Nodes = NULL;
+	}
+
 	if (gameObjectsManager)
 	{
 		delete gameObjectsManager;

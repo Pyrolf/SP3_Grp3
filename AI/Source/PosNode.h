@@ -22,10 +22,10 @@ public:
 	};
 
 	CPosNode(void);
-	CPosNode(Vector3 newPos, POS_TYPE newPosType);
+	CPosNode(Vector3 newPos, int newPosType);
 	~CPosNode(void);
 
 	Vector3 pos;
-	POS_TYPE posType;
+	int posType;
 	CPosNode *up, *down, *left, *right;
 };
