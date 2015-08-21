@@ -14,9 +14,6 @@ ActiveGameObject::ActiveGameObject(int type, Vector3 pos)
 	active = false;
 	canActivate = true;
 
-	randomInt = NULL;
-	randomFloat = NULL;
-
 	InitRanodmVars();
 }
 
@@ -26,17 +23,15 @@ void ActiveGameObject::InitRanodmVars()
 	{
 	case WET_FLOOR:
 	{
-		frameTime = 0.15;
+		frameTime = 0.1;
 		currentFrameTime = 0; 
 		break;
 	}
 	case TIMING_DOOR:
 		{
-			randomInt = new int;
-			randomFloat = new float;
-			
-			*randomInt = Math::RandIntMinMax(3,6);
-			*randomFloat = 0;
+			frameTime = Math::RandFloatMinMax(3,6);
+			currentFrameTime = 0;
+			currentFrame = 1;
 			break;
 		}
 	case HEALTH_PACK:
@@ -49,16 +44,6 @@ void ActiveGameObject::InitRanodmVars()
 
 ActiveGameObject::~ActiveGameObject(void)
 {
-	if(randomInt)
-	{
-		delete randomInt;
-		randomInt = NULL;
-	}
-	if(randomFloat)
-	{
-		delete randomFloat;
-		randomFloat = NULL;
-	}
 }
 
 void ActiveGameObject::update(double dt)
@@ -90,18 +75,18 @@ void ActiveGameObject::update(double dt)
 		}
 	case TIMING_DOOR:
 		{
-			*randomFloat += dt;
-			if(*randomFloat > *randomInt)
+			currentFrameTime += dt;
+			if(currentFrameTime > frameTime)
 			{
-				*randomFloat = 0;
+				currentFrameTime = 0;
 				if(active)
 				{
-					currentFrame = 0;
+					currentFrame = 1;
 					active = false;
 				}
 				else
 				{
-					currentFrame = 1;
+					currentFrame = 0;
 					active = true;
 				}
 			}
@@ -112,12 +97,10 @@ void ActiveGameObject::update(double dt)
 			if(active)
 				{
 					currentFrame = 0;
-					active = false;
 				}
 				else
 				{
 					currentFrame = 1;
-					active = true;
 				}
 			break;
 		}

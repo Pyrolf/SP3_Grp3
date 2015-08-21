@@ -7,6 +7,9 @@ class CPlayerInfo
 public:
 	CPlayerInfo(void);
 	~CPlayerInfo(void);
+
+	void Reset(void);
+
 	enum GEOMETRY_TYPE
 	{
 		GEO_TILEHERO_FRAME0,
@@ -30,10 +33,6 @@ public:
 	// Set target position node of the player
 	void SetTargetPosNode(CPosNode* posNode);
 
-	// Update Movements
-	void MoveUpDown(const bool mode);
-	void MoveLeftRight(const bool mode);
-
 	// Get position of the player
 	Vector3 GetPos(void);
 	// Get current position node of the player
@@ -41,14 +40,10 @@ public:
 	// Get target position node of the player
 	CPosNode* GetTargetPosNode(void);
 
-	// Hero Update
-	void HeroUpdate(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager);
-
 	// Set Movement Speed of the player
 	void SetMovementSpeed(float movementSpeed);
 	// Get Movement Speed of the player
 	float GetMovementSpeed(void);
-	
 	
 	enum CURRENT_STATE
 	{
@@ -62,7 +57,6 @@ public:
 	};
 	void SetCurrentState(CPlayerInfo::CURRENT_STATE currentState);
 	CPlayerInfo::CURRENT_STATE GetCurrentState(void);
-
 	
 	void SetTimeElasped(float timeElasped);
 	float GetTimeElasped(void);
@@ -91,9 +85,17 @@ public:
 	void SetAnimationCounter(float heroAnimationCounter);
 	// Get Animation Counter of the player
 	float GetAnimationCounter(void);
-	void Reset(void);
 	
+
+	// Update Movements
+	void MoveUpDown(const bool mode);
+	void MoveLeftRight(const bool mode);
+
+	// Hero Update
+	void HeroUpdate(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager);
+
 	void knockBackEnabled(Vector3 AI_Pos);
+
 	void moving(float timeDiff);
 	void moveAnimation(float timeDiff, Vector3 prevPos);
 	
@@ -102,6 +104,7 @@ public:
 	
 	bool CheckCollisionTarget(void);
 	bool CheckCollisionCurrent(void);
+	void CollisionResponseCurrent(void);
 
 	std::vector<Mesh*> frontMeshes;
 	std::vector<Mesh*> backMeshes;

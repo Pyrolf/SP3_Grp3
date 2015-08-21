@@ -93,6 +93,26 @@ CPlayerInfo::~CPlayerInfo(void)
 	}
 }
 
+
+
+void CPlayerInfo::Reset(void)
+{
+	theHeroPosition = theHeroInitialPosNode->pos;
+	theHeroCurrentPosNode = theHeroInitialPosNode;
+	theHeroTargetPosNode = theHeroCurrentPosNode;
+
+	currentState = CPlayerInfo::NIL;
+
+	timeElasped = 0.f;
+
+	heroAnimationDirection = DOWN;
+	heroAnimationCounter = 0.0f;
+	heroAnimationInvert = false;
+	heroAnimationSpeed = 20;
+
+	health = 3;
+}
+
 // Set position x of the player
 void CPlayerInfo::SetPos_x(float pos_x)
 {
@@ -112,7 +132,6 @@ void CPlayerInfo::SetPos(Vector3 pos)
 	theHeroPosition.y = pos.y;
 }
 
-
 // Set initial position node of the player
 void CPlayerInfo::SetInitialPosNode(CPosNode* posNode)
 {
@@ -129,6 +148,109 @@ void CPlayerInfo::SetCurrentPosNode(CPosNode* posNode)
 void CPlayerInfo::SetTargetPosNode(CPosNode* posNode)
 {
 	this->theHeroTargetPosNode = posNode;
+}
+
+
+// Get position of the player
+Vector3 CPlayerInfo::GetPos(void)
+{
+	return theHeroPosition;
+}
+
+// Get current position node of the player
+CPosNode* CPlayerInfo::GetCurrentPosNode(void)
+{
+	return theHeroCurrentPosNode;
+}
+
+// Get target position node of the player
+CPosNode* CPlayerInfo::GetTargetPosNode(void)
+{
+	return theHeroTargetPosNode;
+}
+
+
+// Set Animation Direction status of the player
+void CPlayerInfo::SetAnimationDirection(ANIMATION_DIRECTION heroAnimationDirection)
+{
+	this->heroAnimationDirection = heroAnimationDirection;
+}
+
+// Get Animation Direction status of the player
+CPlayerInfo::ANIMATION_DIRECTION CPlayerInfo::GetAnimationDirection(void)
+{
+	return heroAnimationDirection;
+}
+
+// Set Animation Invert status of the player
+void CPlayerInfo::SetAnimationInvert(bool heroAnimationInvert)
+{
+	this->heroAnimationInvert = heroAnimationInvert;
+}
+
+// Get Animation Invert status of the player
+bool CPlayerInfo::GetAnimationInvert(void)
+{
+	return heroAnimationInvert;
+}
+
+// Set Animation Counter of the player
+void CPlayerInfo::SetAnimationCounter(float heroAnimationCounter)
+{
+	this->heroAnimationCounter = heroAnimationCounter;
+}
+
+// Get Animation Counter of the player
+float CPlayerInfo::GetAnimationCounter(void)
+{
+	return heroAnimationCounter;
+}
+
+
+// Set Movement Speed of the player
+void CPlayerInfo::SetMovementSpeed(float movementSpeed)
+{
+	this->movementSpeed = movementSpeed;
+}
+
+// Get Movement Speed of the player
+float CPlayerInfo::GetMovementSpeed(void)
+{
+	return movementSpeed;
+}
+
+
+
+void CPlayerInfo::SetCurrentState(CPlayerInfo::CURRENT_STATE currentState)
+{
+	this->currentState = currentState;
+}
+
+CPlayerInfo::CURRENT_STATE CPlayerInfo::GetCurrentState(void)
+{
+	return currentState;
+}
+
+
+void CPlayerInfo::SetTimeElasped(float timeElasped)
+{
+	this->timeElasped = timeElasped;
+}
+
+float CPlayerInfo::GetTimeElasped(void)
+{
+	return timeElasped;
+}
+
+
+void CPlayerInfo::SetHealth(int health)
+{
+	this->health = health;
+}
+
+int CPlayerInfo::GetHealth(void)
+{
+	return health;
 }
 
 
@@ -198,71 +320,6 @@ void CPlayerInfo::MoveLeftRight(const bool mode)
 	}
 }
 
-// Get position of the player
-Vector3 CPlayerInfo::GetPos(void)
-{
-	return theHeroPosition;
-}
-
-// Get current position node of the player
-CPosNode* CPlayerInfo::GetCurrentPosNode(void)
-{
-	return theHeroCurrentPosNode;
-}
-
-// Get target position node of the player
-CPosNode* CPlayerInfo::GetTargetPosNode(void)
-{
-	return theHeroTargetPosNode;
-}
-
-// Set Animation Direction status of the player
-void CPlayerInfo::SetAnimationDirection(ANIMATION_DIRECTION heroAnimationDirection)
-{
-	this->heroAnimationDirection = heroAnimationDirection;
-}
-
-// Get Animation Direction status of the player
-CPlayerInfo::ANIMATION_DIRECTION CPlayerInfo::GetAnimationDirection(void)
-{
-	return heroAnimationDirection;
-}
-
-// Set Animation Invert status of the player
-void CPlayerInfo::SetAnimationInvert(bool heroAnimationInvert)
-{
-	this->heroAnimationInvert = heroAnimationInvert;
-}
-
-// Get Animation Invert status of the player
-bool CPlayerInfo::GetAnimationInvert(void)
-{
-	return heroAnimationInvert;
-}
-
-// Set Animation Counter of the player
-void CPlayerInfo::SetAnimationCounter(float heroAnimationCounter)
-{
-	this->heroAnimationCounter = heroAnimationCounter;
-}
-
-// Get Animation Counter of the player
-float CPlayerInfo::GetAnimationCounter(void)
-{
-	return heroAnimationCounter;
-}
-
-// Set Movement Speed of the player
-void CPlayerInfo::SetMovementSpeed(float movementSpeed)
-{
-	this->movementSpeed = movementSpeed;
-}
-
-// Get Movement Speed of the player
-float CPlayerInfo::GetMovementSpeed(void)
-{
-	return movementSpeed;
-}
 
 /********************************************************************************
 Hero Update
@@ -292,57 +349,10 @@ void CPlayerInfo::HeroUpdate(float timeDiff, CAIManager* ai_manager, GameObjectF
 	}
 	if(CheckCollisionCurrent())
 	{
-
+		CollisionResponseCurrent();
 	}
 }
 
-void CPlayerInfo::Reset(void)
-{
-	theHeroPosition = theHeroInitialPosNode->pos;
-	theHeroCurrentPosNode = theHeroInitialPosNode;
-	theHeroTargetPosNode = theHeroCurrentPosNode;
-
-	currentState = CPlayerInfo::NIL;
-
-	timeElasped = 0.f;
-
-	heroAnimationDirection = DOWN;
-	heroAnimationCounter = 0.0f;
-	heroAnimationInvert = false;
-	heroAnimationSpeed = 20;
-
-	health = 3;
-}
-
-void CPlayerInfo::SetCurrentState(CPlayerInfo::CURRENT_STATE currentState)
-{
-	this->currentState = currentState;
-}
-
-CPlayerInfo::CURRENT_STATE CPlayerInfo::GetCurrentState(void)
-{
-	return currentState;
-}
-
-void CPlayerInfo::SetTimeElasped(float timeElasped)
-{
-	this->timeElasped = timeElasped;
-}
-
-float CPlayerInfo::GetTimeElasped(void)
-{
-	return timeElasped;
-}
-
-void CPlayerInfo::SetHealth(int health)
-{
-	this->health = health;
-}
-
-int CPlayerInfo::GetHealth(void)
-{
-	return health;
-}
 
 void CPlayerInfo::knockBackEnabled(Vector3 AI_Pos)
 {
@@ -455,6 +465,7 @@ void CPlayerInfo::knockBackEnabled(Vector3 AI_Pos)
 		currentState = KNOCKED_BACKING;
 	}
 }
+
 
 void CPlayerInfo::moving(float timeDiff)
 {
@@ -573,6 +584,7 @@ void CPlayerInfo::Attacking(float timeDiff, CAIManager* ai_manager, GameObjectFa
 	}
 }
 
+
 bool CPlayerInfo::CheckCollisionTarget(void)
 {
 	switch(theHeroTargetPosNode->posType)
@@ -605,6 +617,10 @@ bool CPlayerInfo::CheckCollisionCurrent(void)
 	case CPosNode::HERO_INIT_POS:
 		return false;
 	default:
-			return true;
+		return true;
 	}
+}
+
+void CPlayerInfo::CollisionResponseCurrent(void)
+{
 }
