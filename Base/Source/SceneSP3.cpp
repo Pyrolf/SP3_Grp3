@@ -193,7 +193,7 @@ void SceneSP3::InitLevels()
 	levelList[0]->AI_Manager->alertSign->textureID = LoadTGA("Image//alert_sign.tga");
 
 	levelList[0]->LevelMap_Nodes = new CLevelMap_Nodes;
-	levelList[0]->LevelMap_Nodes->GenerateNodes(levelList[0]->m_cMap, levelList[0]->AI_Manager);
+	levelList[0]->LevelMap_Nodes->GenerateNodes(levelList[0]->m_cMap, levelList[0]->AI_Manager, levelList[0]->gameObjectsManager);
 
 	levelList[0]->HeroStartPosNode = levelList[0]->LevelMap_Nodes->FindHeroInitialNode();
 }

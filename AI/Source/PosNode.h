@@ -1,4 +1,5 @@
 #include "Vector3.h"
+#include "GameObjectFactory.h"
 
 #pragma once
 class CPosNode
@@ -27,5 +28,8 @@ public:
 
 	Vector3 pos;
 	int posType;
+
+	GameObject* gameObject;
+	
 	CPosNode *up, *down, *left, *right;
 };

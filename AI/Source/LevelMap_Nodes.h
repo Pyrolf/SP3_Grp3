@@ -13,7 +13,7 @@ public:
 	CLevelMap_Nodes(void);
 	~CLevelMap_Nodes(void);
 
-	void GenerateNodes(CMap* map, CAIManager* ai_manager);
+	void GenerateNodes(CMap* map, CAIManager* ai_manager, GameObjectFactory* go_manager);
 	CPosNode* FindHeroInitialNode(void);
 };
 
