@@ -343,13 +343,17 @@ void CPlayerInfo::HeroUpdate(float timeDiff, CAIManager* ai_manager, GameObjectF
 		{
 			Vector3 HeroPrevPos = theHeroPosition;
 			moving(timeDiff);
-			moveAnimation(timeDiff, HeroPrevPos);
+			if(currentState == MOVING)
+				moveAnimation(timeDiff, HeroPrevPos);
 		}
 		break;
 	}
-	if(CheckCollisionCurrent())
+	if(currentState == NIL)
 	{
-		CollisionResponseCurrent();
+		if(CheckCollisionCurrent())
+		{
+			CollisionResponseCurrent();
+		}
 	}
 }
 
@@ -623,4 +627,49 @@ bool CPlayerInfo::CheckCollisionCurrent(void)
 
 void CPlayerInfo::CollisionResponseCurrent(void)
 {
+	if(theHeroCurrentPosNode->gameObject->type == GameObject::WET_FLOOR)
+	{
+		switch(heroAnimationDirection)
+		{
+		case UP:
+			{
+				theHeroTargetPosNode = theHeroTargetPosNode->up;
+				vel.Set(0, movementSpeed, 0);
+				currentState = MOVING;
+			}
+			break;
+		case DOWN:
+			{
+				theHeroTargetPosNode = theHeroTargetPosNode->down;
+				vel.Set(0, -movementSpeed, 0);
+				currentState = MOVING;
+			}
+			break;
+		case LEFT:
+			{
+				theHeroTargetPosNode = theHeroTargetPosNode->left;
+				vel.Set(-movementSpeed, 0, 0);
+				currentState = MOVING;
+			}
+			break;
+		case RIGHT:
+			{
+				theHeroTargetPosNode = theHeroTargetPosNode->right;
+				vel.Set(movementSpeed, 0, 0);
+				currentState = MOVING;
+			}
+			break;
+		}
+	}
+	if(theHeroTargetPosNode->gameObject != NULL && theHeroTargetPosNode->gameObject->type == GameObject::WALL)
+	{
+		theHeroTargetPosNode = theHeroCurrentPosNode;
+		currentState = NIL;
+	}
+	else
+	{
+		currentState = SLIDING;
+		heroAnimationCounter = 0.0f;
+	}
+
 }
