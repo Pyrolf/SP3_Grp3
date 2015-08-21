@@ -487,17 +487,30 @@ void SceneSP3::Update(double dt)
 					else
 					{
 						Vector3 knockBackPos = Vector3(this->theHero->GetPos_x(), this->theHero->GetPos_y());
-						if(this->theHero->GetPos_x() != enemy->GetPos_x())
+						if(this->theHero->GetPos_x() > enemy->GetPos_x())
 						{
-							knockBackPos.x = this->theHero->GetPos_x() + ((Vector3(this->theHero->GetPos_x()) - Vector3(enemy->GetPos_x())).Normalized() * currentLevel->gameObjectsManager->tileSize).x;
+							knockBackPos.x = this->theHero->GetPos_x() + currentLevel->gameObjectsManager->tileSize;
 						}
-						if(this->theHero->GetPos_y() != enemy->GetPos_y())
+						else if(this->theHero->GetPos_x() < enemy->GetPos_x())
 						{
-							knockBackPos.y = this->theHero->GetPos_y() + ((Vector3(0, this->theHero->GetPos_y()) - Vector3(0, enemy->GetPos_y())).Normalized() * currentLevel->gameObjectsManager->tileSize).y;
+							knockBackPos.x = this->theHero->GetPos_x() - currentLevel->gameObjectsManager->tileSize;
 						}
+						knockBackPos.x = (int)(knockBackPos.x / currentLevel->gameObjectsManager->tileSize) * currentLevel->gameObjectsManager->tileSize;
+						if(this->theHero->GetPos_y() > enemy->GetPos_y())
+						{
+							knockBackPos.y = this->theHero->GetPos_y() + currentLevel->gameObjectsManager->tileSize;
+						}
+						else if(this->theHero->GetPos_y() < enemy->GetPos_y())
+						{
+							knockBackPos.y = this->theHero->GetPos_y() - currentLevel->gameObjectsManager->tileSize;
+						}
+						knockBackPos.y = (int)(knockBackPos.y / currentLevel->gameObjectsManager->tileSize) * currentLevel->gameObjectsManager->tileSize;
 						GameObject* go = currentLevel->gameObjectsManager->CheckColision(knockBackPos);
 						if(!go)
+						{
 							this->theHero->knockBackEnabled(knockBackPos);
+							enemy->SetTargetPosition(knockBackPos.x, knockBackPos.y);
+						}
 						else
 						{
 							switch(go->type)
@@ -517,8 +530,24 @@ void SceneSP3::Update(double dt)
 				CEnemy *enemyCollided = currentLevel->AI_Manager->CheckColisionBetweenEnemies(enemy, currentLevel->gameObjectsManager->tileSize);
 				if(enemyCollided)
 				{
-					enemy->SetPos_x(enemy->GetPos_x() + enemy->GetPos_x() - enemyCollided->GetPos_x());
-					enemy->SetPos_y(enemy->GetPos_y() + enemy->GetPos_y() - enemyCollided->GetPos_y());
+					if(enemyCollided->GetPos_x() > enemy->GetPos_x())
+					{
+						enemyCollided->SetPos_x(enemyCollided->GetPos_x() + currentLevel->gameObjectsManager->tileSize);
+					}
+					else if(enemyCollided->GetPos_x() < enemy->GetPos_x())
+					{
+						enemyCollided->SetPos_x(enemyCollided->GetPos_x() - currentLevel->gameObjectsManager->tileSize);
+					}
+					enemyCollided->SetPos_x((int)(enemyCollided->GetPos_x() / currentLevel->gameObjectsManager->tileSize) * currentLevel->gameObjectsManager->tileSize);
+					if(this->theHero->GetPos_y() > enemy->GetPos_y())
+					{
+						enemyCollided->SetPos_y(enemyCollided->GetPos_y() + currentLevel->gameObjectsManager->tileSize);
+					}
+					else if(this->theHero->GetPos_y() < enemy->GetPos_y())
+					{
+						enemyCollided->SetPos_y(enemyCollided->GetPos_y() - currentLevel->gameObjectsManager->tileSize);
+					}
+					enemyCollided->SetPos_y((int)(enemyCollided->GetPos_y() / currentLevel->gameObjectsManager->tileSize) * currentLevel->gameObjectsManager->tileSize);
 				}
 			}
 		}

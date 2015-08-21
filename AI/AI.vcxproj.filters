@@ -17,12 +17,24 @@
     <ClCompile Include="Source\AIManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\PosNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LevelMap_Nodes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Enemy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\AIManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\PosNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LevelMap_Nodes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

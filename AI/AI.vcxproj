@@ -13,10 +13,14 @@
   <ItemGroup>
     <ClCompile Include="Source\AIManager.cpp" />
     <ClCompile Include="Source\Enemy.cpp" />
+    <ClCompile Include="Source\LevelMap_Nodes.cpp" />
+    <ClCompile Include="Source\PosNode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\AIManager.h" />
     <ClInclude Include="Source\Enemy.h" />
+    <ClInclude Include="Source\LevelMap_Nodes.h" />
+    <ClInclude Include="Source\PosNode.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E8970069-C54D-4F31-95EF-9AE0FB441894}</ProjectGuid>

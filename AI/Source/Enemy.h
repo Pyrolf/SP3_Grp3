@@ -27,16 +27,16 @@ public:
 	// Set position y of the enemy
 	void SetPos_y(int pos_y, bool intial = false, float endPointDiff_y = 0.f);
 	// Set the destination of this enemy
-	void SetDestination(const int pos_x, const int pos_y);
+	void SetTargetPosition(const int pos_x, const int pos_y);
 
 	// Get position x of the enemy
 	int GetPos_x(void);
 	// Get position y of the enemy
 	int GetPos_y(void);
 	// Set the destination of this enemy
-	int GetDestination_x(void);
+	int GetTargetPosition_x(void);
 	// Set the destination of this enemy
-	int GetDestination_y(void);
+	int GetTargetPosition_y(void);
 
 	// ENEMY Update
 	void Update(GameObjectFactory* goManager, float timeDiff, Vector3 heroPos);
@@ -90,12 +90,13 @@ public:
 	
 	void SetJustAlerted(bool justAlerted);
 	bool GetJustAlerted(void);
-
+	
+	void PathFinding(GameObjectFactory* goManager);
 private:
 	// ENEMY's information
 	Vector3 theENEMYPosition;
 	Vector3 theENEMYInitialPosition;
-	Vector3 patrolTarget;
+	Vector3 theENEMYTargetPosition;
 	float idleTime;
 
 	CURRENT_MODE currentMode;

@@ -368,19 +368,19 @@ void CPlayerInfo::knockingBack(float timeDiff)
 
 	if(knockBackPos.x > HeroPrevPos.x && knockBackPos.x < theHeroPosition.x)
 	{
-		knockBackPos.x = theHeroPosition.x;
+		theHeroPosition.x = knockBackPos.x;
 	}
 	else if(knockBackPos.x < HeroPrevPos.x && knockBackPos.x > theHeroPosition.x)
 	{
-		knockBackPos.x = theHeroPosition.x;
+		theHeroPosition.x = knockBackPos.x;
 	}
 	if(knockBackPos.y > HeroPrevPos.y && knockBackPos.y < theHeroPosition.y)
 	{
-		knockBackPos.y = theHeroPosition.y;
+		theHeroPosition.y = knockBackPos.y;
 	}
 	else if(knockBackPos.y < HeroPrevPos.y && knockBackPos.y > theHeroPosition.y)
 	{
-		knockBackPos.y = theHeroPosition.y;
+		theHeroPosition.y = knockBackPos.y;
 	}
 	if(theHeroPosition == knockBackPos)
 	{
@@ -424,6 +424,8 @@ void CPlayerInfo::Attacking(float timeDiff, CAIManager* ai_manager, GameObjectFa
 				GameObject* go = go_manager->CheckColision(Vector3(ai_manager->enemiesList[i]->GetPos_x(), ai_manager->enemiesList[i]->GetPos_y()));
 				if(go)
 				{
+					enemyPrev.x = ((int)(enemyPrev.x / go_manager->tileSize) * go_manager->tileSize);
+					enemyPrev.y = ((int)(enemyPrev.y / go_manager->tileSize) * go_manager->tileSize);
 					ai_manager->enemiesList[i]->SetPos_x(enemyPrev.x);
 					ai_manager->enemiesList[i]->SetPos_y(enemyPrev.y);
 				}

@@ -47,6 +47,13 @@ void CEnemy::SetPos_y(int pos_y, bool intial, float endPoint_y)
 	}
 }
 
+// Set the destination of this enemy
+void CEnemy::SetTargetPosition(const int pos_x, const int pos_y)
+{
+	theENEMYTargetPosition.x = pos_x;
+	theENEMYTargetPosition.y = pos_y;
+}
+
 // Get position x of the player
 int CEnemy::GetPos_x(void)
 {
@@ -57,6 +64,18 @@ int CEnemy::GetPos_x(void)
 int CEnemy::GetPos_y(void)
 {
 	return theENEMYPosition.y;
+}
+
+// Set the destination of this enemy
+int CEnemy::GetTargetPosition_x(void)
+{
+	return theENEMYTargetPosition.x;
+}
+
+// Set the destination of this enemy
+int CEnemy::GetTargetPosition_y(void)
+{
+	return theENEMYTargetPosition.y;
 }
 
 // Set Animation Invert status of the player
@@ -98,6 +117,8 @@ void CEnemy::Update(GameObjectFactory* goManager, float timeDiff, Vector3 heroPo
 				currentMode = CHASE;
 				justAlerted = true;
 				timeAlerted = 1.f;
+				theENEMYTargetPosition.x = (int)(heroPos.x / goManager->tileSize) * goManager->tileSize;
+				theENEMYTargetPosition.y = (int)(heroPos.y / goManager->tileSize) * goManager->tileSize;
 			}
 		}
 		else
@@ -123,13 +144,34 @@ void CEnemy::Update(GameObjectFactory* goManager, float timeDiff, Vector3 heroPo
 	{
 	case CHASE:
 		{
-			MoveEnemy(goManager, timeDiff, heroPos);
+			if((theENEMYTargetPosition - heroPos).Length() >= goManager->tileSize)
+			{
+				theENEMYTargetPosition.x = (int)(heroPos.x / goManager->tileSize) * goManager->tileSize;
+				theENEMYTargetPosition.y = (int)(heroPos.y / goManager->tileSize) * goManager->tileSize;
+			}
+			MoveEnemy(goManager, timeDiff, theENEMYTargetPosition);
 		}
 		break;
 	case ATTACK:
 		{
-			theENEMYPosition.x += theENEMYPosition.x - heroPos.x;
-			theENEMYPosition.y += theENEMYPosition.y - heroPos.y;
+			if(theENEMYPosition.x > heroPos.x)
+			{
+				theENEMYPosition.x += goManager->tileSize;
+			}
+			else if(theENEMYPosition.x < heroPos.x)
+			{
+				theENEMYPosition.x -= goManager->tileSize;
+			}
+			theENEMYPosition.x = (int)(theENEMYPosition.x / goManager->tileSize) * goManager->tileSize;
+			if(theENEMYPosition.y > heroPos.y)
+			{
+				theENEMYPosition.y += goManager->tileSize;
+			}
+			else if(theENEMYPosition.y < heroPos.y)
+			{
+				theENEMYPosition.y -= goManager->tileSize;
+			}
+			theENEMYPosition.y = (int)(theENEMYPosition.y / goManager->tileSize) * goManager->tileSize;
 		}
 		break;
 	case RETURN:
@@ -170,8 +212,8 @@ void CEnemy::Update(GameObjectFactory* goManager, float timeDiff, Vector3 heroPo
 						{
 							y = 0;
 						}
-						patrolTarget = Vector3(theENEMYPosition.x + x, theENEMYPosition.y + y);
-						if(!CheckCollision(goManager, patrolTarget) && patrolTarget != theENEMYPosition)
+						theENEMYTargetPosition = Vector3(theENEMYPosition.x + x, theENEMYPosition.y + y);
+						if(!CheckCollision(goManager, theENEMYTargetPosition) && theENEMYTargetPosition != theENEMYPosition)
 							break;
 					}
 				}
@@ -185,8 +227,8 @@ void CEnemy::Update(GameObjectFactory* goManager, float timeDiff, Vector3 heroPo
 		break;
 	case PATROL:
 		{
-			MoveEnemy(goManager, timeDiff, patrolTarget);
-			if(theENEMYPosition == patrolTarget || theENEMYPosition == theENEMYPrevPosition)
+			MoveEnemy(goManager, timeDiff, theENEMYTargetPosition);
+			if(theENEMYPosition == theENEMYTargetPosition || theENEMYPosition == theENEMYPrevPosition)
 			{
 				if(rand() % 2 == 0)
 				{
@@ -221,8 +263,8 @@ void CEnemy::Update(GameObjectFactory* goManager, float timeDiff, Vector3 heroPo
 						{
 							y = 0;
 						}
-						patrolTarget = Vector3(theENEMYPosition.x + x, theENEMYPosition.y + y);
-						if(!CheckCollision(goManager, patrolTarget) && patrolTarget != theENEMYPosition)
+						theENEMYTargetPosition = Vector3(theENEMYPosition.x + x, theENEMYPosition.y + y);
+						if(!CheckCollision(goManager, theENEMYTargetPosition) && theENEMYTargetPosition != theENEMYPosition)
 							break;
 					}
 				}
@@ -273,8 +315,8 @@ void CEnemy::Update(GameObjectFactory* goManager, float timeDiff, Vector3 heroPo
 						{
 							y = 0;
 						}
-						patrolTarget = Vector3(theENEMYPosition.x + x, theENEMYPosition.y + y);
-						if(!CheckCollision(goManager, patrolTarget) && patrolTarget != theENEMYPosition)
+						theENEMYTargetPosition = Vector3(theENEMYPosition.x + x, theENEMYPosition.y + y);
+						if(!CheckCollision(goManager, theENEMYTargetPosition) && theENEMYTargetPosition != theENEMYPosition)
 							break;
 					}
 				}
