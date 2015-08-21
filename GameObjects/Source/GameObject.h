@@ -16,16 +16,17 @@ public:
 		TIMING_DOOR,
 		LOCKED_DOOR,
 		HACK_SYS,
-		HEALTH,
+		HEALTH_PACK,
 		TOTAL
 	};
 
 	int type;
 	Vector3 pos;
 	int currentFrame;
-	float frameTime, currentFrameTime;
 	
 	GameObject();
 	GameObject(int type, Vector3 pos);
-	~GameObject();
+	virtual ~GameObject();
+
+	bool CheckColision(Vector3 pos, int tileSize);
 };

@@ -4,7 +4,8 @@
 class ActiveGameObject : public GameObject
 {
 public:
-	bool active;
+	bool active, canActivate;
+	float frameTime, currentFrameTime;
 
 	////////for any use depending on the gameObject////////
 	int* randomInt;
@@ -13,7 +14,7 @@ public:
 
 	ActiveGameObject();
 	ActiveGameObject(int type, Vector3 pos);
-	~ActiveGameObject();
+	virtual ~ActiveGameObject();
 
 	void update(double dt);
 	void InitRanodmVars();

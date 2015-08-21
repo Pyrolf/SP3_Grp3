@@ -578,6 +578,18 @@ void SceneSP3::Update(double dt)
 				}
 			}
 		}
+		for(int i = 0; i < currentLevel->gameObjectsManager->UpdatableGoList.size(); ++i)
+		{
+			
+			if(currentLevel->gameObjectsManager->UpdatableGoList[i]->type == GameObject::WET_FLOOR)
+			{
+				if(currentLevel->gameObjectsManager->UpdatableGoList[i]->CheckColision(Vector3(theHero->GetPos_x(), theHero->GetPos_y(), 0), currentLevel->gameObjectsManager->tileSize))
+					currentLevel->gameObjectsManager->UpdatableGoList[i]->active = true;
+				else
+					currentLevel->gameObjectsManager->UpdatableGoList[i]->canActivate = true;
+				currentLevel->gameObjectsManager->UpdatableGoList[i]->update(dt);
+			}
+		}
 	}
 }
 
@@ -848,9 +860,93 @@ void SceneSP3::HeroColision(GameObject* goCollidedWith, bool updown, bool upORle
 			break;
 		case GameObject::DOOR:
 			{
-				this->theHero->SetPos_x(goCollidedWith->pos.x);
-				this->theHero->SetPos_y(goCollidedWith->pos.y);
+				/*this->theHero->SetPos_x(goCollidedWith->pos.x);
+				this->theHero->SetPos_y(goCollidedWith->pos.y);*/
 				this->theHero->SetCurrentState( this->theHero->EXITING );
+				this->theHero->SetTargetPos_x(goCollidedWith->pos.x);
+				this->theHero->SetTargetPos_y(goCollidedWith->pos.y);
+			}
+			break;
+		case GameObject::WET_FLOOR:
+			{
+				/*ActiveGameObject* active = dynamic_cast<ActiveGameObject*>(goCollidedWith);
+					active->active = true;*/
+				if(updown == true && upORleft == true)// up
+				{
+					Vector3 temp(this->theHero->GetTargetPos_x(), this->theHero->GetTargetPos_y(), 0);
+
+					temp.y += currentLevel->gameObjectsManager->tileSize;
+					while(currentLevel->gameObjectsManager->CheckColision((temp)) != NULL)
+					{
+						if(currentLevel->gameObjectsManager->CheckColision((temp))->type == GameObject::WET_FLOOR)
+						{
+							temp.y += currentLevel->gameObjectsManager->tileSize;
+						}
+						else if(currentLevel->gameObjectsManager->CheckColision((temp)) != NULL && currentLevel->gameObjectsManager->CheckColision((temp))->type != GameObject::WET_FLOOR)
+						{
+							temp.y -= currentLevel->gameObjectsManager->tileSize;
+								break;
+						}
+					}
+					this->theHero->SetTargetPos_y(temp.y);
+				}
+				else if(updown == true && upORleft == false)// down
+				{
+					Vector3 temp(this->theHero->GetTargetPos_x(), this->theHero->GetTargetPos_y(), 0);
+
+					temp.y -= currentLevel->gameObjectsManager->tileSize;
+					while(currentLevel->gameObjectsManager->CheckColision((temp)) != NULL)
+					{
+						if(currentLevel->gameObjectsManager->CheckColision((temp))->type == GameObject::WET_FLOOR)
+						{
+							temp.y -= currentLevel->gameObjectsManager->tileSize;
+						}
+						else if(currentLevel->gameObjectsManager->CheckColision((temp)) != NULL && currentLevel->gameObjectsManager->CheckColision((temp))->type != GameObject::WET_FLOOR)
+						{
+							temp.y += currentLevel->gameObjectsManager->tileSize;
+								break;
+						}
+					}
+					this->theHero->SetTargetPos_y(temp.y);
+				}
+				else if(updown == false && upORleft == true)// left
+				{
+					Vector3 temp(this->theHero->GetTargetPos_x(), this->theHero->GetTargetPos_y(), 0);
+
+					temp.x -= currentLevel->gameObjectsManager->tileSize;
+					while(currentLevel->gameObjectsManager->CheckColision((temp)) != NULL)
+					{
+						if(currentLevel->gameObjectsManager->CheckColision((temp))->type == GameObject::WET_FLOOR)
+						{
+							temp.x -= currentLevel->gameObjectsManager->tileSize;
+						}
+						else if(currentLevel->gameObjectsManager->CheckColision((temp)) != NULL && currentLevel->gameObjectsManager->CheckColision((temp))->type != GameObject::WET_FLOOR)
+						{
+							temp.x += currentLevel->gameObjectsManager->tileSize;
+								break;
+						}
+					}
+					this->theHero->SetTargetPos_x(temp.x);
+				}
+				else if(updown == false && upORleft == false)// fight
+				{
+					Vector3 temp(this->theHero->GetTargetPos_x(), this->theHero->GetTargetPos_y(), 0);
+
+					temp.x += currentLevel->gameObjectsManager->tileSize;
+					while(currentLevel->gameObjectsManager->CheckColision((temp)) != NULL)
+					{
+						if(currentLevel->gameObjectsManager->CheckColision((temp))->type == GameObject::WET_FLOOR)
+						{
+							temp.x += currentLevel->gameObjectsManager->tileSize;
+						}
+						else if(currentLevel->gameObjectsManager->CheckColision((temp)) != NULL && currentLevel->gameObjectsManager->CheckColision((temp))->type != GameObject::WET_FLOOR)
+						{
+							temp.x -= currentLevel->gameObjectsManager->tileSize;
+								break;
+						}
+					}
+					this->theHero->SetTargetPos_x(temp.x);
+				}
 			}
 			break;
 		default :
