@@ -56,8 +56,6 @@ void CAIManager::generateEnemies(CMap *map)
 			{
 				enemiesList.push_back(new CEnemy);
 
-				enemiesList.back()->SetPos_x(k  * map->GetTileSize(), true);
-				enemiesList.back()->SetPos_y((map->getNumOfTiles_MapHeight() - i - 1)  * map->GetTileSize(), true);
 				enemiesList.back()->SetMaxRangeToDetect(map->GetTileSize() * 5);
 				enemiesList.back()->SetAnimationCounter(0.f);
 				enemiesList.back()->SetAnimationInvert(false);
@@ -68,7 +66,7 @@ void CAIManager::generateEnemies(CMap *map)
 
 CEnemy* CAIManager::CheckColisionBetweenEnemies(CEnemy* enemy, int tileSize)
 {
-	Vector3 min(enemy->GetPos_x() + 1, enemy->GetPos_y() + 1, 0);
+	/*Vector3 min(enemy->GetPos_x() + 1, enemy->GetPos_y() + 1, 0);
 	Vector3 max(enemy->GetPos_x() + tileSize - 1, enemy->GetPos_y() + tileSize - 1, 0);
 
 	for(int i = 0; i < enemiesList.size(); ++i)
@@ -83,7 +81,7 @@ CEnemy* CAIManager::CheckColisionBetweenEnemies(CEnemy* enemy, int tileSize)
 				return enemiesList[i];
 			}
 		}
-	}
+	}*/
 	return NULL;
 }
 
@@ -93,7 +91,6 @@ void CAIManager::Reset(void)
 	for(vector<CEnemy *>::iterator it = enemiesList.begin(); it != enemiesList.end(); ++it)
 	{
 		CEnemy *enemy = (CEnemy *)*it;
-		enemy->SetPos_x(enemy->GetInitialPos_x());
-		enemy->SetPos_y(enemy->GetInitialPos_y());
+		enemy->Reset();
 	}
 }

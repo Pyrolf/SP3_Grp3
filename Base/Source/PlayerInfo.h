@@ -39,11 +39,6 @@ public:
 	CPosNode* GetCurrentPosNode(void);
 	// Get target position node of the player
 	CPosNode* GetTargetPosNode(void);
-
-	// Set Movement Speed of the player
-	void SetMovementSpeed(float movementSpeed);
-	// Get Movement Speed of the player
-	float GetMovementSpeed(void);
 	
 	enum CURRENT_STATE
 	{

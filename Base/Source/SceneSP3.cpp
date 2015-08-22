@@ -443,7 +443,7 @@ void SceneSP3::Update(double dt)
 			for(vector<CEnemy *>::iterator it = currentLevel->AI_Manager->enemiesList.begin(); it != currentLevel->AI_Manager->enemiesList.end(); ++it)
 			{
 				CEnemy *enemy = (CEnemy *)*it;
-				enemy->Update(currentLevel->gameObjectsManager, dt, theHero->GetPos());
+				enemy->CheckMode(theHero->GetCurrentPosNode(), currentLevel->gameObjectsManager->tileSize);
 				if(enemy->GetHitHero())
 				{
 					this->theHero->SetHealth(theHero->GetHealth() - 1);
@@ -454,48 +454,15 @@ void SceneSP3::Update(double dt)
 					}
 					else
 					{
-						Vector3 knockBackPos = this->theHero->GetPos();
-						if(this->theHero->GetPos().x > enemy->GetPos_x())
-						{
-							knockBackPos.x = this->theHero->GetPos().x + currentLevel->gameObjectsManager->tileSize;
-						}
-						else if(this->theHero->GetPos().x < enemy->GetPos_x())
-						{
-							knockBackPos.x = this->theHero->GetPos().x - currentLevel->gameObjectsManager->tileSize;
-						}
-						knockBackPos.x = (int)(knockBackPos.x / currentLevel->gameObjectsManager->tileSize) * currentLevel->gameObjectsManager->tileSize;
-						if(this->theHero->GetPos().y > enemy->GetPos_y())
-						{
-							knockBackPos.y = this->theHero->GetPos().y + currentLevel->gameObjectsManager->tileSize;
-						}
-						else if(this->theHero->GetPos().y < enemy->GetPos_y())
-						{
-							knockBackPos.y = this->theHero->GetPos().y - currentLevel->gameObjectsManager->tileSize;
-						}
-						knockBackPos.y = (int)(knockBackPos.y / currentLevel->gameObjectsManager->tileSize) * currentLevel->gameObjectsManager->tileSize;
-						GameObject* go = currentLevel->gameObjectsManager->CheckColision(knockBackPos);
-						if(!go)
-						{
-							this->theHero->knockBackEnabled(Vector3(enemy->GetPos_x(), enemy->GetPos_y()));
-							enemy->SetTargetPosition(knockBackPos.x, knockBackPos.y);
-						}
-						else
-						{
-							switch(go->type)
-							{
-							case GameObject::DOOR:
-								{
-									this->theHero->knockBackEnabled(knockBackPos);
-									this->theHero->SetCurrentState(theHero->EXITING);
-								}
-								break;
-							}
-						}
+						this->theHero->knockBackEnabled(enemy->GetPos());
 					}
 					enemy->SetHitHero(false);
 					break;
 				}
-				CEnemy *enemyCollided = currentLevel->AI_Manager->CheckColisionBetweenEnemies(enemy, currentLevel->gameObjectsManager->tileSize);
+
+				enemy->Update(currentLevel->gameObjectsManager->tileSize, dt, theHero->GetCurrentPosNode());
+
+				/*CEnemy *enemyCollided = currentLevel->AI_Manager->CheckColisionBetweenEnemies(enemy, currentLevel->gameObjectsManager->tileSize);
 				if(enemyCollided)
 				{
 					if(enemyCollided->GetPos_x() > enemy->GetPos_x())
@@ -516,7 +483,7 @@ void SceneSP3::Update(double dt)
 						enemyCollided->SetPos_y(enemyCollided->GetPos_y() - currentLevel->gameObjectsManager->tileSize);
 					}
 					enemyCollided->SetPos_y((int)(enemyCollided->GetPos_y() / currentLevel->gameObjectsManager->tileSize) * currentLevel->gameObjectsManager->tileSize);
-				}
+				}*/
 			}
 		}
 		else
@@ -762,29 +729,29 @@ void SceneSP3::RenderEnemies()
 
 		if(enemy->GetAnimationDirection() == enemy->DOWN)
 		{
-			Render2DMesh(currentLevel->AI_Manager->frontMeshes[(int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos_x(), enemy->GetPos_y());
+			Render2DMesh(currentLevel->AI_Manager->frontMeshes[(int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos().x, enemy->GetPos().y);
 		}
 		else if(enemy->GetAnimationDirection() == enemy->UP)
 		{
-			Render2DMesh(currentLevel->AI_Manager->backMeshes[(int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos_x(), enemy->GetPos_y());
+			Render2DMesh(currentLevel->AI_Manager->backMeshes[(int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos().x, enemy->GetPos().y);
 		}
 		else
 		{
 			// enemy move right
 			if(enemy->GetAnimationInvert() == false)
 			{
-				Render2DMesh(currentLevel->AI_Manager->sideMeshes[(int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos_x(), enemy->GetPos_y());
+				Render2DMesh(currentLevel->AI_Manager->sideMeshes[(int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos().x, enemy->GetPos().y);
 			}
 			// enemy move left
 			else
 			{
 
-				Render2DMesh(currentLevel->AI_Manager->sideMeshes[(int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos_x(), enemy->GetPos_y(), true);
+				Render2DMesh(currentLevel->AI_Manager->sideMeshes[(int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos().x, enemy->GetPos().y, true);
 			}
 		}
-		if(enemy->GetJustAlerted())
+		if(enemy->GetCurrentMode() == enemy->CHASE || enemy->GetCurrentMode() == enemy->ATTACK)
 		{
-			Render2DMesh(currentLevel->AI_Manager->alertSign, false, 1.0f, enemy->GetPos_x(), enemy->GetPos_y() + currentLevel->gameObjectsManager->tileSize);
+			Render2DMesh(currentLevel->AI_Manager->alertSign, false, 1.0f, enemy->GetPos().x, enemy->GetPos().y + currentLevel->gameObjectsManager->tileSize);
 		}
 	}
 }

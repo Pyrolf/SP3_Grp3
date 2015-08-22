@@ -1,7 +1,7 @@
 #pragma once
 #include "Vector3.h"
 #include "Map.h"
-#include "GameObjectFactory.h"
+#include "PosNode.h"
 
 class CEnemy
 {
@@ -19,28 +19,30 @@ public:
 		NUM_GEOMETRY,
 	};
 
-	// Initialise this class instance
-	void Init(void);
+	// Reset this class instance
+	void Reset(void);
 
 	// Set position x of the enemy
-	void SetPos_x(int pos_x, bool intial = false, float endPointDiff_x = 0.f);
+	void SetPos_x(float pos_x);
 	// Set position y of the enemy
-	void SetPos_y(int pos_y, bool intial = false, float endPointDiff_y = 0.f);
-	// Set the destination of this enemy
-	void SetTargetPosition(const int pos_x, const int pos_y);
+	void SetPos_y(float pos_y);
+	// Set position of the enemy
+	void SetPos(Vector3 pos);
 
-	// Get position x of the enemy
-	int GetPos_x(void);
-	// Get position y of the enemy
-	int GetPos_y(void);
-	// Set the destination of this enemy
-	int GetTargetPosition_x(void);
-	// Set the destination of this enemy
-	int GetTargetPosition_y(void);
+	// Set initial position node of the enemy
+	void SetInitialPosNode(CPosNode* posNode);
+	// Set current position node of the enemy
+	void SetCurrentPosNode(CPosNode* posNode);
+	// Set target position node of the enemy
+	void SetTargetPosNode(CPosNode* posNode);
 
-	// ENEMY Update
-	void Update(GameObjectFactory* goManager, float timeDiff, Vector3 heroPos);
-
+	// Get position of the enemy
+	Vector3 GetPos(void);
+	// Get current position node of the enemy
+	CPosNode* GetCurrentPosNode(void);
+	// Get target position node of the enemy
+	CPosNode* GetTargetPosNode(void);
+	
 	enum ANIMATION_DIRECTION
 	{
 		UP,
@@ -63,6 +65,7 @@ public:
 	
 	enum CURRENT_MODE
 	{
+		NIL,
 		ATTACK,
 		CHASE,
 		RETURN,
@@ -72,32 +75,49 @@ public:
 	};
 	void SetCurrentMode(CURRENT_MODE currentMode);
 	CURRENT_MODE GetCurrentMode(void);
-	
-	float GetInitialPos_x(void);
-	float GetInitialPos_y(void);
 
 	void SetHitHero(bool hitHero);
 	bool GetHitHero(void);
 
 	void SetMaxRangeToDetect(int maxRangeToDetect);
 	int GetMaxRangeToDetect(void);
+	
+	// Check current mode
+	void CheckMode(CPosNode* heroPosNode, int tileSize);
 
-	bool CheckCollision(GameObjectFactory* goManager, Vector3 pos);
+	// Choose patrol or idle mode
+	void ChoosePatrolOrIdleMode(void);
 
-	void MoveEnemy(GameObjectFactory* goManager, float timeDiff, Vector3 target);
+	// ENEMY Update
+	void Update(int tileSize, float timeDiff, CPosNode* heroPosNode);
+
+	void moving(float timeDiff);
+	void CalculateVel(void);
 
 	void UpdateAnimation(Vector3 CurrentPos, Vector3 PrevPos, float timeDiff);
 	
-	void SetJustAlerted(bool justAlerted);
-	bool GetJustAlerted(void);
-	
-	void PathFinding(GameObjectFactory* goManager);
+	vector<CPosNode*> PathFinding(CPosNode* TargetPosNode, int tileSize);
+
+	bool ifNodeInList(CPosNode* posNode, vector<CPosNode*> list);
+	void storeAdjacentNodeInList(CPosNode* posNode, vector<CPosNode*>* openList, vector<CPosNode*>* closedList);
+
+	int Calculate_G(CPosNode* posNode, vector<CPosNode*> list);
+	int Calculate_H(CPosNode* CurrentPosNode, CPosNode* TargetPosNode, float tileSize);
+
+	int Calculate_F(CPosNode* CurrentPosNode, CPosNode* TargetPosNode, float tileSize, vector<CPosNode*> list);
+
 private:
 	// ENEMY's information
 	Vector3 theENEMYPosition;
-	Vector3 theENEMYInitialPosition;
-	Vector3 theENEMYTargetPosition;
-	float idleTime;
+	CPosNode* theENEMYInitialPosNode;
+	CPosNode* theENEMYCurrentPosNode;
+	CPosNode* theENEMYTargetPosNode;
+	Vector3 vel;
+	vector<CPosNode*> enemyPath;
+	
+	float movementSpeed;
+
+	float time;
 
 	CURRENT_MODE currentMode;
 
@@ -108,7 +128,4 @@ private:
 
 	bool hitHero;
 	ANIMATION_DIRECTION enemyAnimationDirection;
-
-	bool justAlerted;
-	float timeAlerted;
 };

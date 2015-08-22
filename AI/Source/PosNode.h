@@ -19,7 +19,7 @@ public:
 		HEALTH_PACK,
 		TOTAL_ACTIVE_GO,
 		ENEMY_INITIAL_POS = 10,
-		HERO_INIT_POS = 20
+		HERO_INIT_POS = 20,
 	};
 
 	CPosNode(void);
@@ -28,8 +28,9 @@ public:
 
 	Vector3 pos;
 	int posType;
-
+	
 	GameObject* gameObject;
+	CPosNode* parent;
 	
 	CPosNode *up, *down, *left, *right;
 };

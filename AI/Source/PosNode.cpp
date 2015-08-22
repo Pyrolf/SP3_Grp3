@@ -11,6 +11,7 @@ CPosNode::CPosNode(void)
 	left = NULL;
 	right = NULL;
 	gameObject = NULL;
+	parent = NULL;
 }
 
 CPosNode:: CPosNode(Vector3 newPos, int newPosType)
@@ -22,6 +23,7 @@ CPosNode:: CPosNode(Vector3 newPos, int newPosType)
 	left = NULL;
 	right = NULL;
 	gameObject = NULL;
+	parent = NULL;
 }
 
 CPosNode::~CPosNode(void)
@@ -31,4 +33,5 @@ CPosNode::~CPosNode(void)
 	left = NULL;
 	right = NULL;
 	gameObject = NULL;
+	parent = NULL;
 }

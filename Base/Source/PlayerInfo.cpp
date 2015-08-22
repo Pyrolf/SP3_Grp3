@@ -1,7 +1,6 @@
 #include "PlayerInfo.h"
 #include <iostream>
 
-static float GRAVITY = 3000.f;
 
 CPlayerInfo::CPlayerInfo(void)
 	: theHeroPosition(Vector3(0, 0, 0))
@@ -92,7 +91,6 @@ CPlayerInfo::~CPlayerInfo(void)
 		}
 	}
 }
-
 
 
 void CPlayerInfo::Reset(void)
@@ -205,20 +203,6 @@ float CPlayerInfo::GetAnimationCounter(void)
 {
 	return heroAnimationCounter;
 }
-
-
-// Set Movement Speed of the player
-void CPlayerInfo::SetMovementSpeed(float movementSpeed)
-{
-	this->movementSpeed = movementSpeed;
-}
-
-// Get Movement Speed of the player
-float CPlayerInfo::GetMovementSpeed(void)
-{
-	return movementSpeed;
-}
-
 
 
 void CPlayerInfo::SetCurrentState(CPlayerInfo::CURRENT_STATE currentState)
@@ -554,7 +538,7 @@ void CPlayerInfo::Attacking(float timeDiff, CAIManager* ai_manager, GameObjectFa
 	heroAnimationCounter += heroAnimationSpeed * timeDiff;
 	if(PrevHeroAnimationCounter <= (attackFrontMeshes.size() - 1) * 0.5 && heroAnimationCounter >= (attackFrontMeshes.size() - 1) * 0.5)
 	{
-		Vector3 min(theHeroTargetPosNode->pos.x * 0.2, theHeroTargetPosNode->pos.y * 0.2, 0);
+		/*Vector3 min(theHeroTargetPosNode->pos.x * 0.2, theHeroTargetPosNode->pos.y * 0.2, 0);
 		Vector3 max(theHeroTargetPosNode->pos.x + go_manager->tileSize * 0.2, theHeroTargetPosNode->pos.y + go_manager->tileSize * 0.2, 0);
 
 		for(int i = 0; i < ai_manager->enemiesList.size(); ++i)
@@ -578,7 +562,7 @@ void CPlayerInfo::Attacking(float timeDiff, CAIManager* ai_manager, GameObjectFa
 					ai_manager->enemiesList[i]->SetPos_y(enemyPrev.y);
 				}
 			}
-		}
+		}*/
 	}
 	else if(heroAnimationCounter > attackFrontMeshes.size() - 1)
 	{

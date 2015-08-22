@@ -53,7 +53,8 @@ CLevelMap_Nodes::~CLevelMap_Nodes(void)
 
 void CLevelMap_Nodes::GenerateNodes(CMap* map, CAIManager* ai_manager, GameObjectFactory* go_manager)
 {
-	int index = 0;
+	int ai_index = 0;
+	int go_index = 0;
 	current = NULL;
 	for(int i = 1; i < map->getNumOfTiles_MapHeight(); i ++)
 	{
@@ -126,12 +127,20 @@ void CLevelMap_Nodes::GenerateNodes(CMap* map, CAIManager* ai_manager, GameObjec
 				}
 			}
 			prev = current;
-			if(prev->posType > 0
+			if(prev->posType > CPosNode::NONE
 				&& prev->posType != CPosNode::TOTAL_NON_ACTIVE_GO
 				&& prev->posType < CPosNode::TOTAL_ACTIVE_GO)
 			{
-				prev->gameObject = go_manager->GoList[index];
-				++index;
+				prev->gameObject = go_manager->GoList[go_index];
+				++go_index;
+			}
+			else if(prev->posType == CPosNode::ENEMY_INITIAL_POS)
+			{
+				ai_manager->enemiesList[ai_index]->SetInitialPosNode(prev);
+				ai_manager->enemiesList[ai_index]->SetPos(prev->pos);
+				ai_manager->enemiesList[ai_index]->SetCurrentPosNode(prev);
+				ai_manager->enemiesList[ai_index]->SetTargetPosNode(prev);
+				++ai_index;
 			}
 		}
 	}

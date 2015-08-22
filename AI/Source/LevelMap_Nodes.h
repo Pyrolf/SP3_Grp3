@@ -1,6 +1,5 @@
 #pragma once
 #include <iostream>
-#include "PosNode.h"
 #include "AIManager.h"
 
 using namespace std;
