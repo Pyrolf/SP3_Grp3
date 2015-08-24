@@ -4,7 +4,7 @@
 
 CPlayerInfo::CPlayerInfo(void)
 	: theHeroPosition(Vector3(0, 0, 0))
-	, movementSpeed(200.0f)
+	, movementSpeed(400.0f)
 	, currentState(NIL)
 	, timeElasped(0.f)
 	, heroAnimationDirection(DOWN)
@@ -16,6 +16,10 @@ CPlayerInfo::CPlayerInfo(void)
 	, theHeroCurrentPosNode(NULL)
 	, theHeroTargetPosNode(NULL)
 	, vel(Vector3(0,0,0))
+	, justGotDamged(false)
+	, RenderHero(true)
+	, unrenderOrRenderTimeLeft(0.f)
+	, mapOffset(Vector3(0, 0, 0))
 {
 }
 
@@ -109,6 +113,13 @@ void CPlayerInfo::Reset(void)
 	heroAnimationSpeed = 20;
 
 	health = 3;
+
+	
+	justGotDamged = false;
+	RenderHero = true;
+	unrenderOrRenderTimeLeft = 0.f;
+
+	mapOffset = Vector3(0, 0, 0);
 }
 
 // Set position x of the player
@@ -237,6 +248,51 @@ int CPlayerInfo::GetHealth(void)
 	return health;
 }
 
+// Set just got damged of the player
+void CPlayerInfo::SetJustGotDamged(bool justGotDamged)
+{
+	this->justGotDamged = justGotDamged;
+}
+// Get just got damged of the player
+bool CPlayerInfo::GetJustGotDamged(void)
+{
+	return justGotDamged;
+}
+
+// Set Render Hero of the player
+void CPlayerInfo::SetRenderHero(bool RenderHero)
+{
+	this->RenderHero = RenderHero;
+}
+// Get Render Hero of the player
+bool CPlayerInfo::GetRenderHero(void)
+{
+	return RenderHero;
+}
+
+// Set unrender or render time left of the player
+void CPlayerInfo::SetUnrenderOrRenderTimeLeft(float unrenderOrRenderTimeLeft)
+{
+	this->unrenderOrRenderTimeLeft = unrenderOrRenderTimeLeft;
+}
+// Get unrender or render time left of the player
+float CPlayerInfo::GetUnrenderOrRenderTimeLeft(void)
+{
+	return unrenderOrRenderTimeLeft;
+}
+
+
+// Set mapOffset of the player
+void CPlayerInfo::SetMapOffset(Vector3 mapOffset)
+{
+	this->mapOffset = mapOffset;
+}
+// Get mapOffset of the player
+Vector3 CPlayerInfo::GetMapOffset(void)
+{
+	return mapOffset;
+}
+
 
 /********************************************************************************
 Hero Move Up Down
@@ -308,35 +364,81 @@ void CPlayerInfo::MoveLeftRight(const bool mode)
 /********************************************************************************
 Hero Update
 ********************************************************************************/
-void CPlayerInfo::HeroUpdate(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager)
+void CPlayerInfo::HeroUpdate(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager, CMap* map)
 {
-	// Update Hero's info
-	switch(currentState)
+	if(currentState != DYING)
 	{
-	case CPlayerInfo::KNOCKED_BACKING:
+		// Update Hero's info
+		switch(currentState)
 		{
-			moving(timeDiff);
+		case CPlayerInfo::KNOCKED_BACKING:
+			{
+				moving(timeDiff, map);
+			}
+			break;
+		case CPlayerInfo::ATTACKING:
+			{
+				Attacking(timeDiff, ai_manager, go_manager);
+			}
+			break;
+		default:
+			{
+				Vector3 HeroPrevPos = theHeroPosition;
+				moving(timeDiff, map);
+				if(currentState == MOVING)
+					moveAnimation(timeDiff, HeroPrevPos);
+			}
+			break;
 		}
-		break;
-	case CPlayerInfo::ATTACKING:
+		if(currentState == NIL)
 		{
-			Attacking(timeDiff, ai_manager, go_manager);
+			if(CheckCollisionCurrent())
+			{
+				CollisionResponseCurrent();
+			}
 		}
-		break;
-	default:
+
+		// Flicker hero when got damaged
+		if(justGotDamged)
 		{
-			Vector3 HeroPrevPos = theHeroPosition;
-			moving(timeDiff);
-			if(currentState == MOVING)
-				moveAnimation(timeDiff, HeroPrevPos);
+			if(timeElasped < 1.f)
+			{
+				timeElasped += timeDiff;
+				if(unrenderOrRenderTimeLeft < 0.02f)
+				{
+					unrenderOrRenderTimeLeft += timeDiff;
+				}
+				else
+				{
+					unrenderOrRenderTimeLeft = 0.f;
+					if(RenderHero)
+					{
+						RenderHero = false;
+					}
+					else
+					{
+						RenderHero = true;
+					}
+				}
+			}
+			else
+			{
+				timeElasped = 0.f;
+				unrenderOrRenderTimeLeft = 0.f;
+				justGotDamged = false;
+				RenderHero = true;
+			}
 		}
-		break;
 	}
-	if(currentState == NIL)
+	else
 	{
-		if(CheckCollisionCurrent())
+		// Death animation
+		if(timeElasped < 2.f)
 		{
-			CollisionResponseCurrent();
+			timeElasped += timeDiff;
+			heroAnimationCounter += 20 * timeDiff;
+			if(heroAnimationCounter > 5.0f)
+				heroAnimationCounter = 5.0f;
 		}
 	}
 }
@@ -351,7 +453,7 @@ void CPlayerInfo::knockBackEnabled(Vector3 AI_Pos)
 			theHeroTargetPosNode = theHeroTargetPosNode->down;
 			if(!CPlayerInfo::CheckCollisionTarget())
 			{
-				vel.Set(0, -movementSpeed * 2, 0);
+				vel.Set(0, -movementSpeed * 3, 0);
 				currentState = KNOCKED_BACKING;
 
 				heroAnimationDirection = UP;
@@ -368,7 +470,7 @@ void CPlayerInfo::knockBackEnabled(Vector3 AI_Pos)
 			theHeroTargetPosNode = theHeroTargetPosNode->up;
 			if(!CPlayerInfo::CheckCollisionTarget())
 			{
-				vel.Set(0, movementSpeed * 2, 0);
+				vel.Set(0, movementSpeed * 3, 0);
 				currentState = KNOCKED_BACKING;
 
 				heroAnimationDirection = DOWN;
@@ -385,7 +487,7 @@ void CPlayerInfo::knockBackEnabled(Vector3 AI_Pos)
 			theHeroTargetPosNode = theHeroTargetPosNode->left;
 			if(!CPlayerInfo::CheckCollisionTarget())
 			{
-				vel.Set(-movementSpeed * 2, 0, 0);
+				vel.Set(-movementSpeed * 3, 0, 0);
 				currentState = KNOCKED_BACKING;
 
 				heroAnimationDirection = RIGHT;
@@ -402,7 +504,7 @@ void CPlayerInfo::knockBackEnabled(Vector3 AI_Pos)
 			theHeroTargetPosNode = theHeroTargetPosNode->right;
 			if(!CPlayerInfo::CheckCollisionTarget())
 			{
-				vel.Set(movementSpeed * 2, 0, 0);
+				vel.Set(movementSpeed * 3, 0, 0);
 				currentState = KNOCKED_BACKING;
 
 				heroAnimationDirection = LEFT;
@@ -420,7 +522,7 @@ void CPlayerInfo::knockBackEnabled(Vector3 AI_Pos)
 		swap(theHeroTargetPosNode, theHeroCurrentPosNode);
 		if(theHeroCurrentPosNode->up == theHeroTargetPosNode)
 		{
-			vel.Set(0, movementSpeed * 2, 0);
+			vel.Set(0, movementSpeed * 3, 0);
 
 			heroAnimationDirection = DOWN;
 			heroAnimationInvert = false;
@@ -428,7 +530,7 @@ void CPlayerInfo::knockBackEnabled(Vector3 AI_Pos)
 		}
 		else if(theHeroCurrentPosNode->down == theHeroTargetPosNode)
 		{
-			vel.Set(0, -movementSpeed * 2, 0);
+			vel.Set(0, -movementSpeed * 3, 0);
 
 			heroAnimationDirection = UP;
 			heroAnimationInvert = false;
@@ -436,7 +538,7 @@ void CPlayerInfo::knockBackEnabled(Vector3 AI_Pos)
 		}
 		else if(theHeroCurrentPosNode->left == theHeroTargetPosNode)
 		{
-			vel.Set(-movementSpeed * 2, 0,0);
+			vel.Set(-movementSpeed * 3, 0,0);
 
 			heroAnimationDirection = RIGHT;
 			heroAnimationInvert = false;
@@ -444,7 +546,7 @@ void CPlayerInfo::knockBackEnabled(Vector3 AI_Pos)
 		}
 		else if(theHeroCurrentPosNode->right == theHeroTargetPosNode)
 		{
-			vel.Set(movementSpeed * 2, 0,0);
+			vel.Set(movementSpeed * 3, 0,0);
 
 			heroAnimationDirection = LEFT;
 			heroAnimationInvert = true;
@@ -455,7 +557,7 @@ void CPlayerInfo::knockBackEnabled(Vector3 AI_Pos)
 }
 
 
-void CPlayerInfo::moving(float timeDiff)
+void CPlayerInfo::moving(float timeDiff, CMap* map)
 {
 	theHeroPosition += vel * timeDiff;
 	if((theHeroPosition - theHeroCurrentPosNode->pos).Length() > (theHeroTargetPosNode->pos - theHeroCurrentPosNode->pos).Length())
@@ -463,6 +565,26 @@ void CPlayerInfo::moving(float timeDiff)
 		theHeroPosition = theHeroTargetPosNode->pos;
 		theHeroCurrentPosNode = theHeroTargetPosNode;
 		currentState = NIL;
+		vel.SetZero();
+	}
+	// Mapoffset_x
+	if(theHeroPosition.x < map->GetNumOfTiles_Width() * map->GetTileSize() * 0.5)
+	{
+		mapOffset.x = (map->GetNumOfTiles_Width() * map->GetTileSize() * 0.5) - map->GetTileSize() - theHeroPosition.x;
+	}
+	else if(theHeroPosition.x > (map->getNumOfTiles_MapWidth() * map->GetTileSize()) - (map->GetNumOfTiles_Width() * map->GetTileSize() * 0.5))
+	{
+		mapOffset.x = (map->getNumOfTiles_MapWidth() * map->GetTileSize()) - (map->GetNumOfTiles_Width() * map->GetTileSize() * 0.5) - map->GetTileSize() - theHeroPosition.x;
+	}
+	
+	// Mapoffset_y
+	if(theHeroPosition.y < map->GetNumOfTiles_Height() * map->GetTileSize() * 0.5)
+	{
+		mapOffset.y = (map->GetNumOfTiles_Height() * map->GetTileSize() * 0.5) - map->GetTileSize() - theHeroPosition.y;
+	}
+	else if(theHeroPosition.y > (map->getNumOfTiles_MapHeight() * map->GetTileSize()) - (map->GetNumOfTiles_Height() * map->GetTileSize() * 0.5))
+	{
+		mapOffset.y = (map->getNumOfTiles_MapHeight() * map->GetTileSize()) - (map->GetNumOfTiles_Height() * map->GetTileSize() * 0.5) - map->GetTileSize() - theHeroPosition.y;
 	}
 }
 

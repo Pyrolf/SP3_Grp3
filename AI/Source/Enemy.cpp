@@ -14,7 +14,7 @@ CEnemy::CEnemy(void)
 	, theENEMYCurrentPosNode(NULL)
 	, theENEMYTargetPosNode(NULL)
 	, vel(Vector3(0,0,0))
-	, movementSpeed(100.0f)
+	, movementSpeed(200.0f)
 {
 }
 
@@ -171,14 +171,15 @@ void CEnemy::CheckMode(CPosNode* heroPosNode, int tileSize)
 	if(DistFromHeroToEnemy <= maxRangeToDetect && DistFromHeroToEnemyInit <= maxRangeToDetect * 2)
 	{
 		// If within range of attack
-		if(DistFromHeroToEnemy <= tileSize * 0.25)
+		if(DistFromHeroToEnemy <= tileSize * 0.4)
 		{
 			// If not attack
 			if(currentMode != ATTACK)
 			{
 				currentMode = ATTACK;
 				hitHero = true;
-				time = 2;
+				time = 0.5f;
+				theENEMYPosition = theENEMYCurrentPosNode->pos;
 			}
 		}
 		else
@@ -200,16 +201,23 @@ void CEnemy::CheckMode(CPosNode* heroPosNode, int tileSize)
 				}
 				else
 				{
-					currentMode = RETURN;
-					enemyPath = PathFinding(theENEMYInitialPosNode, tileSize);
-					if(enemyPath.size() != 0)
+					if(theENEMYCurrentPosNode != theENEMYInitialPosNode)
 					{
-						if(theENEMYTargetPosNode == theENEMYCurrentPosNode)
+						currentMode = RETURN;
+						enemyPath = PathFinding(theENEMYInitialPosNode, tileSize);
+						if(enemyPath.size() != 0)
 						{
-							enemyPath.pop_back();
-							theENEMYTargetPosNode = enemyPath.back();
-							enemyPath.pop_back();
-							CalculateVel();
+							if(theENEMYTargetPosNode == theENEMYCurrentPosNode)
+							{
+								enemyPath.pop_back();
+								theENEMYTargetPosNode = enemyPath.back();
+								enemyPath.pop_back();
+								CalculateVel();
+							}
+						}
+						else
+						{
+							ChoosePatrolOrIdleMode();
 						}
 					}
 					else
@@ -332,13 +340,24 @@ void CEnemy::Update(int tileSize, float timeDiff, CPosNode* heroPosNode)
 				}
 				else
 				{
-					currentMode = RETURN;
-					enemyPath = PathFinding(theENEMYInitialPosNode, tileSize);
-					if(enemyPath.size() != 0)
+					if(theENEMYCurrentPosNode != theENEMYInitialPosNode)
 					{
-						theENEMYTargetPosNode = enemyPath.back();
-						enemyPath.pop_back();
-						CalculateVel();
+						currentMode = RETURN;
+						enemyPath = PathFinding(theENEMYInitialPosNode, tileSize);
+						if(enemyPath.size() != 0)
+						{
+							if(theENEMYTargetPosNode == theENEMYCurrentPosNode)
+							{
+								enemyPath.pop_back();
+								theENEMYTargetPosNode = enemyPath.back();
+								enemyPath.pop_back();
+								CalculateVel();
+							}
+						}
+						else
+						{
+							ChoosePatrolOrIdleMode();
+						}
 					}
 					else
 					{
