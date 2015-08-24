@@ -82,6 +82,18 @@ public:
 	// Get Animation Counter of the player
 	float GetAnimationCounter(void);
 	
+	// Set just got damged of the player
+	void SetJustGotDamged(bool justGotDamged);
+	// Get just got damged of the player
+	bool GetJustGotDamged(void);
+	// Set Render Hero of the player
+	void SetRenderHero(bool RenderHero);
+	// Get Render Hero of the player
+	bool GetRenderHero(void);
+	// Set unrender or render time left of the player
+	void SetUnrenderOrRenderTimeLeft(float unrenderOrRenderTimeLeft);
+	// Get unrender or render time left of the player
+	float GetUnrenderOrRenderTimeLeft(void);
 
 	// Update Movements
 	void MoveUpDown(const bool mode);
@@ -129,4 +141,8 @@ private:
 	bool heroAnimationInvert;
 	float heroAnimationCounter;
 	int heroAnimationSpeed;
+	
+	bool justGotDamged;
+	bool RenderHero;
+	float unrenderOrRenderTimeLeft;
 };

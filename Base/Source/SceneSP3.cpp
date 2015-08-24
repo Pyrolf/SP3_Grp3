@@ -382,119 +382,77 @@ void SceneSP3::Update(double dt)
 	UpdateInputs(dt);
 	if(gameState == PLAYING)
 	{
-		if(this->theHero->GetCurrentState() != this->theHero->DYING)
+		// Exiting
+		if(this->theHero->GetCurrentState() == this->theHero->EXITING)
 		{
-			switch (this->theHero->GetCurrentState())
+			if(this->theHero->GetTimeElasped() >= 1.f)
 			{
-			case this->theHero->EXITING:
+				currentLevel->AI_Manager->Reset();
+				for(int index = 0; index < levelList.size(); index++)
 				{
-					if(this->theHero->GetTimeElasped() >= 1.f)
+					if(currentLevel == levelList[index])
 					{
-						currentLevel->AI_Manager->Reset();
-						for(int index = 0; index < levelList.size(); index++)
+						if(index + 1 < levelList.size())
 						{
-							if(currentLevel == levelList[index])
-							{
-								if(index + 1 < levelList.size())
-								{
-									currentLevel = levelList[index + 1];
-									theHero->SetPos(currentLevel->HeroStartPosNode->pos);
-									theHero->SetInitialPosNode(currentLevel->HeroStartPosNode);
-									theHero->SetCurrentPosNode(currentLevel->HeroStartPosNode);
-									theHero->SetTargetPosNode(currentLevel->HeroStartPosNode);
-									this->theHero->SetCurrentState(this->theHero->NIL);
-									this->theHero->SetTimeElasped( 0.f );
-									break;
-								}
-								else
-								{
-									gameState = GAMEOVER;
-									break;
-								}
-							}
+							currentLevel = levelList[index + 1];
+							theHero->SetPos(currentLevel->HeroStartPosNode->pos);
+							theHero->SetInitialPosNode(currentLevel->HeroStartPosNode);
+							theHero->SetCurrentPosNode(currentLevel->HeroStartPosNode);
+							theHero->SetTargetPosNode(currentLevel->HeroStartPosNode);
+							this->theHero->SetCurrentState(this->theHero->NIL);
+							this->theHero->SetTimeElasped( 0.f );
+							break;
+						}
+						else
+						{
+							gameState = GAMEOVER;
+							break;
 						}
 					}
-					else
-						this->theHero->SetTimeElasped( this->theHero->GetTimeElasped() + dt );
 				}
-				break;
 			}
-
-			theHero->HeroUpdate(dt, currentLevel->AI_Manager, currentLevel->gameObjectsManager);
-
-			//Enemies
-			for(vector<CEnemy *>::iterator it = currentLevel->AI_Manager->enemiesList.begin(); it != currentLevel->AI_Manager->enemiesList.end(); ++it)
+			else
+				this->theHero->SetTimeElasped( this->theHero->GetTimeElasped() + dt );
+		}
+		// Dying
+		else if(theHero->GetCurrentState() == CPlayerInfo::DYING)
+		{
+			if(theHero->GetTimeElasped() >= 2.f)
 			{
-				CEnemy *enemy = (CEnemy *)*it;
-				enemy->CheckMode(theHero->GetCurrentPosNode(), currentLevel->gameObjectsManager->tileSize);
-				if(enemy->GetHitHero())
+				// Gameover
+				gameState = GAMEOVER;
+				theHero->SetTimeElasped(0.0f);
+			}
+		}
+
+		theHero->HeroUpdate(dt, currentLevel->AI_Manager, currentLevel->gameObjectsManager);
+
+		//Enemies
+		for(vector<CEnemy *>::iterator it = currentLevel->AI_Manager->enemiesList.begin(); it != currentLevel->AI_Manager->enemiesList.end(); ++it)
+		{
+			CEnemy *enemy = (CEnemy *)*it;
+			enemy->CheckMode(theHero->GetCurrentPosNode(), currentLevel->gameObjectsManager->tileSize);
+			if(enemy->GetHitHero())
+			{
+				if(!this->theHero->GetJustGotDamged() && this->theHero->GetCurrentState() != CPlayerInfo::DYING)
 				{
 					this->theHero->SetHealth(theHero->GetHealth() - 1);
-					if(theHero->GetHealth() == 0)
+					if(theHero->GetHealth() <= 0)
 					{
-						this->theHero->SetCurrentState(this->theHero->DYING);
+						this->theHero->SetCurrentState(CPlayerInfo::DYING);
 						theHero->SetAnimationCounter(0.0f);
 					}
 					else
 					{
 						this->theHero->knockBackEnabled(enemy->GetPos());
+						this->theHero->SetJustGotDamged(true);
 					}
-					enemy->SetHitHero(false);
-					break;
 				}
+				enemy->SetHitHero(false);
+				break;
+			}
 
-				enemy->Update(currentLevel->gameObjectsManager->tileSize, dt, theHero->GetCurrentPosNode());
-
-				/*CEnemy *enemyCollided = currentLevel->AI_Manager->CheckColisionBetweenEnemies(enemy, currentLevel->gameObjectsManager->tileSize);
-				if(enemyCollided)
-				{
-					if(enemyCollided->GetPos_x() > enemy->GetPos_x())
-					{
-						enemyCollided->SetPos_x(enemyCollided->GetPos_x() + currentLevel->gameObjectsManager->tileSize);
-					}
-					else if(enemyCollided->GetPos_x() < enemy->GetPos_x())
-					{
-						enemyCollided->SetPos_x(enemyCollided->GetPos_x() - currentLevel->gameObjectsManager->tileSize);
-					}
-					enemyCollided->SetPos_x((int)(enemyCollided->GetPos_x() / currentLevel->gameObjectsManager->tileSize) * currentLevel->gameObjectsManager->tileSize);
-					if(enemyCollided->GetPos_y() > enemy->GetPos_y())
-					{
-						enemyCollided->SetPos_y(enemyCollided->GetPos_y() + currentLevel->gameObjectsManager->tileSize);
-					}
-					else if(enemyCollided->GetPos_y() < enemy->GetPos_y())
-					{
-						enemyCollided->SetPos_y(enemyCollided->GetPos_y() - currentLevel->gameObjectsManager->tileSize);
-					}
-					enemyCollided->SetPos_y((int)(enemyCollided->GetPos_y() / currentLevel->gameObjectsManager->tileSize) * currentLevel->gameObjectsManager->tileSize);
-				}*/
-			}
-		}
-		else
-		{
-			// Falling animation
-			if(theHero->GetTimeElasped() < 2.f)
-			{
-				theHero->SetTimeElasped(theHero->GetTimeElasped() + dt);
-				theHero->SetAnimationCounter(theHero->GetAnimationCounter() + 20 * dt);
-				if(theHero->GetAnimationCounter() > 5.0f)
-					theHero->SetAnimationCounter(5.0f);
-			}
-			else
-			{
-				theHero->SetHealth(0);
-				if(theHero->GetHealth() > 0)
-				{
-					// Reset informations
-					theHero->Reset();
-					this->theHero->SetCurrentState(this->theHero->NIL);
-					currentLevel->AI_Manager->Reset();
-				}
-				else
-				{
-					// Gameover
-					gameState = GAMEOVER;
-				}
-			}
+			enemy->Update(currentLevel->gameObjectsManager->tileSize, dt, theHero->GetCurrentPosNode());
 		}
 		UpdateActiveGO(dt);
 	}
@@ -573,7 +531,10 @@ void SceneSP3::Render()
 			// Render the zombie
 			RenderEnemies();
 			// Render the hero
-			RenderHero();
+			if(this->theHero->GetRenderHero())
+			{
+				RenderHero();
+			}
 
 			modelStack.PopMatrix();
 
