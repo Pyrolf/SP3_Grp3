@@ -224,6 +224,7 @@ void SceneBase::Init()
 	meshList[GEO_HACK_RED_BAR] = MeshBuilder::Generate2DMesh("GEO_HACK_WINDOW", Color(1, 0, 0), 0.0f, 0.0f, 1.0f, 1.0f);
 	meshList[GEO_HACK_WHITE_BAR] = MeshBuilder::Generate2DMesh("GEO_HACK_WINDOW", Color(1, 1, 1), 0.0f, 0.0f, 1.0f, 1.0f);
 	meshList[GEO_HACK_YELLOW_BAR] = MeshBuilder::Generate2DMesh("GEO_HACK_WINDOW", Color(1, 1, 0), 0.0f, 0.0f, 1.0f, 1.0f);
+
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 1000 units
 	Mtx44 perspective;
 	perspective.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);

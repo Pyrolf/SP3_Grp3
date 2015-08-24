@@ -34,6 +34,11 @@ void ActiveGameObject::InitRanodmVars()
 			currentFrame = 1;
 			break;
 		}
+	case LOCKED_DOOR:
+		{
+			currentFrame = 1;
+			break;
+		}
 	case HEALTH_PACK:
 		{
 			active = true;
@@ -98,7 +103,7 @@ void ActiveGameObject::update(double dt)
 				{
 					currentFrame = 0;
 				}
-				else
+			else
 				{
 					currentFrame = 1;
 				}

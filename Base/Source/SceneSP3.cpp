@@ -280,9 +280,40 @@ void SceneSP3::UpdateInputs(double dt)
 		}
 
 		static bool spaceDown = false;
-		if(Application::IsKeyPressed(VK_SPACE) && spaceDown == false)
+		if(Application::IsKeyPressed(VK_SPACE) && spaceDown == false && gameState == PLAYING)
 		{
-			hackingGame.Input();
+			if(hackingGame.active)
+				hackingGame.Input(dt);
+			else
+			{
+				switch(this->theHero->GetAnimationDirection())
+				{
+				case this->theHero->UP:
+					{
+						if(this->theHero->GetCurrentPosNode()->up->posType == this->theHero->GetCurrentPosNode()->HACK_SYS)
+							hackingGame.active = true;
+						
+					}break;
+				case this->theHero->DOWN:
+					{
+						if(this->theHero->GetCurrentPosNode()->down->posType == this->theHero->GetCurrentPosNode()->HACK_SYS)
+							hackingGame.active = true;
+						
+					}break;
+				case this->theHero->LEFT:
+					{
+						if(this->theHero->GetCurrentPosNode()->left->posType == this->theHero->GetCurrentPosNode()->HACK_SYS)
+							hackingGame.active = true;
+						
+					}break;
+				case this->theHero->RIGHT:
+					{
+						if(this->theHero->GetCurrentPosNode()->right->posType == this->theHero->GetCurrentPosNode()->HACK_SYS)
+							hackingGame.active = true;
+						
+					}break;
+				}
+			}
 			spaceDown = true;
 		}
 		else if(!Application::IsKeyPressed(VK_SPACE) && spaceDown == true)
@@ -468,6 +499,25 @@ void SceneSP3::Update(double dt)
 					enemyCollided->SetPos_y((int)(enemyCollided->GetPos_y() / currentLevel->gameObjectsManager->tileSize) * currentLevel->gameObjectsManager->tileSize);
 				}*/
 			}
+			if(hackingGame.active)
+			{
+				hackingGame.Update(dt);
+				if(hackingGame.currentBar == hackingGame.hackingBar.size() || theHero->GetCurrentState() != theHero->NIL)
+				{
+					if(hackingGame.currentBar == hackingGame.hackingBar.size())
+					{
+						for(int i = 0; i < currentLevel->gameObjectsManager->UpdatableGoList.size(); ++i)
+						{
+							if(currentLevel->gameObjectsManager->UpdatableGoList[i]->type == GameObject::LOCKED_DOOR)
+							{
+								currentLevel->gameObjectsManager->UpdatableGoList[i]->active = true;
+							}
+						}
+					}
+					hackingGame.active = false;
+					hackingGame.Reset();
+				}
+			}
 		}
 		else
 		{
@@ -498,8 +548,6 @@ void SceneSP3::Update(double dt)
 		}
 		UpdateActiveGO(dt);
 	}
-	else
-		hackingGame.Update(dt);
 }
 
 void SceneSP3::RenderBackground()
@@ -518,9 +566,7 @@ void SceneSP3::Render()
 	case MAINMENU:
 		{
 			Render2DMesh(meshList[GEO_MAINMENU], false);
-
-			RenderHackGame();
-
+			
 			//On screen text
 			RenderTextOnScreen(meshList[GEO_TEXT], "START GAME", Color(1, 1, 1), 5, 25, 15);
 			RenderTextOnScreen(meshList[GEO_TEXT], "EXIT", Color(1, 1, 1), 5, 25, 10);
@@ -576,6 +622,11 @@ void SceneSP3::Render()
 			RenderHero();
 
 			modelStack.PopMatrix();
+
+			if(hackingGame.active)
+			{
+				RenderHackGame();
+			}
 
 			RenderGUI();
 		}
@@ -697,6 +748,11 @@ void SceneSP3::RenderGameObjects()
 		case  GameObject::LOCKED_DOOR:
 			{
 				Render2DMesh(lockedDoorMesh[go->currentFrame], false, 1.0f, go->pos.x, go->pos.y);
+				break;
+			}
+		case  GameObject::HACK_SYS:
+			{
+				Render2DMesh(hackMesh[go->currentFrame], false, 1.0f, go->pos.x, go->pos.y);
 				break;
 			}
 		}
@@ -836,6 +892,9 @@ void SceneSP3::InitGoMeshes()
 	lockedDoorMesh.back()->textureID = LoadTGA("Image//door open.tga");
 	lockedDoorMesh.push_back(MeshBuilder::Generate2DMesh("door locked", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f));
 	lockedDoorMesh.back()->textureID = LoadTGA("Image//door locked.tga");
+
+	hackMesh.push_back(MeshBuilder::Generate2DMesh("door open", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f));
+	hackMesh.back()->textureID = LoadTGA("Image//hack station.tga");
 }
 
 void SceneSP3::DeleteGoMeshes()

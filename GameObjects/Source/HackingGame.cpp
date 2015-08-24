@@ -70,14 +70,15 @@ void HackingGame::Update(double dt)
 		}
 	}
 }
-bool HackingGame::Input()
+bool HackingGame::Input(double dt)
 {
-	if(hackingBar[currentBar]->bottomPos.y + 10 >= bottomLeftPos.y  
-		&& hackingBar[currentBar]->topPos.y - 10 <= topRightPos.y)
+	if(hackingBar[currentBar]->bottomPos.y + 15 >= bottomLeftPos.y  
+		&& hackingBar[currentBar]->topPos.y - 15 <= topRightPos.y)
 	{
 		hackingBar[currentBar]->active = false;
 		hackingBar[currentBar]->bottomPos.y = bottomLeftPos.y;
 		hackingBar[currentBar]->topPos.y = topRightPos.y;
+		hackingBar[currentBar]->vel.y *= 1.05;
 		currentBar++;
 		return true;
 	}
@@ -90,4 +91,32 @@ bool HackingGame::Input()
 		}
 		return false;
 	}
+}
+
+void HackingGame::Reset()
+{
+	for(int i = hackingBar.size() - 1; i >= 0; --i)
+	{
+		if(hackingBar[i])
+		{
+			delete hackingBar[i];
+			hackingBar[i] = NULL;
+			hackingBar.pop_back();
+		}
+	}
+
+	float distanceBetween = ((topRightPos.x - bottomLeftPos.x))/9;
+	float currentX = bottomLeftPos.x + distanceBetween;
+	float speed = 250;
+
+	for(int i = 1; i < 9; ++i)
+	{
+		hackingBar.push_back(new HackingBar);
+		hackingBar.back()->Init(speed, Vector3(currentX, bottomLeftPos.y - 120, 0), Vector3(currentX, topRightPos.y - 120, 0));
+
+		currentX += distanceBetween;
+		speed += 200;
+	}
+
+	currentBar = 0;
 }
