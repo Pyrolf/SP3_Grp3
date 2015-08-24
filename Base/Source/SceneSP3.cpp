@@ -30,6 +30,7 @@ void SceneSP3::Init()
 	InitGoMeshes();
 	InitLevels();
 	InitSound();
+	hackingGame.Init(Vector3(270, 335, 0), Vector3(753, 365, 0));
 }
 
 void SceneSP3::InitHero()
@@ -277,6 +278,17 @@ void SceneSP3::UpdateInputs(double dt)
 		{
 			this->theHero->SetAnimationCounter(0.0f);
 		}
+
+		static bool spaceDown = false;
+		if(Application::IsKeyPressed(VK_SPACE) && spaceDown == false)
+		{
+			hackingGame.Input();
+			spaceDown = true;
+		}
+		else if(!Application::IsKeyPressed(VK_SPACE) && spaceDown == true)
+		{
+			spaceDown = false;
+		}
 	}
 	// Others
 	{
@@ -484,7 +496,10 @@ void SceneSP3::Update(double dt)
 				}
 			}
 		}
+		UpdateActiveGO(dt);
 	}
+	else
+		hackingGame.Update(dt);
 }
 
 void SceneSP3::RenderBackground()
@@ -914,4 +929,42 @@ void SceneSP3::UpdateActiveGO(double dt)
 void SceneSP3::RenderHackGame()
 {
 	Render2DMesh(meshList[GEO_HACK_WINDOW], false, 1.0f, 112, 100);
+
+	modelStack.PushMatrix();
+    modelStack.Translate(hackingGame.bottomLeftPos.x,hackingGame.bottomLeftPos.y, 0);
+	modelStack.Scale(hackingGame.topRightPos.x - hackingGame.bottomLeftPos.x, hackingGame.topRightPos.y - hackingGame.bottomLeftPos.y, 1);
+	Render2DMesh(meshList[GEO_HACK_RED_BAR], false, 1.0f, 0, 0);
+	modelStack.PopMatrix();
+
+	for(int i = 0; i < 8; ++i)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(hackingGame.hackingBar[i]->bottomPos.x - 15,hackingGame.hackingBar[i]->topPos.y, 0);
+		if(i == hackingGame.currentBar)
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(-2,-1.5, 0);
+			modelStack.Scale(34, 94, 1);
+			Render2DMesh(meshList[GEO_HACK_YELLOW_BAR], false, 1.0f, 0, 0);
+			modelStack.PopMatrix();
+		}
+		modelStack.Scale(30, 90, 1);
+		Render2DMesh(meshList[GEO_HACK_WHITE_BAR], false, 1.0f, 0, 0);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(hackingGame.hackingBar[i]->bottomPos.x - 15,hackingGame.hackingBar[i]->bottomPos.y - 90, 0);
+		if(i == hackingGame.currentBar)
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(-2,-1.5, 0);
+			modelStack.Scale(34, 94, 1);
+			Render2DMesh(meshList[GEO_HACK_YELLOW_BAR], false, 1.0f, 0, 0);
+			modelStack.PopMatrix();
+		}
+		modelStack.Scale(30, 90, 1);
+		Render2DMesh(meshList[GEO_HACK_WHITE_BAR], false, 1.0f, 0, 0);
+		modelStack.PopMatrix();
+	}
+
 }

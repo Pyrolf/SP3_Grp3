@@ -5,6 +5,7 @@
 #include "Level.h"
 #include "Vector3.h"
 #include "PlayerInfo.h"
+#include "HackingGame.h"
 
 #include <irrKlang.h>
 #pragma comment(lib, "irrKlang.lib")
@@ -66,6 +67,8 @@ private:
 	void InitGoMeshes();
 	void DeleteGoMeshes();
 	void UpdateActiveGO(double dt);
+
+	HackingGame hackingGame;
 
 	void RenderHackGame();
 };

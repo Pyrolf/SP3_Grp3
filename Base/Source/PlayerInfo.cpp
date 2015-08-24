@@ -420,35 +420,35 @@ void CPlayerInfo::knockBackEnabled(Vector3 AI_Pos)
 		swap(theHeroTargetPosNode, theHeroCurrentPosNode);
 		if(theHeroCurrentPosNode->up == theHeroTargetPosNode)
 		{
-				vel.Set(0, movementSpeed * 2, 0);
+			vel.Set(0, movementSpeed * 2, 0);
 
-				heroAnimationDirection = DOWN;
-				heroAnimationInvert = false;
-				heroAnimationCounter = 0.0f;
+			heroAnimationDirection = DOWN;
+			heroAnimationInvert = false;
+			heroAnimationCounter = 0.0f;
 		}
 		else if(theHeroCurrentPosNode->down == theHeroTargetPosNode)
 		{
-				vel.Set(0, -movementSpeed * 2, 0);
+			vel.Set(0, -movementSpeed * 2, 0);
 
-				heroAnimationDirection = UP;
-				heroAnimationInvert = false;
-				heroAnimationCounter = 0.0f;
+			heroAnimationDirection = UP;
+			heroAnimationInvert = false;
+			heroAnimationCounter = 0.0f;
 		}
 		else if(theHeroCurrentPosNode->left == theHeroTargetPosNode)
 		{
-				vel.Set(-movementSpeed * 2, 0,0);
+			vel.Set(-movementSpeed * 2, 0,0);
 
-				heroAnimationDirection = RIGHT;
-				heroAnimationInvert = false;
-				heroAnimationCounter = 0.0f;
+			heroAnimationDirection = RIGHT;
+			heroAnimationInvert = false;
+			heroAnimationCounter = 0.0f;
 		}
 		else if(theHeroCurrentPosNode->right == theHeroTargetPosNode)
 		{
-				vel.Set(movementSpeed * 2, 0,0);
+			vel.Set(movementSpeed * 2, 0,0);
 
-				heroAnimationDirection = LEFT;
-				heroAnimationInvert = true;
-				heroAnimationCounter = 0.0f;
+			heroAnimationDirection = LEFT;
+			heroAnimationInvert = true;
+			heroAnimationCounter = 0.0f;
 		}
 		currentState = KNOCKED_BACKING;
 	}
@@ -575,7 +575,7 @@ bool CPlayerInfo::CheckCollisionTarget(void)
 	case CPosNode::HERO_INIT_POS:
 		return false;
 	default:
-			return true;
+		return true;
 	}
 }
 
@@ -596,49 +596,87 @@ bool CPlayerInfo::CheckCollisionCurrent(void)
 
 void CPlayerInfo::CollisionResponseCurrent(void)
 {
-	if(theHeroCurrentPosNode->gameObject->type == GameObject::WET_FLOOR)
+	switch(theHeroCurrentPosNode->gameObject->type)
 	{
-		switch(heroAnimationDirection)
+	case GameObject::HOLE:
 		{
-		case UP:
-			{
-				theHeroTargetPosNode = theHeroTargetPosNode->up;
-				vel.Set(0, movementSpeed, 0);
-				currentState = MOVING;
-			}
-			break;
-		case DOWN:
-			{
-				theHeroTargetPosNode = theHeroTargetPosNode->down;
-				vel.Set(0, -movementSpeed, 0);
-				currentState = MOVING;
-			}
-			break;
-		case LEFT:
-			{
-				theHeroTargetPosNode = theHeroTargetPosNode->left;
-				vel.Set(-movementSpeed, 0, 0);
-				currentState = MOVING;
-			}
-			break;
-		case RIGHT:
-			{
-				theHeroTargetPosNode = theHeroTargetPosNode->right;
-				vel.Set(movementSpeed, 0, 0);
-				currentState = MOVING;
-			}
-			break;
+			//play fall animation or die
 		}
-	}
-	if(theHeroTargetPosNode->gameObject != NULL && theHeroTargetPosNode->gameObject->type == GameObject::WALL)
-	{
-		theHeroTargetPosNode = theHeroCurrentPosNode;
-		currentState = NIL;
-	}
-	else
-	{
-		currentState = SLIDING;
-		heroAnimationCounter = 0.0f;
-	}
+		break;
+	case GameObject::DOOR:
+		{
+			SetCurrentState(EXITING);
+		}
+		break;
+	case GameObject::WET_FLOOR:
+		{
+			switch(heroAnimationDirection)
+			{
+			case UP:
+				{
+					theHeroTargetPosNode = theHeroTargetPosNode->up;
+					vel.Set(0, movementSpeed, 0);
+					currentState = MOVING;
+				}
+				break;
+			case DOWN:
+				{
+					theHeroTargetPosNode = theHeroTargetPosNode->down;
+					vel.Set(0, -movementSpeed, 0);
+					currentState = MOVING;
+				}
+				break;
+			case LEFT:
+				{
+					theHeroTargetPosNode = theHeroTargetPosNode->left;
+					vel.Set(-movementSpeed, 0, 0);
+					currentState = MOVING;
+				}
+				break;
+			case RIGHT:
+				{
+					theHeroTargetPosNode = theHeroTargetPosNode->right;
+					vel.Set(movementSpeed, 0, 0);
+					currentState = MOVING;
+				}
+				break;
+			}
 
+			if(theHeroTargetPosNode->gameObject != NULL && theHeroTargetPosNode->gameObject->type > 0 && theHeroTargetPosNode->gameObject->type < GameObject::TOTAL && theHeroTargetPosNode->gameObject->type != GameObject::WET_FLOOR)
+			{
+				theHeroTargetPosNode = theHeroCurrentPosNode;
+				currentState = NIL;
+			}
+			else
+			{
+				currentState = SLIDING;
+				heroAnimationCounter = 0.0f;
+			}
+		}
+		break;
+	case GameObject::TIMING_DOOR:
+		{
+			ActiveGameObject* temp = dynamic_cast<ActiveGameObject*>(theHeroCurrentPosNode->gameObject);
+			if(temp->active)
+				SetCurrentState(EXITING);
+		}
+		break;
+	case GameObject::LOCKED_DOOR:
+		{
+			ActiveGameObject* temp = dynamic_cast<ActiveGameObject*>(theHeroCurrentPosNode->gameObject);
+			if(temp->active)
+				SetCurrentState(EXITING);
+		}
+		break;
+	case GameObject::HEALTH_PACK:
+		{
+			ActiveGameObject* temp = dynamic_cast<ActiveGameObject*>(theHeroCurrentPosNode->gameObject);
+			if(temp->active /*&& health < 3*/)
+			{
+				//add player health
+				temp->active = false;
+			}
+		}
+		break;
+	}
 }
