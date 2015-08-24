@@ -15,6 +15,7 @@ public:
 
 	void Init(Vector3 bottomLeftPos, Vector3 topRightPos);
 	void Update(double dt);
-	bool Input();
+	bool Input(double dt);
+	void Reset();
 };
 
