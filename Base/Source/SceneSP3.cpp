@@ -184,6 +184,7 @@ void SceneSP3::UpdateInputs(double dt)
 {
 	static bool upkey = false;
 	static bool downkey = false;
+
 	// For gameplay
 	{
 		// Check Collision of th hero before moving up
@@ -379,7 +380,9 @@ void SceneSP3::UpdateInputs(double dt)
 
 void SceneSP3::Update(double dt)
 {
+
 	UpdateInputs(dt);
+
 	if(gameState == PLAYING)
 	{
 		if(this->theHero->GetCurrentState() != this->theHero->DYING)
@@ -507,16 +510,16 @@ void SceneSP3::RenderBackground()
 	// Render the crosshair
 	Render2DMesh(currentLevel->background, false);
 }
-
 void SceneSP3::Render()
 {
 	SceneBase::Render();
-
+	static bool soundplayed = false;
 	glDisable(GL_DEPTH_TEST);
 	switch(gameState)
 	{
+	
 	case MAINMENU:
-		{
+		{		
 			Render2DMesh(meshList[GEO_MAINMENU], false);
 
 			RenderHackGame();
@@ -532,6 +535,11 @@ void SceneSP3::Render()
 			{
 				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 15, 10);
 			}
+			if(!soundplayed && gameState == MAINMENU)        // main menu sound
+			{
+				engine->play2D("../media/FFX Otherworld.mp3");
+				soundplayed = true;
+			}
 		}
 		break;
 	case PAUSE:
@@ -544,6 +552,7 @@ void SceneSP3::Render()
 			if(choice == PLAY)
 			{
 				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 15, 15);
+				
 			}
 			else if(choice == QUIT)
 			{
@@ -554,12 +563,12 @@ void SceneSP3::Render()
 	case GAMEOVER:
 		{
 			Render2DMesh(meshList[GEO_GAMEOVER], false);
-
+			
 			RenderTextOnScreen(meshList[GEO_TEXT], "Press enter to return", Color(1, 1, 1), 2.5, 13, 5);
 		}
 		break;
 	default:
-		{
+		{		
 			modelStack.PushMatrix();
 
 			modelStack.Translate( currentLevel->m_cMap->GetNumOfTiles_Width() * currentLevel->m_cMap->GetTileSize() * 0.5 - theHero->GetPos().x * 2 - currentLevel->m_cMap->GetTileSize(),  currentLevel->m_cMap->GetNumOfTiles_Height() * currentLevel->m_cMap->GetTileSize() * 0.5 - theHero->GetPos().y * 2 - currentLevel->m_cMap->GetTileSize(), 0);
