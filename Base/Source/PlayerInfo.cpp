@@ -4,7 +4,7 @@
 
 CPlayerInfo::CPlayerInfo(void)
 	: theHeroPosition(Vector3(0, 0, 0))
-	, movementSpeed(200.0f)
+	, movementSpeed(400.0f)
 	, currentState(NIL)
 	, timeElasped(0.f)
 	, heroAnimationDirection(DOWN)
@@ -19,6 +19,7 @@ CPlayerInfo::CPlayerInfo(void)
 	, justGotDamged(false)
 	, RenderHero(true)
 	, unrenderOrRenderTimeLeft(0.f)
+	, mapOffset(Vector3(0, 0, 0))
 {
 }
 
@@ -117,6 +118,8 @@ void CPlayerInfo::Reset(void)
 	justGotDamged = false;
 	RenderHero = true;
 	unrenderOrRenderTimeLeft = 0.f;
+
+	mapOffset = Vector3(0, 0, 0);
 }
 
 // Set position x of the player
@@ -279,6 +282,18 @@ float CPlayerInfo::GetUnrenderOrRenderTimeLeft(void)
 }
 
 
+// Set mapOffset of the player
+void CPlayerInfo::SetMapOffset(Vector3 mapOffset)
+{
+	this->mapOffset = mapOffset;
+}
+// Get mapOffset of the player
+Vector3 CPlayerInfo::GetMapOffset(void)
+{
+	return mapOffset;
+}
+
+
 /********************************************************************************
 Hero Move Up Down
 ********************************************************************************/
@@ -349,7 +364,7 @@ void CPlayerInfo::MoveLeftRight(const bool mode)
 /********************************************************************************
 Hero Update
 ********************************************************************************/
-void CPlayerInfo::HeroUpdate(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager)
+void CPlayerInfo::HeroUpdate(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager, CMap* map)
 {
 	if(currentState != DYING)
 	{
@@ -358,7 +373,7 @@ void CPlayerInfo::HeroUpdate(float timeDiff, CAIManager* ai_manager, GameObjectF
 		{
 		case CPlayerInfo::KNOCKED_BACKING:
 			{
-				moving(timeDiff);
+				moving(timeDiff, map);
 			}
 			break;
 		case CPlayerInfo::ATTACKING:
@@ -369,7 +384,7 @@ void CPlayerInfo::HeroUpdate(float timeDiff, CAIManager* ai_manager, GameObjectF
 		default:
 			{
 				Vector3 HeroPrevPos = theHeroPosition;
-				moving(timeDiff);
+				moving(timeDiff, map);
 				if(currentState == MOVING)
 					moveAnimation(timeDiff, HeroPrevPos);
 			}
@@ -542,7 +557,7 @@ void CPlayerInfo::knockBackEnabled(Vector3 AI_Pos)
 }
 
 
-void CPlayerInfo::moving(float timeDiff)
+void CPlayerInfo::moving(float timeDiff, CMap* map)
 {
 	theHeroPosition += vel * timeDiff;
 	if((theHeroPosition - theHeroCurrentPosNode->pos).Length() > (theHeroTargetPosNode->pos - theHeroCurrentPosNode->pos).Length())
@@ -550,6 +565,26 @@ void CPlayerInfo::moving(float timeDiff)
 		theHeroPosition = theHeroTargetPosNode->pos;
 		theHeroCurrentPosNode = theHeroTargetPosNode;
 		currentState = NIL;
+		vel.SetZero();
+	}
+	// Mapoffset_x
+	if(theHeroPosition.x < map->GetNumOfTiles_Width() * map->GetTileSize() * 0.5)
+	{
+		mapOffset.x = (map->GetNumOfTiles_Width() * map->GetTileSize() * 0.5) - map->GetTileSize() - theHeroPosition.x;
+	}
+	else if(theHeroPosition.x > (map->getNumOfTiles_MapWidth() * map->GetTileSize()) - (map->GetNumOfTiles_Width() * map->GetTileSize() * 0.5))
+	{
+		mapOffset.x = (map->getNumOfTiles_MapWidth() * map->GetTileSize()) - (map->GetNumOfTiles_Width() * map->GetTileSize() * 0.5) - map->GetTileSize() - theHeroPosition.x;
+	}
+	
+	// Mapoffset_y
+	if(theHeroPosition.y < map->GetNumOfTiles_Height() * map->GetTileSize() * 0.5)
+	{
+		mapOffset.y = (map->GetNumOfTiles_Height() * map->GetTileSize() * 0.5) - map->GetTileSize() - theHeroPosition.y;
+	}
+	else if(theHeroPosition.y > (map->getNumOfTiles_MapHeight() * map->GetTileSize()) - (map->GetNumOfTiles_Height() * map->GetTileSize() * 0.5))
+	{
+		mapOffset.y = (map->getNumOfTiles_MapHeight() * map->GetTileSize()) - (map->GetNumOfTiles_Height() * map->GetTileSize() * 0.5) - map->GetTileSize() - theHeroPosition.y;
 	}
 }
 

@@ -14,7 +14,7 @@ CEnemy::CEnemy(void)
 	, theENEMYCurrentPosNode(NULL)
 	, theENEMYTargetPosNode(NULL)
 	, vel(Vector3(0,0,0))
-	, movementSpeed(100.0f)
+	, movementSpeed(200.0f)
 {
 }
 

@@ -37,113 +37,113 @@ void SceneSP3::InitHero()
 {
 	// Initialise the hero's position
 	theHero = new CPlayerInfo();
-	theHero->sideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME0_SIDE", 32.0f, 32.0f, 21, 13, 0, 11));
+	theHero->sideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME0_SIDE", 64.0f, 64.0f, 21, 13, 0, 11));
 	theHero->sideMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
-	theHero->sideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME1_SIDE", 32.0f, 32.0f, 21, 13, 1, 11));
+	theHero->sideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME1_SIDE", 64.0f, 64.0f, 21, 13, 1, 11));
 	theHero->sideMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
-	theHero->sideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME2_SIDE", 32.0f, 32.0f, 21, 13, 2, 11));
+	theHero->sideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME2_SIDE", 64.0f, 64.0f, 21, 13, 2, 11));
 	theHero->sideMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
-	theHero->sideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME3_SIDE", 32.0f, 32.0f, 21, 13, 3, 11));
+	theHero->sideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME3_SIDE", 64.0f, 64.0f, 21, 13, 3, 11));
 	theHero->sideMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
-	theHero->sideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME4_SIDE", 32.0f, 32.0f, 21, 13, 4, 11));
+	theHero->sideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME4_SIDE", 64.0f, 64.0f, 21, 13, 4, 11));
 	theHero->sideMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
-	theHero->sideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME5_SIDE", 32.0f, 32.0f, 21, 13, 5, 11));
+	theHero->sideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME5_SIDE", 64.0f, 64.0f, 21, 13, 5, 11));
 	theHero->sideMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
-	theHero->sideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME6_SIDE", 32.0f, 32.0f, 21, 13, 6, 11));
+	theHero->sideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME6_SIDE", 64.0f, 64.0f, 21, 13, 6, 11));
 	theHero->sideMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
-	theHero->sideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME7_SIDE", 32.0f, 32.0f, 21, 13, 7, 11));
+	theHero->sideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME7_SIDE", 64.0f, 64.0f, 21, 13, 7, 11));
 	theHero->sideMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
-	theHero->sideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME8_SIDE", 32.0f, 32.0f, 21, 13, 8, 11));
+	theHero->sideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME8_SIDE", 64.0f, 64.0f, 21, 13, 8, 11));
 	theHero->sideMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
 
-	theHero->frontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME0_FRONT", 32.0f, 32.0f, 21, 13, 0, 10));
+	theHero->frontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME0_FRONT", 64.0f, 64.0f, 21, 13, 0, 10));
 	theHero->frontMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
-	theHero->frontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME1_FRONT", 32.0f, 32.0f, 21, 13, 1, 10));
+	theHero->frontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME1_FRONT", 64.0f, 64.0f, 21, 13, 1, 10));
 	theHero->frontMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
-	theHero->frontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME2_FRONT", 32.0f, 32.0f, 21, 13, 2, 10));
+	theHero->frontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME2_FRONT", 64.0f, 64.0f, 21, 13, 2, 10));
 	theHero->frontMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
-	theHero->frontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME3_FRONT", 32.0f, 32.0f, 21, 13, 3, 10));
+	theHero->frontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME3_FRONT", 64.0f, 64.0f, 21, 13, 3, 10));
 	theHero->frontMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
-	theHero->frontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME4_FRONT", 32.0f, 32.0f, 21, 13, 4, 10));
+	theHero->frontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME4_FRONT", 64.0f, 64.0f, 21, 13, 4, 10));
 	theHero->frontMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
-	theHero->frontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME5_FRONT", 32.0f, 32.0f, 21, 13, 5, 10));
+	theHero->frontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME5_FRONT", 64.0f, 64.0f, 21, 13, 5, 10));
 	theHero->frontMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
-	theHero->frontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME6_FRONT", 32.0f, 32.0f, 21, 13, 6, 10));
+	theHero->frontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME6_FRONT", 64.0f, 64.0f, 21, 13, 6, 10));
 	theHero->frontMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
-	theHero->frontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME7_FRONT", 32.0f, 32.0f, 21, 13, 7, 10));
+	theHero->frontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME7_FRONT", 64.0f, 64.0f, 21, 13, 7, 10));
 	theHero->frontMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
-	theHero->frontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME8_FRONT", 32.0f, 32.0f, 21, 13, 8, 10));
+	theHero->frontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME8_FRONT", 64.0f, 64.0f, 21, 13, 8, 10));
 	theHero->frontMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
 
-	theHero->backMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME0_BACK", 32.0f, 32.0f, 21, 13, 0, 8));
+	theHero->backMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME0_BACK", 64.0f, 64.0f, 21, 13, 0, 8));
 	theHero->backMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
-	theHero->backMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME1_BACK", 32.0f, 32.0f, 21, 13, 1, 8));
+	theHero->backMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME1_BACK", 64.0f, 64.0f, 21, 13, 1, 8));
 	theHero->backMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
-	theHero->backMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME2_BACK", 32.0f, 32.0f, 21, 13, 2, 8));
+	theHero->backMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME2_BACK", 64.0f, 64.0f, 21, 13, 2, 8));
 	theHero->backMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
-	theHero->backMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME3_BACK", 32.0f, 32.0f, 21, 13, 3, 8));
+	theHero->backMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME3_BACK", 64.0f, 64.0f, 21, 13, 3, 8));
 	theHero->backMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
-	theHero->backMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME4_BACK", 32.0f, 32.0f, 21, 13, 4, 8));
+	theHero->backMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME4_BACK", 64.0f, 64.0f, 21, 13, 4, 8));
 	theHero->backMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
-	theHero->backMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME5_BACK", 32.0f, 32.0f, 21, 13, 5, 8));
+	theHero->backMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME5_BACK", 64.0f, 64.0f, 21, 13, 5, 8));
 	theHero->backMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
-	theHero->backMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME6_BACK", 32.0f, 32.0f, 21, 13, 6, 8));
+	theHero->backMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME6_BACK", 64.0f, 64.0f, 21, 13, 6, 8));
 	theHero->backMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
-	theHero->backMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME7_BACK", 32.0f, 32.0f, 21, 13, 7, 8));
+	theHero->backMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME7_BACK", 64.0f, 64.0f, 21, 13, 7, 8));
 	theHero->backMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
-	theHero->backMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME8_BACK", 32.0f, 32.0f, 21, 13, 8, 8));
+	theHero->backMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME8_BACK", 64.0f, 64.0f, 21, 13, 8, 8));
 	theHero->backMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
 
-	theHero->deathMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME0_DEATH", 32.0f, 32.0f, 21, 13, 0, 20));
+	theHero->deathMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME0_DEATH", 64.0f, 64.0f, 21, 13, 0, 20));
 	theHero->deathMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
-	theHero->deathMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME1_DEATH", 32.0f, 32.0f, 21, 13, 1, 20));
+	theHero->deathMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME1_DEATH", 64.0f, 64.0f, 21, 13, 1, 20));
 	theHero->deathMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
-	theHero->deathMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME2_DEATH", 32.0f, 32.0f, 21, 13, 2, 20));
+	theHero->deathMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME2_DEATH", 64.0f, 64.0f, 21, 13, 2, 20));
 	theHero->deathMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
-	theHero->deathMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME3_DEATH", 32.0f, 32.0f, 21, 13, 3, 20));
+	theHero->deathMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME3_DEATH", 64.0f, 64.0f, 21, 13, 3, 20));
 	theHero->deathMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
-	theHero->deathMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME4_DEATH", 32.0f, 32.0f, 21, 13, 4, 20));
+	theHero->deathMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME4_DEATH", 64.0f, 64.0f, 21, 13, 4, 20));
 	theHero->deathMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
-	theHero->deathMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME5_DEATH", 32.0f, 32.0f, 21, 13, 5, 20));
+	theHero->deathMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME5_DEATH", 64.0f, 64.0f, 21, 13, 5, 20));
 	theHero->deathMeshes.back()->textureID = LoadTGA("Image//hero_office.tga");
 
-	theHero->attackFrontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME0_ATTACK_FRONT", 32.0f, 32.0f, 4, 6, 0, 2));
+	theHero->attackFrontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME0_ATTACK_FRONT", 64.0f, 64.0f, 4, 6, 0, 2));
 	theHero->attackFrontMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
-	theHero->attackFrontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME1_ATTACK_FRONT", 32.0f, 32.0f, 4, 6, 1, 2));
+	theHero->attackFrontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME1_ATTACK_FRONT", 64.0f, 64.0f, 4, 6, 1, 2));
 	theHero->attackFrontMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
-	theHero->attackFrontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME2_ATTACK_FRONT", 32.0f, 32.0f, 4, 6, 2, 2));
+	theHero->attackFrontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME2_ATTACK_FRONT", 64.0f, 64.0f, 4, 6, 2, 2));
 	theHero->attackFrontMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
-	theHero->attackFrontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME3_ATTACK_FRONT", 32.0f, 32.0f, 4, 6, 3, 2));
+	theHero->attackFrontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME3_ATTACK_FRONT", 64.0f, 64.0f, 4, 6, 3, 2));
 	theHero->attackFrontMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
-	theHero->attackFrontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME4_ATTACK_FRONT", 32.0f, 32.0f, 4, 6, 4, 2));
+	theHero->attackFrontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME4_ATTACK_FRONT", 64.0f, 64.0f, 4, 6, 4, 2));
 	theHero->attackFrontMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
-	theHero->attackFrontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME5_ATTACK_FRONT", 32.0f, 32.0f, 4, 6, 5, 2));
+	theHero->attackFrontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME5_ATTACK_FRONT", 64.0f, 64.0f, 4, 6, 5, 2));
 	theHero->attackFrontMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
 
-	theHero->attackBackMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME0_ATTACK_BACK", 32.0f, 32.0f, 4, 6, 0, 0));
+	theHero->attackBackMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME0_ATTACK_BACK", 64.0f, 64.0f, 4, 6, 0, 0));
 	theHero->attackBackMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
-	theHero->attackBackMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME1_ATTACK_BACK", 32.0f, 32.0f, 4, 6, 1, 0));
+	theHero->attackBackMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME1_ATTACK_BACK", 64.0f, 64.0f, 4, 6, 1, 0));
 	theHero->attackBackMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
-	theHero->attackBackMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME2_ATTACK_BACK", 32.0f, 32.0f, 4, 6, 2, 0));
+	theHero->attackBackMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME2_ATTACK_BACK", 64.0f, 64.0f, 4, 6, 2, 0));
 	theHero->attackBackMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
-	theHero->attackBackMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME3_ATTACK_BACK", 32.0f, 32.0f, 4, 6, 3, 0));
+	theHero->attackBackMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME3_ATTACK_BACK", 64.0f, 64.0f, 4, 6, 3, 0));
 	theHero->attackBackMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
-	theHero->attackBackMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME4_ATTACK_BACK", 32.0f, 32.0f, 4, 6, 4, 0));
+	theHero->attackBackMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME4_ATTACK_BACK", 64.0f, 64.0f, 4, 6, 4, 0));
 	theHero->attackBackMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
-	theHero->attackBackMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME5_ATTACK_BACK", 32.0f, 32.0f, 4, 6, 5, 0));
+	theHero->attackBackMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME5_ATTACK_BACK", 64.0f, 64.0f, 4, 6, 5, 0));
 	theHero->attackBackMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
 
-	theHero->attackSideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME0_ATTACK_SIDE", 32.0f, 32.0f, 4, 6, 0, 3));
+	theHero->attackSideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME0_ATTACK_SIDE", 64.0f, 64.0f, 4, 6, 0, 3));
 	theHero->attackSideMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
-	theHero->attackSideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME1_ATTACK_SIDE", 32.0f, 32.0f, 4, 6, 1, 3));
+	theHero->attackSideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME1_ATTACK_SIDE", 64.0f, 64.0f, 4, 6, 1, 3));
 	theHero->attackSideMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
-	theHero->attackSideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME2_ATTACK_SIDE", 32.0f, 32.0f, 4, 6, 2, 3));
+	theHero->attackSideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME2_ATTACK_SIDE", 64.0f, 64.0f, 4, 6, 2, 3));
 	theHero->attackSideMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
-	theHero->attackSideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME3_ATTACK_SIDE", 32.0f, 32.0f, 4, 6, 3, 3));
+	theHero->attackSideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME3_ATTACK_SIDE", 64.0f, 64.0f, 4, 6, 3, 3));
 	theHero->attackSideMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
-	theHero->attackSideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME4_ATTACK_SIDE", 32.0f, 32.0f, 4, 6, 4, 3));
+	theHero->attackSideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME4_ATTACK_SIDE", 64.0f, 64.0f, 4, 6, 4, 3));
 	theHero->attackSideMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
-	theHero->attackSideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME5_ATTACK_SIDE", 32.0f, 32.0f, 4, 6, 5, 3));
+	theHero->attackSideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME5_ATTACK_SIDE", 64.0f, 64.0f, 4, 6, 5, 3));
 	theHero->attackSideMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
 }
 
@@ -152,9 +152,9 @@ void SceneSP3::InitLevels()
 	// Initialise and load the tile map
 	levelList.push_back(new Level);
 	levelList[0]->m_cMap = new CMap();
-	levelList[0]->m_cMap->Init( 80 + 32, 1024, 25 + 1, 32, 1600 + 32, 1024);
+	levelList[0]->m_cMap->Init( 768 + 64, 1024, 12 + 1, 16, 3200 + 64, 2048, 64);
 	levelList[0]->m_cMap->LoadMap( "Image//MapDesignLv1.csv" );
-	levelList[0]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL1", Color(1, 1, 1), 0.0f, 0.0f, 1024.0f, 1600);
+	levelList[0]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL1", Color(1, 1, 1), 0.0f, 0.0f, 2048, 3200);
 	levelList[0]->background->textureID = LoadTGA("Image//background_level1.tga");
 	levelList[0]->sideView = false;
 
@@ -425,7 +425,7 @@ void SceneSP3::Update(double dt)
 			}
 		}
 
-		theHero->HeroUpdate(dt, currentLevel->AI_Manager, currentLevel->gameObjectsManager);
+		theHero->HeroUpdate(dt, currentLevel->AI_Manager, currentLevel->gameObjectsManager, currentLevel->m_cMap);
 
 		//Enemies
 		for(vector<CEnemy *>::iterator it = currentLevel->AI_Manager->enemiesList.begin(); it != currentLevel->AI_Manager->enemiesList.end(); ++it)
@@ -520,8 +520,8 @@ void SceneSP3::Render()
 		{
 			modelStack.PushMatrix();
 
-			modelStack.Translate( currentLevel->m_cMap->GetNumOfTiles_Width() * currentLevel->m_cMap->GetTileSize() * 0.5 - theHero->GetPos().x * 2 - currentLevel->m_cMap->GetTileSize(),  currentLevel->m_cMap->GetNumOfTiles_Height() * currentLevel->m_cMap->GetTileSize() * 0.5 - theHero->GetPos().y * 2 - currentLevel->m_cMap->GetTileSize(), 0);
-			modelStack.Scale(2,2,2);
+			modelStack.Translate( currentLevel->m_cMap->GetNumOfTiles_Width() * currentLevel->m_cMap->GetTileSize() * 0.5 - theHero->GetPos().x - currentLevel->m_cMap->GetTileSize() - theHero->GetMapOffset().x,
+				currentLevel->m_cMap->GetNumOfTiles_Height() * currentLevel->m_cMap->GetTileSize() * 0.5 - theHero->GetPos().y - currentLevel->m_cMap->GetTileSize() - theHero->GetMapOffset().y, 0);
 
 			// Render the background image
 			RenderBackground();
@@ -772,30 +772,30 @@ void SceneSP3::HeroColision(GameObject* goCollidedWith, bool updown, bool upORle
 
 void SceneSP3::InitGoMeshes()
 {
-	wallMesh.push_back(MeshBuilder::Generate2DMesh("GEO_TILEGROUND", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f));
+	wallMesh.push_back(MeshBuilder::Generate2DMesh("GEO_TILEGROUND", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
 	wallMesh.back()->textureID = LoadTGA("Image//tile1_ground.tga");
 
-	holeMesh.push_back(MeshBuilder::Generate2DMesh("hole", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f));
+	holeMesh.push_back(MeshBuilder::Generate2DMesh("hole", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
 	holeMesh.back()->textureID = LoadTGA("Image//hole.tga");
 
-	doorMesh.push_back(MeshBuilder::Generate2DMesh("door open", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f));
+	doorMesh.push_back(MeshBuilder::Generate2DMesh("door open", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
 	doorMesh.back()->textureID = LoadTGA("Image//door open.tga");
 
-	wetFloorMesh.push_back(MeshBuilder::Generate2DMesh("water 0", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f));
+	wetFloorMesh.push_back(MeshBuilder::Generate2DMesh("water 0", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
 	wetFloorMesh.back()->textureID = LoadTGA("Image//water 0.tga");
-	wetFloorMesh.push_back(MeshBuilder::Generate2DMesh("water 1", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f));
+	wetFloorMesh.push_back(MeshBuilder::Generate2DMesh("water 1", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
 	wetFloorMesh.back()->textureID = LoadTGA("Image//water 1.tga");
-	wetFloorMesh.push_back(MeshBuilder::Generate2DMesh("water 2", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f));
+	wetFloorMesh.push_back(MeshBuilder::Generate2DMesh("water 2", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
 	wetFloorMesh.back()->textureID = LoadTGA("Image//water 2.tga");
 
-	timmingDoorMesh.push_back(MeshBuilder::Generate2DMesh("door open", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f));
+	timmingDoorMesh.push_back(MeshBuilder::Generate2DMesh("door open", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
 	timmingDoorMesh.back()->textureID = LoadTGA("Image//door open.tga");
-	timmingDoorMesh.push_back(MeshBuilder::Generate2DMesh("door closed", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f));
+	timmingDoorMesh.push_back(MeshBuilder::Generate2DMesh("door closed", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
 	timmingDoorMesh.back()->textureID = LoadTGA("Image//door closed.tga");
 	
-	lockedDoorMesh.push_back(MeshBuilder::Generate2DMesh("door open", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f));
+	lockedDoorMesh.push_back(MeshBuilder::Generate2DMesh("door open", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
 	lockedDoorMesh.back()->textureID = LoadTGA("Image//door open.tga");
-	lockedDoorMesh.push_back(MeshBuilder::Generate2DMesh("door locked", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f));
+	lockedDoorMesh.push_back(MeshBuilder::Generate2DMesh("door locked", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
 	lockedDoorMesh.back()->textureID = LoadTGA("Image//door locked.tga");
 }
 

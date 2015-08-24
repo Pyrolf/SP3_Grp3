@@ -95,16 +95,21 @@ public:
 	// Get unrender or render time left of the player
 	float GetUnrenderOrRenderTimeLeft(void);
 
+	// Set mapOffset of the player
+	void SetMapOffset(Vector3 mapOffset);
+	// Get mapOffset of the player
+	Vector3 GetMapOffset(void);
+
 	// Update Movements
 	void MoveUpDown(const bool mode);
 	void MoveLeftRight(const bool mode);
 
 	// Hero Update
-	void HeroUpdate(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager);
+	void HeroUpdate(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager, CMap* map);
 
 	void knockBackEnabled(Vector3 AI_Pos);
 
-	void moving(float timeDiff);
+	void moving(float timeDiff, CMap* map);
 	void moveAnimation(float timeDiff, Vector3 prevPos);
 	
 	void attackingEnabled();
@@ -145,4 +150,6 @@ private:
 	bool justGotDamged;
 	bool RenderHero;
 	float unrenderOrRenderTimeLeft;
+
+	Vector3 mapOffset;
 };
