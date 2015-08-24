@@ -557,7 +557,6 @@ void CPlayerInfo::Attacking(float timeDiff, CAIManager* ai_manager, GameObjectFa
 	}
 }
 
-
 bool CPlayerInfo::CheckCollisionTarget(void)
 {
 	switch(theHeroTargetPosNode->posType)
@@ -570,6 +569,22 @@ bool CPlayerInfo::CheckCollisionTarget(void)
 		return false;
 	case CPosNode::WET_FLOOR:
 		return false;
+	case CPosNode::TIMING_DOOR:
+		{
+			ActiveGameObject* temp = dynamic_cast<ActiveGameObject*>(theHeroTargetPosNode->gameObject);
+			if(temp->active)
+				return false;
+			else
+				return true;
+		}
+	case CPosNode::LOCKED_DOOR:
+		{
+			ActiveGameObject* temp = dynamic_cast<ActiveGameObject*>(theHeroTargetPosNode->gameObject);
+			if(temp->active)
+				return false;
+			else
+				return true;
+		}
 	case CPosNode::ENEMY_INITIAL_POS:
 		return false;
 	case CPosNode::HERO_INIT_POS:

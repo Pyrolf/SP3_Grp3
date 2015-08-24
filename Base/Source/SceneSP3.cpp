@@ -411,7 +411,6 @@ void SceneSP3::UpdateInputs(double dt)
 
 void SceneSP3::Update(double dt)
 {
-
 	UpdateInputs(dt);
 
 	if(gameState == PLAYING)
@@ -514,6 +513,7 @@ void SceneSP3::Update(double dt)
 							if(currentLevel->gameObjectsManager->UpdatableGoList[i]->type == GameObject::LOCKED_DOOR)
 							{
 								currentLevel->gameObjectsManager->UpdatableGoList[i]->active = true;
+								break;
 							}
 						}
 					}
