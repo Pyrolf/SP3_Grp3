@@ -156,6 +156,40 @@ void SceneBase::Init()
 	meshList[GEO_ICECAVE_BACKGROUND] = MeshBuilder::Generate2DMesh("GEO_ICECAVE_BACKGROUND", Color(1, 1, 1), 0.0f, 0.0f, 1024.0f, 800.0f);
 	meshList[GEO_ICECAVE_BACKGROUND]->textureID = LoadTGA("Image//icecave_background.tga");
 	
+	// SP3
+	// Enemy
+	// Front
+	meshList[GEO_ENEMY_FRONT_0] = MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_ENEMY_FRAME0_FRONT", 32.0f, 32.0f, 4, 4, 0, 1);
+	meshList[GEO_ENEMY_FRONT_0]->textureID = LoadTGA("Image//tile_zombie.tga");
+	meshList[GEO_ENEMY_FRONT_1] = MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_ENEMY_FRAME1_FRONT", 32.0f, 32.0f, 4, 4, 1, 1);
+	meshList[GEO_ENEMY_FRONT_1]->textureID = LoadTGA("Image//tile_zombie.tga");
+	meshList[GEO_ENEMY_FRONT_2] = MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_ENEMY_FRAME2_FRONT", 32.0f, 32.0f, 4, 4, 2, 1);
+	meshList[GEO_ENEMY_FRONT_2]->textureID = LoadTGA("Image//tile_zombie.tga");
+	meshList[GEO_ENEMY_FRONT_3] = MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_ENEMY_FRAME3_FRONT", 32.0f, 32.0f, 4, 4, 3, 1);
+	meshList[GEO_ENEMY_FRONT_3]->textureID = LoadTGA("Image//tile_zombie.tga");
+
+	meshList[GEO_ENEMY_BACK_0] = MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_ENEMY_FRAME0_BACK", 32.0f, 32.0f, 4, 4, 0, 0);
+	meshList[GEO_ENEMY_BACK_0]->textureID = LoadTGA("Image//tile_zombie.tga");
+	meshList[GEO_ENEMY_BACK_1] = MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_ENEMY_FRAME1_BACK", 32.0f, 32.0f, 4, 4, 1, 0);
+	meshList[GEO_ENEMY_BACK_1]->textureID = LoadTGA("Image//tile_zombie.tga");
+	meshList[GEO_ENEMY_BACK_2] = MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_ENEMY_FRAME2_BACK", 32.0f, 32.0f, 4, 4, 2, 0);
+	meshList[GEO_ENEMY_BACK_2]->textureID = LoadTGA("Image//tile_zombie.tga");
+	meshList[GEO_ENEMY_BACK_3] = MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_ENEMY_FRAME3_BACK", 32.0f, 32.0f, 4, 4, 3, 0);
+	meshList[GEO_ENEMY_BACK_3]->textureID = LoadTGA("Image//tile_zombie.tga");
+
+	meshList[GEO_ENEMY_SIDE_0] = MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_ENEMY_FRAME0_SIDE", 32.0f, 32.0f, 4, 4, 0, 3);
+	meshList[GEO_ENEMY_SIDE_0]->textureID = LoadTGA("Image//tile_zombie.tga");
+	meshList[GEO_ENEMY_SIDE_1] = MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_ENEMY_FRAME1_SIDE", 32.0f, 32.0f, 4, 4, 1, 3);
+	meshList[GEO_ENEMY_SIDE_1]->textureID = LoadTGA("Image//tile_zombie.tga");
+	meshList[GEO_ENEMY_SIDE_2] = MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_ENEMY_FRAME2_SIDE", 32.0f, 32.0f, 4, 4, 2, 3);
+	meshList[GEO_ENEMY_SIDE_2]->textureID = LoadTGA("Image//tile_zombie.tga");
+	meshList[GEO_ENEMY_SIDE_3] = MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_ENEMY_FRAME3_SIDE", 32.0f, 32.0f, 4, 4, 3, 3);
+	meshList[GEO_ENEMY_SIDE_3]->textureID = LoadTGA("Image//tile_zombie.tga");
+
+	meshList[GEO_ENEMY_ALERT_SIGN] = MeshBuilder::Generate2DMesh("GEO_ALERT", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f);
+	meshList[GEO_ENEMY_ALERT_SIGN]->textureID = LoadTGA("Image//alert_sign.tga");
+
+
 	meshList[GEO_TILEGROUND] = MeshBuilder::Generate2DMesh("GEO_TILEGROUND", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f);
 	meshList[GEO_TILEGROUND]->textureID = LoadTGA("Image//tile1_ground.tga");
 	meshList[GEO_MAGMA] = MeshBuilder::Generate2DMesh("GEO_MAGMA", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f);

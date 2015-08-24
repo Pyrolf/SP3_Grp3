@@ -535,34 +535,19 @@ void CPlayerInfo::attackingEnabled()
 void CPlayerInfo::Attacking(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager)
 {
 	float PrevHeroAnimationCounter = heroAnimationCounter;
-	heroAnimationCounter += heroAnimationSpeed * timeDiff;
-	if(PrevHeroAnimationCounter <= (attackFrontMeshes.size() - 1) * 0.5 && heroAnimationCounter >= (attackFrontMeshes.size() - 1) * 0.5)
+	heroAnimationCounter += heroAnimationSpeed * 2 * timeDiff;
+	if(PrevHeroAnimationCounter <= (attackFrontMeshes.size() - 1) * 0.5 
+		&& heroAnimationCounter >= (attackFrontMeshes.size() - 1) * 0.5)
 	{
-		/*Vector3 min(theHeroTargetPosNode->pos.x * 0.2, theHeroTargetPosNode->pos.y * 0.2, 0);
-		Vector3 max(theHeroTargetPosNode->pos.x + go_manager->tileSize * 0.2, theHeroTargetPosNode->pos.y + go_manager->tileSize * 0.2, 0);
-
 		for(int i = 0; i < ai_manager->enemiesList.size(); ++i)
 		{
-			if((min.x > ai_manager->enemiesList[i]->GetPos_x() && min.x < ai_manager->enemiesList[i]->GetPos_x() + go_manager->tileSize) && (min.y > ai_manager->enemiesList[i]->GetPos_y() && min.y < ai_manager->enemiesList[i]->GetPos_y() + go_manager->tileSize) || 
-				(min.x > ai_manager->enemiesList[i]->GetPos_x() && min.x < ai_manager->enemiesList[i]->GetPos_x() + go_manager->tileSize) && (max.y > ai_manager->enemiesList[i]->GetPos_y() && max.y < ai_manager->enemiesList[i]->GetPos_y() + go_manager->tileSize) ||
-				(max.x > ai_manager->enemiesList[i]->GetPos_x() && max.x < ai_manager->enemiesList[i]->GetPos_x() + go_manager->tileSize) && (min.y > ai_manager->enemiesList[i]->GetPos_y() && min.y < ai_manager->enemiesList[i]->GetPos_y() + go_manager->tileSize) ||
-				(max.x > ai_manager->enemiesList[i]->GetPos_x() && max.x < ai_manager->enemiesList[i]->GetPos_x() + go_manager->tileSize) && (max.y > ai_manager->enemiesList[i]->GetPos_y() && max.y < ai_manager->enemiesList[i]->GetPos_y() + go_manager->tileSize))
+			if((ai_manager->enemiesList[i]->GetTargetPosNode() == theHeroCurrentPosNode
+				&& ai_manager->enemiesList[i]->GetCurrentPosNode() == theHeroTargetPosNode)
+				|| ai_manager->enemiesList[i]->GetCurrentPosNode() == theHeroTargetPosNode)
 			{
-				Vector3 enemyPrev = Vector3(ai_manager->enemiesList[i]->GetPos_x(), ai_manager->enemiesList[i]->GetPos_y());
-				if(ai_manager->enemiesList[i]->GetPos_x() != theHeroTargetPosNode->pos.x)
-					ai_manager->enemiesList[i]->SetPos_x(ai_manager->enemiesList[i]->GetPos_x() + Vector3(ai_manager->enemiesList[i]->GetPos_x() - theHeroPosition.x).Normalized().x * go_manager->tileSize);
-				if(ai_manager->enemiesList[i]->GetPos_y() != theHeroTargetPosNode->pos.y)
-					ai_manager->enemiesList[i]->SetPos_y(ai_manager->enemiesList[i]->GetPos_y() + Vector3(0, ai_manager->enemiesList[i]->GetPos_y() - theHeroPosition.y).Normalized().y * go_manager->tileSize);
-				GameObject* go = go_manager->CheckColision(Vector3(ai_manager->enemiesList[i]->GetPos_x(), ai_manager->enemiesList[i]->GetPos_y()));
-				if(go)
-				{
-					enemyPrev.x = ((int)(enemyPrev.x / go_manager->tileSize) * go_manager->tileSize);
-					enemyPrev.y = ((int)(enemyPrev.y / go_manager->tileSize) * go_manager->tileSize);
-					ai_manager->enemiesList[i]->SetPos_x(enemyPrev.x);
-					ai_manager->enemiesList[i]->SetPos_y(enemyPrev.y);
-				}
+				ai_manager->enemiesList[i]->SetPos(theHeroTargetPosNode->pos);
 			}
-		}*/
+		}
 	}
 	else if(heroAnimationCounter > attackFrontMeshes.size() - 1)
 	{

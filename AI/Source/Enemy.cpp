@@ -166,8 +166,9 @@ int CEnemy::GetMaxRangeToDetect(void)
 void CEnemy::CheckMode(CPosNode* heroPosNode, int tileSize)
 {
 	float DistFromHeroToEnemy = (theENEMYPosition - heroPosNode->pos).Length();
+	float DistFromHeroToEnemyInit = (heroPosNode->pos - theENEMYInitialPosNode->pos).Length();
 	// If within range of detection
-	if(DistFromHeroToEnemy <= maxRangeToDetect)
+	if(DistFromHeroToEnemy <= maxRangeToDetect && DistFromHeroToEnemyInit <= maxRangeToDetect * 2)
 	{
 		// If within range of attack
 		if(DistFromHeroToEnemy <= tileSize * 0.25)
@@ -187,9 +188,35 @@ void CEnemy::CheckMode(CPosNode* heroPosNode, int tileSize)
 			{
 				currentMode = CHASE;
 				enemyPath = PathFinding(heroPosNode, tileSize);
-				theENEMYTargetPosNode = enemyPath.back();
-				enemyPath.pop_back();
-				CalculateVel();
+				if(enemyPath.size() != 0)
+				{
+					if(theENEMYTargetPosNode == theENEMYCurrentPosNode)
+					{
+						enemyPath.pop_back();
+						theENEMYTargetPosNode = enemyPath.back();
+						enemyPath.pop_back();
+						CalculateVel();
+					}
+				}
+				else
+				{
+					currentMode = RETURN;
+					enemyPath = PathFinding(theENEMYInitialPosNode, tileSize);
+					if(enemyPath.size() != 0)
+					{
+						if(theENEMYTargetPosNode == theENEMYCurrentPosNode)
+						{
+							enemyPath.pop_back();
+							theENEMYTargetPosNode = enemyPath.back();
+							enemyPath.pop_back();
+							CalculateVel();
+						}
+					}
+					else
+					{
+						ChoosePatrolOrIdleMode();
+					}
+				}
 			}
 		}
 	}
@@ -202,9 +229,13 @@ void CEnemy::CheckMode(CPosNode* heroPosNode, int tileSize)
 			enemyPath = PathFinding(theENEMYInitialPosNode, tileSize);
 			if(enemyPath.size() != 0)
 			{
-				theENEMYTargetPosNode = enemyPath.back();
-				enemyPath.pop_back();
-				CalculateVel();
+				if(theENEMYTargetPosNode == theENEMYCurrentPosNode)
+				{
+					enemyPath.pop_back();
+					theENEMYTargetPosNode = enemyPath.back();
+					enemyPath.pop_back();
+					CalculateVel();
+				}
 			}
 			else
 			{
@@ -292,9 +323,28 @@ void CEnemy::Update(int tileSize, float timeDiff, CPosNode* heroPosNode)
 				{
 					enemyPath = PathFinding(heroPosNode, tileSize);
 				}
-				theENEMYTargetPosNode = enemyPath.back();
-				enemyPath.pop_back();
-				CalculateVel();
+				if(enemyPath.size() != 0)
+				{
+					theENEMYTargetPosNode = enemyPath.back();
+					enemyPath.pop_back();
+					CalculateVel();
+					currentMode = CHASE;
+				}
+				else
+				{
+					currentMode = RETURN;
+					enemyPath = PathFinding(theENEMYInitialPosNode, tileSize);
+					if(enemyPath.size() != 0)
+					{
+						theENEMYTargetPosNode = enemyPath.back();
+						enemyPath.pop_back();
+						CalculateVel();
+					}
+					else
+					{
+						ChoosePatrolOrIdleMode();
+					}
+				}
 			}
 		}
 		break;
@@ -303,11 +353,32 @@ void CEnemy::Update(int tileSize, float timeDiff, CPosNode* heroPosNode)
 			time -=timeDiff;
 			if(time <= 0.f)
 			{
-				currentMode = CHASE;
-				enemyPath = PathFinding(heroPosNode, tileSize);
-				theENEMYTargetPosNode = enemyPath.back();
-				enemyPath.pop_back();
-				CalculateVel();
+				if(enemyPath.size() == 0 || enemyPath[0] != heroPosNode)
+				{
+					enemyPath = PathFinding(heroPosNode, tileSize);
+				}
+				if(enemyPath.size() != 0)
+				{
+					theENEMYTargetPosNode = enemyPath.back();
+					enemyPath.pop_back();
+					CalculateVel();
+					currentMode = CHASE;
+				}
+				else
+				{
+					currentMode = RETURN;
+					enemyPath = PathFinding(theENEMYInitialPosNode, tileSize);
+					if(enemyPath.size() != 0)
+					{
+						theENEMYTargetPosNode = enemyPath.back();
+						enemyPath.pop_back();
+						CalculateVel();
+					}
+					else
+					{
+						ChoosePatrolOrIdleMode();
+					}
+				}
 			}
 		}
 		break;
@@ -321,6 +392,7 @@ void CEnemy::Update(int tileSize, float timeDiff, CPosNode* heroPosNode)
 					theENEMYTargetPosNode = enemyPath.back();
 					enemyPath.pop_back();
 					CalculateVel();
+					currentMode = RETURN;
 				}
 				else
 				{
@@ -408,7 +480,7 @@ vector<CPosNode*> CEnemy::PathFinding(CPosNode* TargetPosNode, int tileSize)
 {
 	vector<CPosNode*> openList;
 	vector<CPosNode*> closedList;
-	CPosNode* A = TargetPosNode;
+	CPosNode* A = theENEMYCurrentPosNode;
 	bool start = true;
 
 	openList.push_back(A);
@@ -427,7 +499,7 @@ vector<CPosNode*> CEnemy::PathFinding(CPosNode* TargetPosNode, int tileSize)
 			{
 				if(openList[i]->parent == A)
 				{
-					smallest_F = Calculate_F(openList[i], theENEMYCurrentPosNode, tileSize, closedList);
+					smallest_F = Calculate_F(openList[i], TargetPosNode, tileSize, closedList);
 					smallest_F_Node = openList[i];
 					break;
 				}
@@ -436,7 +508,7 @@ vector<CPosNode*> CEnemy::PathFinding(CPosNode* TargetPosNode, int tileSize)
 			{
 				if(openList[i]->parent == A)
 				{
-					int F = Calculate_F(openList[i], theENEMYCurrentPosNode, tileSize, closedList);
+					int F = Calculate_F(openList[i], TargetPosNode, tileSize, closedList);
 					if(smallest_F > F)
 					{
 						smallest_F = F;
@@ -445,8 +517,12 @@ vector<CPosNode*> CEnemy::PathFinding(CPosNode* TargetPosNode, int tileSize)
 
 				}
 			}
-
-			A = smallest_F_Node;
+			if(smallest_F_Node)
+			{
+				A = smallest_F_Node;
+			}
+			else
+				break;
 		}
 
 		storeAdjacentNodeInList(A, &openList, &closedList);
@@ -462,247 +538,28 @@ vector<CPosNode*> CEnemy::PathFinding(CPosNode* TargetPosNode, int tileSize)
 				openList.pop_back();
 			}
 		}
-		if(theENEMYCurrentPosNode == A
+		if(TargetPosNode == A
 			|| openList.size() == 0)
 		{
 			break;
 		}
 	}
-
-	closedList.pop_back();
-
-	return closedList;
+	if(TargetPosNode == A)
+	{
+		vector<CPosNode*> revert;
+		while(closedList.size() != 0)
+		{
+			revert.push_back(closedList.back());
+			closedList.pop_back();
+		}
+		return revert;
+	}
+	else
+	{
+		vector<CPosNode*> empty;
+		return empty;
+	}
 }
-//	CPosNode* current;
-//	vector<CPosNode*> path;
-//	vector<vector<CPosNode*>> allPath;
-//	current = TargetPosNode;
-//	allPath.push_back(path);
-//	allPath[0].push_back(current);
-//
-//	// Store path
-//	for(int i = 0; i < allPath.size(); i++)
-//	{
-//		current = allPath[i].back();
-//		while(true)
-//		{
-//			// Check enemy pos
-//			if(current->pos.y < theENEMYCurrentPosNode->pos.y)
-//			{
-//				// Check up
-//				if(current->up->posType == CPosNode::NONE
-//					|| current->up->posType >= CPosNode::ENEMY_INITIAL_POS)
-//				{
-//					current = current->up;
-//					allPath[i].push_back(current);
-//				}
-//				// Check if  enemy pos is left
-//				else if(current->pos.x < theENEMYCurrentPosNode->pos.x)
-//				{
-//					// Check left
-//					if(current->left->posType == CPosNode::NONE
-//						|| current->left->posType >= CPosNode::ENEMY_INITIAL_POS)
-//					{
-//						current = current->left;
-//						allPath[i].push_back(current);
-//					}
-//				}
-//				// or on right
-//				else if(current->pos.x > theENEMYCurrentPosNode->pos.x)
-//				{
-//				}
-//				else
-//				{
-//					// Check left
-//					if(current->left->posType == CPosNode::NONE
-//						|| current->left->posType >= CPosNode::ENEMY_INITIAL_POS)
-//					{
-//						// Check right
-//						if(current->right->posType == CPosNode::NONE
-//							|| current->right->posType >= CPosNode::ENEMY_INITIAL_POS)
-//						{
-//							current = current->right;
-//
-//							int i;
-//							for(i = 0; i < allPath.size(); ++i)
-//							{
-//								if(ifNodeInPath(current, allPath[i]))
-//								{
-//									break;
-//								}
-//							}
-//							if(i == allPath.size())
-//								allPath.push_back(allPath[i]);
-//
-//							current = current->left;
-//						}
-//						current = current->left;
-//						allPath[i].push_back(current);
-//					}
-//					// Check right
-//					else if(current->right->posType == CPosNode::NONE
-//						|| current->right->posType >= CPosNode::ENEMY_INITIAL_POS)
-//					{
-//						current = current->right;
-//						allPath[i].push_back(current);
-//					}
-//				}
-//			}
-//			//
-//
-//
-//
-//
-//			else if(current->pos.y > theENEMYCurrentPosNode->pos.y)
-//			{
-//				// Check down
-//				if(current->down->posType == CPosNode::NONE
-//					|| current->down->posType >= CPosNode::ENEMY_INITIAL_POS)
-//				{
-//					current = current->down;
-//					allPath[i].push_back(current);
-//				}
-//				// Check left
-//				else if(current->left->posType == CPosNode::NONE
-//					|| current->left->posType >= CPosNode::ENEMY_INITIAL_POS)
-//				{
-//					// Check right
-//					if(current->right->posType == CPosNode::NONE
-//						|| current->right->posType >= CPosNode::ENEMY_INITIAL_POS)
-//					{
-//						current = current->right;
-//
-//						int i;
-//						for(i = 0; i < allPath.size(); ++i)
-//						{
-//							if(ifNodeInPath(current, allPath[i]))
-//							{
-//								break;
-//							}
-//						}
-//						if(i == allPath.size())
-//							allPath.push_back(allPath[i]);
-//
-//						current = current->left;
-//					}
-//					current = current->left;
-//					allPath[i].push_back(current);
-//				}
-//				// Check right
-//				else if(current->right->posType == CPosNode::NONE
-//					|| current->right->posType >= CPosNode::ENEMY_INITIAL_POS)
-//				{
-//					current = current->right;
-//					allPath[i].push_back(current);
-//				}
-//			}
-//			else if(current->pos.x > theENEMYCurrentPosNode->pos.x)
-//			{
-//				// Check left
-//				if(current->left->posType == CPosNode::NONE
-//					|| current->left->posType >= CPosNode::ENEMY_INITIAL_POS)
-//				{
-//					current = current->left;
-//					allPath[i].push_back(current);
-//				}
-//				// Check up
-//				else if(current->up->posType == CPosNode::NONE
-//					|| current->up->posType >= CPosNode::ENEMY_INITIAL_POS)
-//				{
-//					// Check right
-//					if(current->down->posType == CPosNode::NONE
-//						|| current->down->posType >= CPosNode::ENEMY_INITIAL_POS)
-//					{
-//						current = current->down;
-//
-//						int i;
-//						for(i = 0; i < allPath.size(); ++i)
-//						{
-//							if(ifNodeInPath(current, allPath[i]))
-//							{
-//								break;
-//							}
-//						}
-//						if(i == allPath.size())
-//							allPath.push_back(allPath[i]);
-//
-//						current = current->up;
-//					}
-//					current = current->up;
-//					allPath[i].push_back(current);
-//				}
-//				// Check right
-//				else if(current->down->posType == CPosNode::NONE
-//					|| current->down->posType >= CPosNode::ENEMY_INITIAL_POS)
-//				{
-//					current = current->down;
-//					allPath[i].push_back(current);
-//				}
-//			}
-//			else if(current->pos.x < theENEMYCurrentPosNode->pos.x)
-//			{
-//				// Check right
-//				if(current->right->posType == CPosNode::NONE
-//					|| current->right->posType >= CPosNode::ENEMY_INITIAL_POS)
-//				{
-//					current = current->right;
-//					allPath[i].push_back(current);
-//				}
-//				// Check up
-//				else if(current->up->posType == CPosNode::NONE
-//					|| current->up->posType >= CPosNode::ENEMY_INITIAL_POS)
-//				{
-//					// Check right
-//					if(current->down->posType == CPosNode::NONE
-//						|| current->down->posType >= CPosNode::ENEMY_INITIAL_POS)
-//					{
-//						current = current->down;
-//
-//						int i;
-//						for(i = 0; i < allPath.size(); ++i)
-//						{
-//							if(ifNodeInPath(current, allPath[i]))
-//							{
-//								break;
-//							}
-//						}
-//						if(i == allPath.size())
-//							allPath.push_back(allPath[i]);
-//
-//						current = current->up;
-//					}
-//					current = current->up;
-//					allPath[i].push_back(current);
-//				}
-//				// Check right
-//				else if(current->down->posType == CPosNode::NONE
-//					|| current->down->posType >= CPosNode::ENEMY_INITIAL_POS)
-//				{
-//					current = current->down;
-//					allPath[i].push_back(current);
-//				}
-//			}
-//			if(current == theENEMYCurrentPosNode)
-//			{
-//				allPath[i].pop_back();
-//				break;
-//			}
-//		}
-//	}
-//
-//	// Get shortest rout
-//	vector<CPosNode*> shortest = allPath[0];
-//	for(int i = 1; i < allPath.size(); i++)
-//	{
-//		if(shortest.size() > allPath[i].size())
-//		{
-//			shortest = allPath[i];
-//		}
-//	}
-//
-//	return shortest;
-
-
 
 bool CEnemy::ifNodeInList(CPosNode* posNode, vector<CPosNode*> list)
 {
@@ -718,47 +575,59 @@ bool CEnemy::ifNodeInList(CPosNode* posNode, vector<CPosNode*> list)
 void CEnemy::storeAdjacentNodeInList(CPosNode* posNode, vector<CPosNode*>* openList, vector<CPosNode*>* closedList)
 {
 	// Top
-	if(!ifNodeInList(posNode->up, *openList) 
-		&& (closedList->size() == 0 || !ifNodeInList(posNode->up, *closedList)))
+	//if((theENEMYCurrentPosNode->pos - posNode->up->pos).Length() < maxRangeToDetect)
 	{
-		if(posNode->up->posType == CPosNode::NONE
-			|| posNode->up->posType >= CPosNode::ENEMY_INITIAL_POS)
+		if(!ifNodeInList(posNode->up, *openList)
+			&& (closedList->size() == 0 || !ifNodeInList(posNode->up, *closedList)))
 		{
-			openList->push_back(posNode->up);
-			openList->back()->parent = posNode;
+			if(posNode->up->posType == CPosNode::NONE
+				|| posNode->up->posType >= CPosNode::ENEMY_INITIAL_POS)
+			{
+				openList->push_back(posNode->up);
+				openList->back()->parent = posNode;
+			}
 		}
 	}
-	// Bottom
-	if(!ifNodeInList(posNode->down, *openList)
-		&& (closedList->size() == 0 || !ifNodeInList(posNode->down, *closedList)))
+	//if((theENEMYCurrentPosNode->pos - posNode->down->pos).Length() < maxRangeToDetect)
 	{
-		if(posNode->down->posType == CPosNode::NONE
-			|| posNode->down->posType >= CPosNode::ENEMY_INITIAL_POS)
+		// Bottom
+		if(!ifNodeInList(posNode->down, *openList)
+			&& (closedList->size() == 0 || !ifNodeInList(posNode->down, *closedList)))
 		{
-			openList->push_back(posNode->down);
-			openList->back()->parent = posNode;
-		}
-	}	
-	// Left
-	if(!ifNodeInList(posNode->left, *openList)
-		&& (closedList->size() == 0 || !ifNodeInList(posNode->left, *closedList)))
-	{
-		if(posNode->left->posType == CPosNode::NONE
-			|| posNode->left->posType >= CPosNode::ENEMY_INITIAL_POS)
-		{
-			openList->push_back(posNode->left);
-			openList->back()->parent = posNode;
+			if(posNode->down->posType == CPosNode::NONE
+				|| posNode->down->posType >= CPosNode::ENEMY_INITIAL_POS)
+			{
+				openList->push_back(posNode->down);
+				openList->back()->parent = posNode;
+			}
 		}
 	}
-	// Right
-	if(!ifNodeInList(posNode->right, *openList)
-		&& (closedList->size() == 0 || !ifNodeInList(posNode->right, *closedList)))
-	{
-		if(posNode->right->posType == CPosNode::NONE
-			|| posNode->right->posType >= CPosNode::ENEMY_INITIAL_POS)
+	//if((theENEMYCurrentPosNode->pos - posNode->left->pos).Length() < maxRangeToDetect)
+	{	
+		// Left
+		if(!ifNodeInList(posNode->left, *openList)
+			&& (closedList->size() == 0 || !ifNodeInList(posNode->left, *closedList)))
 		{
-			openList->push_back(posNode->right);
-			openList->back()->parent = posNode;
+			if(posNode->left->posType == CPosNode::NONE
+				|| posNode->left->posType >= CPosNode::ENEMY_INITIAL_POS)
+			{
+				openList->push_back(posNode->left);
+				openList->back()->parent = posNode;
+			}
+		}
+	}
+	//if((theENEMYCurrentPosNode->pos - posNode->right->pos).Length() < maxRangeToDetect)
+	{
+		// Right
+		if(!ifNodeInList(posNode->right, *openList)
+			&& (closedList->size() == 0 || !ifNodeInList(posNode->right, *closedList)))
+		{
+			if(posNode->right->posType == CPosNode::NONE
+				|| posNode->right->posType >= CPosNode::ENEMY_INITIAL_POS)
+			{
+				openList->push_back(posNode->right);
+				openList->back()->parent = posNode;
+			}
 		}
 	}
 }

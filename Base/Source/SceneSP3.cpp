@@ -162,35 +162,6 @@ void SceneSP3::InitLevels()
 
 	levelList[0]->AI_Manager = new CAIManager;
 	levelList[0]->AI_Manager->generateEnemies(levelList[0]->m_cMap);
-	levelList[0]->AI_Manager->sideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_ENEMY_FRAME0_SIDE", 32.0f, 32.0f, 4, 4, 0, 3));
-	levelList[0]->AI_Manager->sideMeshes.back()->textureID = LoadTGA("Image//tile_zombie.tga");
-	levelList[0]->AI_Manager->sideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_ENEMY_FRAME1_SIDE", 32.0f, 32.0f, 4, 4, 1, 3));
-	levelList[0]->AI_Manager->sideMeshes.back()->textureID = LoadTGA("Image//tile_zombie.tga");
-	levelList[0]->AI_Manager->sideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_ENEMY_FRAME2_SIDE", 32.0f, 32.0f, 4, 4, 2, 3));
-	levelList[0]->AI_Manager->sideMeshes.back()->textureID = LoadTGA("Image//tile_zombie.tga");
-	levelList[0]->AI_Manager->sideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_ENEMY_FRAME3_SIDE", 32.0f, 32.0f, 4, 4, 3, 3));
-	levelList[0]->AI_Manager->sideMeshes.back()->textureID = LoadTGA("Image//tile_zombie.tga");
-
-	levelList[0]->AI_Manager->frontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_ENEMY_FRAME0_FRONT", 32.0f, 32.0f, 4, 4, 0, 1));
-	levelList[0]->AI_Manager->frontMeshes.back()->textureID = LoadTGA("Image//tile_zombie.tga");
-	levelList[0]->AI_Manager->frontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_ENEMY_FRAME1_FRONT", 32.0f, 32.0f, 4, 4, 1, 1));
-	levelList[0]->AI_Manager->frontMeshes.back()->textureID = LoadTGA("Image//tile_zombie.tga");
-	levelList[0]->AI_Manager->frontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_ENEMY_FRAME2_FRONT", 32.0f, 32.0f, 4, 4, 2, 1));
-	levelList[0]->AI_Manager->frontMeshes.back()->textureID = LoadTGA("Image//tile_zombie.tga");
-	levelList[0]->AI_Manager->frontMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_ENEMY_FRAME3_FRONT", 32.0f, 32.0f, 4, 4, 3, 1));
-	levelList[0]->AI_Manager->frontMeshes.back()->textureID = LoadTGA("Image//tile_zombie.tga");
-
-	levelList[0]->AI_Manager->backMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_ENEMY_FRAME0_BACK", 32.0f, 32.0f, 4, 4, 0, 0));
-	levelList[0]->AI_Manager->backMeshes.back()->textureID = LoadTGA("Image//tile_zombie.tga");
-	levelList[0]->AI_Manager->backMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_ENEMY_FRAME1_BACK", 32.0f, 32.0f, 4, 4, 1, 0));
-	levelList[0]->AI_Manager->backMeshes.back()->textureID = LoadTGA("Image//tile_zombie.tga");
-	levelList[0]->AI_Manager->backMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_ENEMY_FRAME2_BACK", 32.0f, 32.0f, 4, 4, 2, 0));
-	levelList[0]->AI_Manager->backMeshes.back()->textureID = LoadTGA("Image//tile_zombie.tga");
-	levelList[0]->AI_Manager->backMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_ENEMY_FRAME3_BACK", 32.0f, 32.0f, 4, 4, 3, 0));
-	levelList[0]->AI_Manager->backMeshes.back()->textureID = LoadTGA("Image//tile_zombie.tga");
-
-	levelList[0]->AI_Manager->alertSign = MeshBuilder::Generate2DMesh("GEO_ALERT", Color(1, 1, 1), 0.0f, 0.0f, 32.0f, 32.0f);
-	levelList[0]->AI_Manager->alertSign->textureID = LoadTGA("Image//alert_sign.tga");
 
 	levelList[0]->LevelMap_Nodes = new CLevelMap_Nodes;
 	levelList[0]->LevelMap_Nodes->GenerateNodes(levelList[0]->m_cMap, levelList[0]->AI_Manager, levelList[0]->gameObjectsManager);
@@ -729,29 +700,29 @@ void SceneSP3::RenderEnemies()
 
 		if(enemy->GetAnimationDirection() == enemy->DOWN)
 		{
-			Render2DMesh(currentLevel->AI_Manager->frontMeshes[(int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos().x, enemy->GetPos().y);
+			Render2DMesh(meshList[GEO_ENEMY_FRONT_0 + (int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos().x, enemy->GetPos().y);
 		}
 		else if(enemy->GetAnimationDirection() == enemy->UP)
 		{
-			Render2DMesh(currentLevel->AI_Manager->backMeshes[(int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos().x, enemy->GetPos().y);
+			Render2DMesh(meshList[GEO_ENEMY_BACK_0 + (int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos().x, enemy->GetPos().y);
 		}
 		else
 		{
 			// enemy move right
 			if(enemy->GetAnimationInvert() == false)
 			{
-				Render2DMesh(currentLevel->AI_Manager->sideMeshes[(int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos().x, enemy->GetPos().y);
+				Render2DMesh(meshList[GEO_ENEMY_SIDE_0 + (int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos().x, enemy->GetPos().y);
 			}
 			// enemy move left
 			else
 			{
 
-				Render2DMesh(currentLevel->AI_Manager->sideMeshes[(int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos().x, enemy->GetPos().y, true);
+				Render2DMesh(meshList[GEO_ENEMY_SIDE_0 + (int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos().x, enemy->GetPos().y, true);
 			}
 		}
 		if(enemy->GetCurrentMode() == enemy->CHASE || enemy->GetCurrentMode() == enemy->ATTACK)
 		{
-			Render2DMesh(currentLevel->AI_Manager->alertSign, false, 1.0f, enemy->GetPos().x, enemy->GetPos().y + currentLevel->gameObjectsManager->tileSize);
+			Render2DMesh(meshList[GEO_ENEMY_ALERT_SIGN], false, 1.0f, enemy->GetPos().x, enemy->GetPos().y + currentLevel->gameObjectsManager->tileSize);
 		}
 	}
 }

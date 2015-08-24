@@ -18,9 +18,4 @@ public:
 	CEnemy* CheckColisionBetweenEnemies(CEnemy* enemy, int tileSize);
 
 	void Reset(void);
-
-	std::vector<Mesh*> frontMeshes;
-	std::vector<Mesh*> backMeshes;
-	std::vector<Mesh*> sideMeshes;
-	Mesh* alertSign;
 };

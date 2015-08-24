@@ -14,36 +14,6 @@ CAIManager::~CAIManager()
 			enemiesList[i] = NULL;
 		}
 	}
-	
-	for(int i = 0; i < frontMeshes.size(); ++i)
-	{
-		if(frontMeshes[i])
-		{
-			delete frontMeshes[i];
-			frontMeshes[i] = NULL;
-		}
-	}
-	for(int i = 0; i < backMeshes.size(); ++i)
-	{
-		if(backMeshes[i])
-		{
-			delete backMeshes[i];
-			backMeshes[i] = NULL;
-		}
-	}
-	for(int i = 0; i < sideMeshes.size(); ++i)
-	{
-		if(sideMeshes[i])
-		{
-			delete sideMeshes[i];
-			sideMeshes[i] = NULL;
-		}
-	}
-	if(alertSign)
-	{
-		delete alertSign;
-		alertSign = NULL;
-	}
 }
 
 void CAIManager::generateEnemies(CMap *map)
