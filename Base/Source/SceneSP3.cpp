@@ -628,7 +628,19 @@ void SceneSP3::RenderHero()
 		break;
 	case this->theHero->DYING:
 		{
-			Render2DMesh(theHero->deathMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos().x, theHero->GetPos().y, false);
+			if(this->theHero->GetCurrentPosNode()->posType == this->theHero->GetCurrentPosNode()->HOLE)
+			{
+				modelStack.PushMatrix();
+				modelStack.Translate(theHero->GetPos().x,theHero->GetPos().y,0);
+				modelStack.Translate(32,17,0);	
+				modelStack.Scale(theHero->GetDropScale(), theHero->GetDropScale(), 1);
+				modelStack.Translate(-32,-32,0);
+				if(theHero->GetDropScale() > 0.3)
+					Render2DMesh(theHero->deathMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, 0, 0, false);
+				modelStack.PopMatrix();
+			}
+			else
+				Render2DMesh(theHero->deathMeshes[(int)theHero->GetAnimationCounter()], false, 1.0f, theHero->GetPos().x, theHero->GetPos().y, false);
 		}
 		break;
 	case this->theHero->ATTACKING:
@@ -726,6 +738,13 @@ void SceneSP3::RenderGameObjects()
 		case  GameObject::HACK_SYS:
 			{
 				Render2DMesh(hackMesh[go->currentFrame], false, 1.0f, go->pos.x, go->pos.y);
+				break;
+			}
+		case GameObject::HEALTH_PACK:
+			{
+				ActiveGameObject* temp = dynamic_cast<ActiveGameObject*>(go);
+				if(temp->active == true)
+					Render2DMesh(healthMesh[go->currentFrame], false, 1.0f, go->pos.x, go->pos.y);
 				break;
 			}
 		}
@@ -868,6 +887,9 @@ void SceneSP3::InitGoMeshes()
 
 	hackMesh.push_back(MeshBuilder::Generate2DMesh("hack", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
 	hackMesh.back()->textureID = LoadTGA("Image//hack station.tga");
+
+	healthMesh.push_back(MeshBuilder::Generate2DMesh("health", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
+	healthMesh.back()->textureID = LoadTGA("Image//health pack.tga");
 }
 
 void SceneSP3::DeleteGoMeshes()

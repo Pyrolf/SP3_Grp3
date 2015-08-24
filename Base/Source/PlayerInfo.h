@@ -81,7 +81,8 @@ public:
 	void SetAnimationCounter(float heroAnimationCounter);
 	// Get Animation Counter of the player
 	float GetAnimationCounter(void);
-	
+	float GetDropScale();
+
 	// Set just got damged of the player
 	void SetJustGotDamged(bool justGotDamged);
 	// Get just got damged of the player
@@ -145,6 +146,7 @@ private:
 	ANIMATION_DIRECTION heroAnimationDirection;
 	bool heroAnimationInvert;
 	float heroAnimationCounter;
+	float holeDropScale;
 	int heroAnimationSpeed;
 	
 	bool justGotDamged;

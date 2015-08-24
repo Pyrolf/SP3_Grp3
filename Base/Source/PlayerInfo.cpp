@@ -9,6 +9,7 @@ CPlayerInfo::CPlayerInfo(void)
 	, timeElasped(0.f)
 	, heroAnimationDirection(DOWN)
 	, heroAnimationCounter(0.0f)
+	, holeDropScale(0.6f)
 	, heroAnimationInvert(false)
 	, heroAnimationSpeed(20)
 	, health(3)
@@ -109,6 +110,7 @@ void CPlayerInfo::Reset(void)
 
 	heroAnimationDirection = DOWN;
 	heroAnimationCounter = 0.0f;
+	holeDropScale = 0.6;
 	heroAnimationInvert = false;
 	heroAnimationSpeed = 20;
 
@@ -215,6 +217,10 @@ float CPlayerInfo::GetAnimationCounter(void)
 	return heroAnimationCounter;
 }
 
+float CPlayerInfo::GetDropScale()
+{
+	return holeDropScale;
+}
 
 void CPlayerInfo::SetCurrentState(CPlayerInfo::CURRENT_STATE currentState)
 {
@@ -435,6 +441,12 @@ void CPlayerInfo::HeroUpdate(float timeDiff, CAIManager* ai_manager, GameObjectF
 		// Death animation
 		if(timeElasped < 2.f)
 		{
+			if(theHeroCurrentPosNode->posType == CPosNode::HOLE)
+			{
+				holeDropScale -= timeDiff;
+				if(holeDropScale < 0.1)
+					holeDropScale = 0.1;
+			}
 			timeElasped += timeDiff;
 			heroAnimationCounter += 20 * timeDiff;
 			if(heroAnimationCounter > 5.0f)
@@ -707,6 +719,10 @@ bool CPlayerInfo::CheckCollisionTarget(void)
 			else
 				return true;
 		}
+	case CPosNode::HEALTH_PACK:
+		{
+			return false;
+		}
 	case CPosNode::ENEMY_INITIAL_POS:
 		return false;
 	case CPosNode::HERO_INIT_POS:
@@ -737,7 +753,9 @@ void CPlayerInfo::CollisionResponseCurrent(void)
 	{
 	case GameObject::HOLE:
 		{
-			//play fall animation or die
+			heroAnimationCounter = 5;
+			health = 0;
+			currentState = DYING;
 		}
 		break;
 	case GameObject::DOOR:
@@ -808,9 +826,9 @@ void CPlayerInfo::CollisionResponseCurrent(void)
 	case GameObject::HEALTH_PACK:
 		{
 			ActiveGameObject* temp = dynamic_cast<ActiveGameObject*>(theHeroCurrentPosNode->gameObject);
-			if(temp->active /*&& health < 3*/)
+			if(temp->active && health < 3)
 			{
-				//add player health
+				++health;
 				temp->active = false;
 			}
 		}
