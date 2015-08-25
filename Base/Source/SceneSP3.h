@@ -7,6 +7,7 @@
 #include "PlayerInfo.h"
 #include "HackingGame.h"
 #include "Timing.h"
+#include "Blackout.h"
 
 #include <irrKlang.h>
 #pragma comment(lib, "irrKlang.lib")
@@ -74,6 +75,7 @@ private:
 	void RenderHackGame();
 
 	CTiming clock;
+	Blackout blackout;
 };
 
 #endif

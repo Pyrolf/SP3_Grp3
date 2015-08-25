@@ -83,6 +83,9 @@
     <ClInclude Include="Source\HackingBar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Blackout.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Asteroid2D.cpp">
@@ -143,6 +146,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\HackingBar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Blackout.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

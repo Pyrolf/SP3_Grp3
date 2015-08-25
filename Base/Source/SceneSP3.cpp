@@ -518,6 +518,7 @@ void SceneSP3::Update(double dt)
 			}
 		}
 		UpdateActiveGO(dt);
+		blackout.Update(dt);
 	}
 }
 
@@ -589,19 +590,22 @@ void SceneSP3::Render()
 				currentLevel->m_cMap->GetNumOfTiles_Height() * currentLevel->m_cMap->GetTileSize() * 0.5 - theHero->GetPos().y - currentLevel->m_cMap->GetTileSize() - theHero->GetMapOffset().y, 0);
 
 			// Render the background image
-			RenderBackground();
-
-			// Render the Game Objects
-			RenderGameObjects();
-			// Render the zombie
-			RenderEnemies();
-			// Render the hero
-			if(this->theHero->GetRenderHero())
+			if(!blackout.blackout)
 			{
-				RenderHero();
-			}
+				RenderBackground();
 
+				// Render the Game Objects
+				RenderGameObjects();
+				// Render the zombie
+				RenderEnemies();
+				// Render the hero
+				if(this->theHero->GetRenderHero())
+				{
+					RenderHero();
+				}
+			}
 			modelStack.PopMatrix();
+
 
 			if(hackingGame.active)
 			{
@@ -1010,7 +1014,7 @@ void SceneSP3::RenderHackGame()
 		if(i == hackingGame.currentBar)
 		{
 			modelStack.PushMatrix();
-			modelStack.Translate(-2,-1.5, 0);
+			modelStack.Translate(-2,-1.7, 0);
 			modelStack.Scale(34, 94, 1);
 			Render2DMesh(meshList[GEO_HACK_YELLOW_BAR], false, 1.0f, 0, 0);
 			modelStack.PopMatrix();
@@ -1024,7 +1028,7 @@ void SceneSP3::RenderHackGame()
 		if(i == hackingGame.currentBar)
 		{
 			modelStack.PushMatrix();
-			modelStack.Translate(-2,-1.5, 0);
+			modelStack.Translate(-2,-1.7, 0);
 			modelStack.Scale(34, 94, 1);
 			Render2DMesh(meshList[GEO_HACK_YELLOW_BAR], false, 1.0f, 0, 0);
 			modelStack.PopMatrix();
