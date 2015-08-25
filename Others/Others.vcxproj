@@ -13,10 +13,12 @@
   <ItemGroup>
     <ClCompile Include="Source\Highscore.cpp" />
     <ClCompile Include="Source\Sound.cpp" />
+    <ClCompile Include="Source\Timing.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Highscore.h" />
     <ClInclude Include="Source\Sound.h" />
+    <ClInclude Include="Source\Timing.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B8C14414-F834-4EC0-806C-49FA0DDE35E1}</ProjectGuid>
