@@ -130,6 +130,17 @@ float CEnemy::GetAnimationCounter(void)
 	return enemyAnimationCounter;
 }
 
+// Set Animation Direction status of the enemy
+void CEnemy::SetAnimationDirection(ANIMATION_DIRECTION dir)
+{
+	this->enemyAnimationDirection = dir;
+}
+
+CEnemy::ANIMATION_DIRECTION CEnemy::GetAnimationDirection(void)
+{
+	return enemyAnimationDirection;
+}
+
 
 void CEnemy::SetCurrentMode(CEnemy::CURRENT_MODE currentMode)
 {
@@ -161,6 +172,17 @@ int CEnemy::GetMaxRangeToDetect(void)
 	return maxRangeToDetect;
 }
 
+// Set time of the enemy
+void CEnemy::SetTime(float time)
+{
+	this->time = time;
+}
+
+// Get time of the enemy
+float CEnemy::GetTime(void)
+{
+	return time;
+}
 
 // Check current mode
 void CEnemy::CheckMode(CPosNode* heroPosNode, int tileSize)
@@ -170,61 +192,28 @@ void CEnemy::CheckMode(CPosNode* heroPosNode, int tileSize)
 	// If within range of detection
 	if(DistFromHeroToEnemy <= maxRangeToDetect && DistFromHeroToEnemyInit <= maxRangeToDetect * 2)
 	{
-		// If within range of attack
-		if(DistFromHeroToEnemy <= tileSize * 0.4)
+		// If not chase or attack
+		if(currentMode != CHASE && currentMode != ATTACK)
 		{
-			// If not attack
-			if(currentMode != ATTACK)
-			{
-				currentMode = ATTACK;
-				hitHero = true;
-				time = 0.5f;
-				theENEMYPosition = theENEMYCurrentPosNode->pos;
-			}
+			// Mode = CHASE
+			currentMode = CHASE;
+			ChaseCheck(heroPosNode, tileSize);
 		}
-		else
+		// If chase
+		else if(currentMode == CHASE)
 		{
-			// If not chase
-			if(currentMode != CHASE && currentMode != ATTACK)
+			// if path is empty or player moved
+			if(enemyPath.size() == 0 || enemyPath[0] != heroPosNode)
 			{
-				currentMode = CHASE;
+				// Find a path
 				enemyPath = PathFinding(heroPosNode, tileSize);
-				if(enemyPath.size() != 0)
-				{
-					if(theENEMYTargetPosNode == theENEMYCurrentPosNode)
-					{
-						enemyPath.pop_back();
-						theENEMYTargetPosNode = enemyPath.back();
-						enemyPath.pop_back();
-						CalculateVel();
-					}
-				}
-				else
-				{
-					if(theENEMYCurrentPosNode != theENEMYInitialPosNode)
-					{
-						currentMode = RETURN;
-						enemyPath = PathFinding(theENEMYInitialPosNode, tileSize);
-						if(enemyPath.size() != 0)
-						{
-							if(theENEMYTargetPosNode == theENEMYCurrentPosNode)
-							{
-								enemyPath.pop_back();
-								theENEMYTargetPosNode = enemyPath.back();
-								enemyPath.pop_back();
-								CalculateVel();
-							}
-						}
-						else
-						{
-							ChoosePatrolOrIdleMode();
-						}
-					}
-					else
-					{
-						ChoosePatrolOrIdleMode();
-					}
-				}
+				ChaseCheck(heroPosNode, tileSize);
+			}
+			else
+			{
+				theENEMYTargetPosNode = enemyPath.back();
+				enemyPath.pop_back();
+				CalculateVel();
 			}
 		}
 	}
@@ -233,23 +222,82 @@ void CEnemy::CheckMode(CPosNode* heroPosNode, int tileSize)
 		// If not return/ patrol/ idle
 		if(currentMode != RETURN && currentMode != PATROL && currentMode != IDLE)
 		{
-			currentMode = RETURN;
-			enemyPath = PathFinding(theENEMYInitialPosNode, tileSize);
-			if(enemyPath.size() != 0)
+			ReturnCheck(tileSize);
+		}
+		// If return
+		else if(currentMode == RETURN)
+		{
+			// if theENEMYCurrentPosNode not equal to theENEMYInitialPosNode
+			if(theENEMYCurrentPosNode != theENEMYInitialPosNode)
 			{
-				if(theENEMYTargetPosNode == theENEMYCurrentPosNode)
-				{
-					enemyPath.pop_back();
-					theENEMYTargetPosNode = enemyPath.back();
-					enemyPath.pop_back();
-					CalculateVel();
-				}
+				theENEMYTargetPosNode = enemyPath.back();
+				enemyPath.pop_back();
+				CalculateVel();
+				currentMode = RETURN;
 			}
+			// if theENEMYCurrentPosNode equal to theENEMYInitialPosNode
 			else
 			{
 				ChoosePatrolOrIdleMode();
 			}
 		}
+	}
+}
+
+void CEnemy::ChaseCheck(CPosNode* heroPosNode, int tileSize)
+{
+	// Find a path
+	enemyPath = PathFinding(heroPosNode, tileSize);
+	// if path not empty
+	if(enemyPath.size() != 0)
+	{
+		// if theENEMYTargetPosNode is equal to next path node
+		if(theENEMYTargetPosNode == enemyPath.back())
+		{
+			enemyPath.pop_back();
+		}
+		theENEMYTargetPosNode = enemyPath.back();
+		enemyPath.pop_back();
+		CalculateVel();
+	}
+	// if path is empty
+	else
+	{
+		ReturnCheck(tileSize);
+	}
+}
+
+void CEnemy::ReturnCheck(int tileSize)
+{
+	// if theENEMYCurrentPosNode is not theENEMYInitialPosNode
+	if(theENEMYCurrentPosNode != theENEMYInitialPosNode)
+	{
+		// Mode = RETURN
+		currentMode = RETURN;
+		// Find a path
+		enemyPath = PathFinding(theENEMYInitialPosNode, tileSize);
+		// if path not empty
+		if(enemyPath.size() != 0)
+		{
+			// if theENEMYTargetPosNode is equal to next path node
+			if(theENEMYTargetPosNode == enemyPath.back())
+			{
+				enemyPath.pop_back();
+			}
+			theENEMYTargetPosNode = enemyPath.back();
+			enemyPath.pop_back();
+			CalculateVel();
+		}
+		else
+		{
+			// if path is empty
+			ChoosePatrolOrIdleMode();
+		}
+	}
+	// if theENEMYCurrentPosNode is theENEMYInitialPosNode
+	else
+	{
+		ChoosePatrolOrIdleMode();
 	}
 }
 
@@ -325,44 +373,53 @@ void CEnemy::Update(int tileSize, float timeDiff, CPosNode* heroPosNode)
 	case CHASE:
 		{
 			moving(timeDiff);
-			if(currentMode == NIL)
+			float DistFromHeroToEnemy = (theENEMYPosition - heroPosNode->pos).Length();
+			// If within range of attack
+			if(DistFromHeroToEnemy <= tileSize * 0.5)
 			{
-				if(enemyPath.size() == 0 || enemyPath[0] != heroPosNode)
+				// If not attack
+				if(currentMode != ATTACK)
 				{
-					enemyPath = PathFinding(heroPosNode, tileSize);
+					currentMode = ATTACK;
+					hitHero = true;
+					time = 0.5f;
+					enemyPath.push_back(theENEMYTargetPosNode);
+					// If target at up side
+					if(theENEMYCurrentPosNode->up == theENEMYTargetPosNode)
+					{
+						theENEMYTargetPosNode = theENEMYTargetPosNode->down;
+						theENEMYCurrentPosNode = theENEMYCurrentPosNode->down;
+						theENEMYPosition = theENEMYCurrentPosNode->pos;
+					}
+					// If target at down side
+					else if(theENEMYCurrentPosNode->down == theENEMYTargetPosNode)
+					{
+						theENEMYTargetPosNode = theENEMYTargetPosNode->up;
+						theENEMYCurrentPosNode = theENEMYCurrentPosNode->up;
+						theENEMYPosition = theENEMYCurrentPosNode->pos;
+					}
+					// If target at left side
+					else if(theENEMYCurrentPosNode->left == theENEMYTargetPosNode)
+					{
+						theENEMYTargetPosNode = theENEMYTargetPosNode->right;
+						theENEMYCurrentPosNode = theENEMYCurrentPosNode->right;
+						theENEMYPosition = theENEMYCurrentPosNode->pos;
+					}
+					// If target at right side
+					else if(theENEMYCurrentPosNode->right == theENEMYTargetPosNode)
+					{
+						theENEMYTargetPosNode = theENEMYTargetPosNode->left;
+						theENEMYCurrentPosNode = theENEMYCurrentPosNode->left;
+						theENEMYPosition = theENEMYCurrentPosNode->pos;
+					}
 				}
-				if(enemyPath.size() != 0)
+			}
+			else
+			{
+				if(currentMode == NIL)
 				{
-					theENEMYTargetPosNode = enemyPath.back();
-					enemyPath.pop_back();
-					CalculateVel();
 					currentMode = CHASE;
-				}
-				else
-				{
-					if(theENEMYCurrentPosNode != theENEMYInitialPosNode)
-					{
-						currentMode = RETURN;
-						enemyPath = PathFinding(theENEMYInitialPosNode, tileSize);
-						if(enemyPath.size() != 0)
-						{
-							if(theENEMYTargetPosNode == theENEMYCurrentPosNode)
-							{
-								enemyPath.pop_back();
-								theENEMYTargetPosNode = enemyPath.back();
-								enemyPath.pop_back();
-								CalculateVel();
-							}
-						}
-						else
-						{
-							ChoosePatrolOrIdleMode();
-						}
-					}
-					else
-					{
-						ChoosePatrolOrIdleMode();
-					}
+					CheckMode(heroPosNode, tileSize);
 				}
 			}
 		}
@@ -372,32 +429,8 @@ void CEnemy::Update(int tileSize, float timeDiff, CPosNode* heroPosNode)
 			time -=timeDiff;
 			if(time <= 0.f)
 			{
-				if(enemyPath.size() == 0 || enemyPath[0] != heroPosNode)
-				{
-					enemyPath = PathFinding(heroPosNode, tileSize);
-				}
-				if(enemyPath.size() != 0)
-				{
-					theENEMYTargetPosNode = enemyPath.back();
-					enemyPath.pop_back();
-					CalculateVel();
-					currentMode = CHASE;
-				}
-				else
-				{
-					currentMode = RETURN;
-					enemyPath = PathFinding(theENEMYInitialPosNode, tileSize);
-					if(enemyPath.size() != 0)
-					{
-						theENEMYTargetPosNode = enemyPath.back();
-						enemyPath.pop_back();
-						CalculateVel();
-					}
-					else
-					{
-						ChoosePatrolOrIdleMode();
-					}
-				}
+				currentMode = CHASE;
+				CheckMode(heroPosNode, tileSize);
 			}
 		}
 		break;
@@ -406,17 +439,8 @@ void CEnemy::Update(int tileSize, float timeDiff, CPosNode* heroPosNode)
 			moving(timeDiff);
 			if(currentMode == NIL)
 			{
-				if(theENEMYTargetPosNode != theENEMYInitialPosNode)
-				{
-					theENEMYTargetPosNode = enemyPath.back();
-					enemyPath.pop_back();
-					CalculateVel();
-					currentMode = RETURN;
-				}
-				else
-				{
-					ChoosePatrolOrIdleMode();
-				}
+				currentMode = RETURN;
+				CheckMode(heroPosNode, tileSize);
 			}
 		}
 		break;
@@ -425,13 +449,19 @@ void CEnemy::Update(int tileSize, float timeDiff, CPosNode* heroPosNode)
 			moving(timeDiff);
 			if(currentMode == NIL)
 			{
-				ChoosePatrolOrIdleMode();
+				currentMode = PATROL;
+				CheckMode(heroPosNode, tileSize);
+				if(currentMode == PATROL)
+				{
+					ChoosePatrolOrIdleMode();
+				}
 			}
 		}
 		break;
 	case IDLE:
 		{
 			time -=timeDiff;
+			CheckMode(heroPosNode, tileSize);
 			if(time <= 0.f)
 			{
 				ChoosePatrolOrIdleMode();
@@ -439,7 +469,8 @@ void CEnemy::Update(int tileSize, float timeDiff, CPosNode* heroPosNode)
 		}
 		break;
 	}
-	UpdateAnimation(theENEMYPosition, theENEMYPrevPosition, timeDiff);
+	if(currentMode != ATTACK)
+		UpdateAnimation(theENEMYPosition, theENEMYPrevPosition, timeDiff);
 }
 
 void CEnemy::moving(float timeDiff)
@@ -489,16 +520,12 @@ void CEnemy::UpdateAnimation(Vector3 CurrentPos, Vector3 PrevPos, float timeDiff
 	}
 }
 
-CEnemy::ANIMATION_DIRECTION CEnemy::GetAnimationDirection(void)
-{
-	return enemyAnimationDirection;
-}
-
 
 vector<CPosNode*> CEnemy::PathFinding(CPosNode* TargetPosNode, int tileSize)
 {
 	vector<CPosNode*> openList;
 	vector<CPosNode*> closedList;
+	vector<CPosNode*> deletedList;
 	CPosNode* A = theENEMYCurrentPosNode;
 	bool start = true;
 
@@ -512,39 +539,47 @@ vector<CPosNode*> CEnemy::PathFinding(CPosNode* TargetPosNode, int tileSize)
 		}
 		else
 		{
-			int smallest_F;
-			CPosNode* smallest_F_Node = NULL;
-			for(int i = 0; i < openList.size(); ++i)
+			while(true)
 			{
-				if(openList[i]->parent == A)
+				int smallest_F;
+				CPosNode* smallest_F_Node = NULL;
+				for(int i = 0; i < openList.size(); ++i)
 				{
-					smallest_F = Calculate_F(openList[i], TargetPosNode, tileSize, closedList);
-					smallest_F_Node = openList[i];
+					if(openList[i]->parent == A)
+					{
+						smallest_F = Calculate_F(openList[i], TargetPosNode, tileSize, closedList);
+						smallest_F_Node = openList[i];
+						break;
+					}
+				}
+				for(int i = 0; i < openList.size(); ++i)
+				{
+					if(openList[i]->parent == A)
+					{
+						int F = Calculate_F(openList[i], TargetPosNode, tileSize, closedList);
+						if(smallest_F > F)
+						{
+							smallest_F = F;
+							smallest_F_Node = openList[i];
+						}
+
+					}
+				}
+				if(smallest_F_Node)
+				{
+					A = smallest_F_Node;
 					break;
 				}
-			}
-			for(int i = 0; i < openList.size(); ++i)
-			{
-				if(openList[i]->parent == A)
+				else
 				{
-					int F = Calculate_F(openList[i], TargetPosNode, tileSize, closedList);
-					if(smallest_F > F)
-					{
-						smallest_F = F;
-						smallest_F_Node = openList[i];
-					}
-
+					A = A->parent;
+					deletedList.push_back(A);
+					closedList.pop_back();
 				}
 			}
-			if(smallest_F_Node)
-			{
-				A = smallest_F_Node;
-			}
-			else
-				break;
 		}
 
-		storeAdjacentNodeInList(A, &openList, &closedList);
+		storeAdjacentNodeInList(A, &openList, &closedList, &deletedList,TargetPosNode);
 
 		closedList.push_back(A);
 		// Remove A from openList
@@ -591,13 +626,15 @@ bool CEnemy::ifNodeInList(CPosNode* posNode, vector<CPosNode*> list)
 	return false;
 }
 
-void CEnemy::storeAdjacentNodeInList(CPosNode* posNode, vector<CPosNode*>* openList, vector<CPosNode*>* closedList)
+void CEnemy::storeAdjacentNodeInList(CPosNode* posNode, vector<CPosNode*>* openList, vector<CPosNode*>* closedList, vector<CPosNode*>* deletedList, CPosNode* TargetPosNode)
 {
 	// Top
-	//if((theENEMYCurrentPosNode->pos - posNode->up->pos).Length() < maxRangeToDetect)
+	if((TargetPosNode->pos - posNode->up->pos).Length() <= maxRangeToDetect
+		|| TargetPosNode == theENEMYInitialPosNode)
 	{
 		if(!ifNodeInList(posNode->up, *openList)
-			&& (closedList->size() == 0 || !ifNodeInList(posNode->up, *closedList)))
+			&& (closedList->size() == 0 || !ifNodeInList(posNode->up, *closedList))
+			&& (deletedList->size() == 0 || !ifNodeInList(posNode->up, *deletedList)))
 		{
 			if(posNode->up->posType == CPosNode::NONE
 				|| posNode->up->posType >= CPosNode::ENEMY_INITIAL_POS)
@@ -607,11 +644,13 @@ void CEnemy::storeAdjacentNodeInList(CPosNode* posNode, vector<CPosNode*>* openL
 			}
 		}
 	}
-	//if((theENEMYCurrentPosNode->pos - posNode->down->pos).Length() < maxRangeToDetect)
+	if((TargetPosNode->pos - posNode->down->pos).Length() <= maxRangeToDetect
+		|| TargetPosNode == theENEMYInitialPosNode)
 	{
 		// Bottom
 		if(!ifNodeInList(posNode->down, *openList)
-			&& (closedList->size() == 0 || !ifNodeInList(posNode->down, *closedList)))
+			&& (closedList->size() == 0 || !ifNodeInList(posNode->down, *closedList))
+			&& (deletedList->size() == 0 || !ifNodeInList(posNode->down, *deletedList)))
 		{
 			if(posNode->down->posType == CPosNode::NONE
 				|| posNode->down->posType >= CPosNode::ENEMY_INITIAL_POS)
@@ -621,11 +660,13 @@ void CEnemy::storeAdjacentNodeInList(CPosNode* posNode, vector<CPosNode*>* openL
 			}
 		}
 	}
-	//if((theENEMYCurrentPosNode->pos - posNode->left->pos).Length() < maxRangeToDetect)
+	if((TargetPosNode->pos - posNode->left->pos).Length() <= maxRangeToDetect
+		|| TargetPosNode == theENEMYInitialPosNode)
 	{	
 		// Left
 		if(!ifNodeInList(posNode->left, *openList)
-			&& (closedList->size() == 0 || !ifNodeInList(posNode->left, *closedList)))
+			&& (closedList->size() == 0 || !ifNodeInList(posNode->left, *closedList))
+			&& (deletedList->size() == 0 || !ifNodeInList(posNode->left, *deletedList)))
 		{
 			if(posNode->left->posType == CPosNode::NONE
 				|| posNode->left->posType >= CPosNode::ENEMY_INITIAL_POS)
@@ -635,11 +676,13 @@ void CEnemy::storeAdjacentNodeInList(CPosNode* posNode, vector<CPosNode*>* openL
 			}
 		}
 	}
-	//if((theENEMYCurrentPosNode->pos - posNode->right->pos).Length() < maxRangeToDetect)
+	if((TargetPosNode->pos - posNode->right->pos).Length() <= maxRangeToDetect
+		|| TargetPosNode == theENEMYInitialPosNode)
 	{
 		// Right
 		if(!ifNodeInList(posNode->right, *openList)
-			&& (closedList->size() == 0 || !ifNodeInList(posNode->right, *closedList)))
+			&& (closedList->size() == 0 || !ifNodeInList(posNode->right, *closedList))
+			&& (deletedList->size() == 0 || !ifNodeInList(posNode->right, *deletedList)))
 		{
 			if(posNode->right->posType == CPosNode::NONE
 				|| posNode->right->posType >= CPosNode::ENEMY_INITIAL_POS)

@@ -464,7 +464,7 @@ void SceneSP3::Update(double dt)
 		for(vector<CEnemy *>::iterator it = currentLevel->AI_Manager->enemiesList.begin(); it != currentLevel->AI_Manager->enemiesList.end(); ++it)
 		{
 			CEnemy *enemy = (CEnemy *)*it;
-			enemy->CheckMode(theHero->GetCurrentPosNode(), currentLevel->gameObjectsManager->tileSize);
+			//enemy->CheckMode(theHero->GetCurrentPosNode(), currentLevel->gameObjectsManager->tileSize);
 			if(enemy->GetHitHero())
 			{
 				if(!this->theHero->GetJustGotDamged() && this->theHero->GetCurrentState() != CPlayerInfo::DYING)

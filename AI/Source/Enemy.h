@@ -43,6 +43,11 @@ public:
 	// Get target position node of the enemy
 	CPosNode* GetTargetPosNode(void);
 	
+	// Set time of the enemy
+	void SetTime(float time);
+	// Get time of the enemy
+	float GetTime(void);
+
 	enum ANIMATION_DIRECTION
 	{
 		UP,
@@ -60,6 +65,8 @@ public:
 	void SetAnimationCounter(float ENEMYAnimationCounter);
 	// Get Animation Counter of the enemy
 	float GetAnimationCounter(void);
+	// Set Animation Direction status of the enemy
+	void SetAnimationDirection(ANIMATION_DIRECTION dir);
 	// Get Animation Direction status of the enemy
 	ANIMATION_DIRECTION GetAnimationDirection(void);
 	
@@ -84,6 +91,8 @@ public:
 	
 	// Check current mode
 	void CheckMode(CPosNode* heroPosNode, int tileSize);
+	void ChaseCheck(CPosNode* heroPosNode, int tileSize);
+	void ReturnCheck(int tileSize);
 
 	// Choose patrol or idle mode
 	void ChoosePatrolOrIdleMode(void);
@@ -99,7 +108,7 @@ public:
 	vector<CPosNode*> PathFinding(CPosNode* TargetPosNode, int tileSize);
 
 	bool ifNodeInList(CPosNode* posNode, vector<CPosNode*> list);
-	void storeAdjacentNodeInList(CPosNode* posNode, vector<CPosNode*>* openList, vector<CPosNode*>* closedList);
+	void storeAdjacentNodeInList(CPosNode* posNode, vector<CPosNode*>* openList, vector<CPosNode*>* closedList, vector<CPosNode*>* deletedList, CPosNode* TargetPosNode);
 
 	int Calculate_G(CPosNode* posNode, vector<CPosNode*> list);
 	int Calculate_H(CPosNode* CurrentPosNode, CPosNode* TargetPosNode, float tileSize);

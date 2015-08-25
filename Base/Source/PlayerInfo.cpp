@@ -675,11 +675,52 @@ void CPlayerInfo::Attacking(float timeDiff, CAIManager* ai_manager, GameObjectFa
 	{
 		for(int i = 0; i < ai_manager->enemiesList.size(); ++i)
 		{
-			if((ai_manager->enemiesList[i]->GetTargetPosNode() == theHeroCurrentPosNode
-				&& ai_manager->enemiesList[i]->GetCurrentPosNode() == theHeroTargetPosNode)
-				|| ai_manager->enemiesList[i]->GetCurrentPosNode() == theHeroTargetPosNode)
+			if((ai_manager->enemiesList[i]->GetPos() - theHeroTargetPosNode->pos).Length() < go_manager->tileSize)
 			{
-				ai_manager->enemiesList[i]->SetPos(theHeroTargetPosNode->pos);
+				// if enemy current node is equal to attack target node
+				if(ai_manager->enemiesList[i]->GetCurrentPosNode() == theHeroTargetPosNode)
+				{
+					// Set enemy target node to hero target node
+					ai_manager->enemiesList[i]->SetTargetPosNode(theHeroTargetPosNode);
+				}
+
+				// Repel to one unit away in direction of attack
+				if(theHeroCurrentPosNode->up == theHeroTargetPosNode)
+				{
+					ai_manager->enemiesList[i]->SetPos(theHeroTargetPosNode->up->pos);
+					ai_manager->enemiesList[i]->SetCurrentPosNode(theHeroTargetPosNode->up);
+					ai_manager->enemiesList[i]->SetAnimationDirection(CEnemy::DOWN);
+				}
+				else if(theHeroCurrentPosNode->down == theHeroTargetPosNode)
+				{
+					ai_manager->enemiesList[i]->SetPos(theHeroTargetPosNode->down->pos);
+					ai_manager->enemiesList[i]->SetCurrentPosNode(theHeroTargetPosNode->down);
+					ai_manager->enemiesList[i]->SetAnimationDirection(CEnemy::UP);
+				}
+				else if(theHeroCurrentPosNode->left == theHeroTargetPosNode)
+				{
+					ai_manager->enemiesList[i]->SetPos(theHeroTargetPosNode->left->pos);
+					ai_manager->enemiesList[i]->SetCurrentPosNode(theHeroTargetPosNode->left);
+					ai_manager->enemiesList[i]->SetAnimationDirection(CEnemy::RIGHT);
+				}
+				else if(theHeroCurrentPosNode->right == theHeroTargetPosNode)
+				{
+					ai_manager->enemiesList[i]->SetPos(theHeroTargetPosNode->right->pos);
+					ai_manager->enemiesList[i]->SetCurrentPosNode(theHeroTargetPosNode->right);
+					ai_manager->enemiesList[i]->SetAnimationDirection(CEnemy::LEFT);
+				}
+
+				if(ai_manager->enemiesList[i]->GetCurrentPosNode()->posType > CPosNode::NONE 
+					&& ai_manager->enemiesList[i]->GetCurrentPosNode()->posType < CPosNode::ENEMY_INITIAL_POS)
+				{
+					ai_manager->enemiesList[i]->SetPos(theHeroTargetPosNode->pos);
+					ai_manager->enemiesList[i]->SetCurrentPosNode(theHeroTargetPosNode);
+					ai_manager->enemiesList[i]->SetTargetPosNode(theHeroCurrentPosNode);
+				}
+
+				ai_manager->enemiesList[i]->CalculateVel();
+				ai_manager->enemiesList[i]->SetCurrentMode(CEnemy::ATTACK);
+				ai_manager->enemiesList[i]->SetTime(0.25f);
 			}
 		}
 	}
