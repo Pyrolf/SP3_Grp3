@@ -381,6 +381,7 @@ void SceneSP3::UpdateInputs(double dt)
 					gameState = MAINMENU;
 					this->theHero->Reset();
 					this->theHero->SetCurrentState(this->theHero->NIL);
+					clock.Reset();
 					currentLevel->AI_Manager->Reset();
 				}
 				choice = NONE;
@@ -402,6 +403,7 @@ void SceneSP3::UpdateInputs(double dt)
 			{
 				gameState = MAINMENU;
 				this->theHero->Reset();
+				clock.Reset();
 				this->theHero->SetCurrentState(this->theHero->NIL);
 				currentLevel->AI_Manager->Reset();
 			}
@@ -416,6 +418,11 @@ void SceneSP3::Update(double dt)
 	if(gameState == PLAYING)
 	{
 		// Exiting
+		if(this->theHero->GetCurrentState() != this->theHero->DYING && this->theHero->GetCurrentState() != this->theHero->EXITING)
+		{
+			clock.update(dt);
+		}
+		
 		if(this->theHero->GetCurrentState() == this->theHero->EXITING)
 		{
 			if(this->theHero->GetTimeElasped() >= 1.f)
@@ -806,6 +813,12 @@ void SceneSP3::RenderGUI()
 		if(theHero->GetHealth() == 3)
 			RenderMeshIn2D(meshList[GEO_LIVE_3], false, 1.0f, -69 + 7 * i, 69.5);
 	}
+
+	std::ostringstream time;
+	time.precision(3);
+	time << clock.getMin() << ":" << clock.getSec();
+	RenderTextOnScreen(meshList[GEO_TEXT], time.str(), Color(1,1,1), 5.f, 40.f, 55.f);
+
 
 	//On screen text
 	/*std::ostringstream ss;

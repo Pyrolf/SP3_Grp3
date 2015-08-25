@@ -6,6 +6,7 @@
 #include "Vector3.h"
 #include "PlayerInfo.h"
 #include "HackingGame.h"
+#include "Timing.h"
 
 #include <irrKlang.h>
 #pragma comment(lib, "irrKlang.lib")
@@ -71,6 +72,8 @@ private:
 	HackingGame hackingGame;
 
 	void RenderHackGame();
+
+	CTiming clock;
 };
 
 #endif
