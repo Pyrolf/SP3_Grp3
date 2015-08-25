@@ -3,7 +3,6 @@
 Highscore::Highscore()
 {
 	counter = 0;
-	highscore = 200;
 }
 
 Highscore::~Highscore()
@@ -36,19 +35,17 @@ void Highscore::reset()
 }
 
 
-int Highscore::ReadFromTextFile()
+bool Highscore::ReadFromTextFile()
 {
-	string line;
+	stringstream line;
 	std::ifstream myfile ("HighScore.txt");
 	if (myfile.is_open())
 	{
-		getline (myfile,line);
-		std::stringstream convert(line);
-		if (!(convert >> highscore) )   //give the value to Result using the characters in the string
-			return 0;//highscore
-		
-		myfile.close();
+		myfile >> highscore;
 	}
+	else
+		return false;
+	return true;
 }
 
 
@@ -56,17 +53,17 @@ void Highscore::SaveTextFile()
 {
 	std::ofstream myfile;
 	myfile.open ("HighScore.txt", std::ios::in|std::ios::trunc);
-	myfile << highscore << endl;
+	myfile << highscore.getMin() << highscore.getSec() << endl;
 	myfile.close();
 }
 
-void Highscore::HighscoreCheck(double b)
-{
-	highscore = b;
-	if (highscore > b)
-	{
-		SaveTextFile();
-		highscore = b;
-	}
-
-}
+//void Highscore::HighscoreCheck(double b)
+//{
+//	highscore = b;
+//	if (highscore > b)
+//	{
+//		SaveTextFile();
+//		highscore = b;
+//	}
+//
+//}

@@ -18,13 +18,13 @@ public:
 
 	void reset();
 
-	int ReadFromTextFile();
+	bool ReadFromTextFile();
 	void SaveTextFile();
-	void HighscoreCheck(double b);
+	//void HighscoreCheck(double b);
 
 private:	
 	CTiming timerin[5];
 	int counter;
-	int highscore;
+	CTiming highscore;
 	string PlayerName;
 };

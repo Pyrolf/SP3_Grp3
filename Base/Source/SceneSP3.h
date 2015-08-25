@@ -47,6 +47,7 @@ private:
 
 	// Render functions
 	void RenderBackground();
+	void RenderHighscore();
 	void RenderHero();
 	void RenderGameObjects();
 	void RenderEnemies();

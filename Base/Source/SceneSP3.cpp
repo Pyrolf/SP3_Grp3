@@ -411,6 +411,15 @@ void SceneSP3::UpdateInputs(double dt)
 	}
 }
 
+void SceneSP3::RenderHighscore()
+{
+	// string playername;
+	// cout << "Enter your name: " << endl;
+	// cin >> playername;
+
+	//RenderTextOnScreen(meshList[GEO_TEXT], );
+}
+
 void SceneSP3::Update(double dt)
 {
 	UpdateInputs(dt);
@@ -580,7 +589,7 @@ void SceneSP3::Render()
 	case GAMEOVER:
 		{
 			Render2DMesh(meshList[GEO_GAMEOVER], false);
-			
+			RenderHighscore();	
 			RenderTextOnScreen(meshList[GEO_TEXT], "Press enter to return", Color(1, 1, 1), 2.5, 13, 5);
 		}
 		break;
