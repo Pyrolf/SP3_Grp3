@@ -838,7 +838,11 @@ void CPlayerInfo::CollisionResponseCurrent(void)
 				break;
 			}
 
-			if(theHeroTargetPosNode->gameObject != NULL && theHeroTargetPosNode->gameObject->type > 0 && theHeroTargetPosNode->gameObject->type < GameObject::TOTAL && theHeroTargetPosNode->gameObject->type != GameObject::WET_FLOOR)
+			if(theHeroTargetPosNode->gameObject != NULL 
+				&& theHeroTargetPosNode->gameObject->type > 0 
+				&& theHeroTargetPosNode->gameObject->type < GameObject::TOTAL 
+				&& theHeroTargetPosNode->gameObject->type != GameObject::WET_FLOOR 
+				&& theHeroTargetPosNode->gameObject->type != GameObject::HOLE)
 			{
 				theHeroTargetPosNode = theHeroCurrentPosNode;
 				currentState = NIL;

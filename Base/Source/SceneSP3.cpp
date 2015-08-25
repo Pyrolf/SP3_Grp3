@@ -153,7 +153,7 @@ void SceneSP3::InitLevels()
 	levelList.push_back(new Level);
 	levelList[0]->m_cMap = new CMap();
 	levelList[0]->m_cMap->Init( 768 + 64, 1024, 12 + 1, 16, 3200 + 64, 2048, 64);
-	levelList[0]->m_cMap->LoadMap( "Image//MapDesignLv1.csv" );
+	levelList[0]->m_cMap->LoadMap( "Image//MapDesignLv5.csv" );
 	levelList[0]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL1", Color(1, 1, 1), 0.0f, 0.0f, 2048, 3200);
 	levelList[0]->background->textureID = LoadTGA("Image//background_level1.tga");
 	levelList[0]->sideView = false;
@@ -471,27 +471,29 @@ void SceneSP3::Update(double dt)
 		for(vector<CEnemy *>::iterator it = currentLevel->AI_Manager->enemiesList.begin(); it != currentLevel->AI_Manager->enemiesList.end(); ++it)
 		{
 			CEnemy *enemy = (CEnemy *)*it;
-			//enemy->CheckMode(theHero->GetCurrentPosNode(), currentLevel->gameObjectsManager->tileSize);
-			if(enemy->GetHitHero())
+			if((enemy->GetPos()- theHero->GetPos()).Length() < enemy->GetMaxRangeToDetect() * 3)
 			{
-				if(!this->theHero->GetJustGotDamged() && this->theHero->GetCurrentState() != CPlayerInfo::DYING)
+				enemy->Update(currentLevel->gameObjectsManager->tileSize, dt, theHero->GetCurrentPosNode());
+				if(enemy->GetHitHero())
 				{
-					this->theHero->SetHealth(theHero->GetHealth() - 1);
-					if(theHero->GetHealth() <= 0)
+					if(!this->theHero->GetJustGotDamged() && this->theHero->GetCurrentState() != CPlayerInfo::DYING)
 					{
-						this->theHero->SetCurrentState(CPlayerInfo::DYING);
-						theHero->SetAnimationCounter(0.0f);
+						this->theHero->SetHealth(theHero->GetHealth() - 1);
+						if(theHero->GetHealth() <= 0)
+						{
+							this->theHero->SetCurrentState(CPlayerInfo::DYING);
+							theHero->SetAnimationCounter(0.0f);
+						}
+						else
+						{
+							this->theHero->knockBackEnabled(enemy->GetPos());
+							this->theHero->SetJustGotDamged(true);
+						}
 					}
-					else
-					{
-						this->theHero->knockBackEnabled(enemy->GetPos());
-						this->theHero->SetJustGotDamged(true);
-					}
+					enemy->SetHitHero(false);
+					break;
 				}
-				enemy->SetHitHero(false);
-				break;
 			}
-			enemy->Update(currentLevel->gameObjectsManager->tileSize, dt, theHero->GetCurrentPosNode());
 		}
 		if(hackingGame.active)
 		{

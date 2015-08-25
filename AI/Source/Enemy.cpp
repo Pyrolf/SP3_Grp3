@@ -449,7 +449,14 @@ void CEnemy::Update(int tileSize, float timeDiff, CPosNode* heroPosNode)
 			moving(timeDiff);
 			if(currentMode == NIL)
 			{
-				currentMode = PATROL;
+				if((theENEMYCurrentPosNode->pos - theENEMYInitialPosNode->pos).Length() > maxRangeToDetect * 2)
+				{
+					currentMode = RETURN;
+				}
+				else
+				{
+					currentMode = PATROL;
+				}
 				CheckMode(heroPosNode, tileSize);
 				if(currentMode == PATROL)
 				{

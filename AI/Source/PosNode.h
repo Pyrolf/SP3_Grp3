@@ -18,8 +18,8 @@ public:
 		HACK_SYS,
 		HEALTH_PACK,
 		TOTAL_ACTIVE_GO,
-		ENEMY_INITIAL_POS = 10,
 		HERO_INIT_POS = 20,
+		ENEMY_INITIAL_POS = 30,
 	};
 
 	CPosNode(void);

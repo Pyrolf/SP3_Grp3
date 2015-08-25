@@ -22,7 +22,7 @@ void CAIManager::generateEnemies(CMap *map)
 	{
 		for(int k = 0; k < map->getNumOfTiles_MapWidth(); k ++)
 		{
-			if(map->theScreenMap[i][k] == 10)
+			if(map->theScreenMap[i][k] == 30)
 			{
 				enemiesList.push_back(new CEnemy);
 
