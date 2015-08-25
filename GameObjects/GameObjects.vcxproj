@@ -14,6 +14,7 @@
     <ClInclude Include="Source\ActiveGameObject.h" />
     <ClInclude Include="Source\Asteroid2D.h" />
     <ClInclude Include="Source\AsteroidFactory.h" />
+    <ClInclude Include="Source\Blackout.h" />
     <ClInclude Include="Source\Bullet2D.h" />
     <ClInclude Include="Source\Bullet2DFactory.h" />
     <ClInclude Include="Source\DamagesThings.h" />
@@ -36,6 +37,7 @@
     <ClCompile Include="Source\ActiveGameObject.cpp" />
     <ClCompile Include="Source\Asteroid2D.cpp" />
     <ClCompile Include="Source\AsteroidFactory.cpp" />
+    <ClCompile Include="Source\Blackout.cpp" />
     <ClCompile Include="Source\Bullet2D.cpp" />
     <ClCompile Include="Source\Bullet2DFactory.cpp" />
     <ClCompile Include="Source\DamagesThings.cpp" />
