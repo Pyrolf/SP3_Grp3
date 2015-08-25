@@ -29,6 +29,10 @@ void SceneSP3::Init()
 	InitHero();
 	InitGoMeshes();
 	InitLevels();
+	
+	meshList[GEO_ATTACK_RANGE] = MeshBuilder::GenerateRing("ATTACK_RANGE", Color(0, 1, 0), 36.f, levelList[0]->AI_Manager->enemiesList[0]->GetMaxRangeToDetect(), levelList[0]->AI_Manager->enemiesList[0]->GetMaxRangeToDetect() - 1.f);
+	meshList[GEO_REPEL_RANGE] = MeshBuilder::GenerateRing("REPEL_RANGE", Color(1, 0, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 0.5, levelList[0]->gameObjectsManager->tileSize * 0.5 - 1.f);
+
 	InitSound();
 	hackingGame.Init(Vector3(270, 335, 0), Vector3(753, 365, 0));
 }
@@ -482,7 +486,7 @@ void SceneSP3::Update(double dt)
 			CEnemy *enemy = (CEnemy *)*it;
 			if((enemy->GetPos()- theHero->GetPos()).Length() < enemy->GetMaxRangeToDetect() * 3)
 			{
-				enemy->Update(currentLevel->gameObjectsManager->tileSize, dt, theHero->GetCurrentPosNode());
+				enemy->Update(currentLevel->gameObjectsManager->tileSize, dt, theHero->GetCurrentPosNode(), theHero->GetPos());
 				if(enemy->GetHitHero())
 				{
 					if(!this->theHero->GetJustGotDamged() && this->theHero->GetCurrentState() != CPlayerInfo::DYING)
@@ -809,6 +813,10 @@ void SceneSP3::RenderEnemies()
 		{
 			Render2DMesh(meshList[GEO_ENEMY_ALERT_SIGN], false, 1.0f, enemy->GetPos().x, enemy->GetPos().y + currentLevel->gameObjectsManager->tileSize);
 		}
+
+		// Render ranges
+		Render2DMesh(meshList[GEO_ATTACK_RANGE], false, 1.0f, enemy->GetPos().x - currentLevel->gameObjectsManager->tileSize * 0.5, enemy->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, true);
+		Render2DMesh(meshList[GEO_REPEL_RANGE], false, 1.0f, enemy->GetPos().x - currentLevel->gameObjectsManager->tileSize * 0.5, enemy->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, true);
 	}
 }
 

@@ -90,7 +90,7 @@ public:
 	int GetMaxRangeToDetect(void);
 	
 	// Check current mode
-	void CheckMode(CPosNode* heroPosNode, int tileSize);
+	void CheckMode(CPosNode* heroPosNode, int tileSize, Vector3 heroPos);
 	void ChaseCheck(CPosNode* heroPosNode, int tileSize);
 	void ReturnCheck(int tileSize);
 
@@ -98,7 +98,7 @@ public:
 	void ChoosePatrolOrIdleMode(void);
 
 	// ENEMY Update
-	void Update(int tileSize, float timeDiff, CPosNode* heroPosNode);
+	void Update(int tileSize, float timeDiff, CPosNode* heroPosNode, Vector3 heroPos);
 
 	void moving(float timeDiff);
 	void CalculateVel(void);

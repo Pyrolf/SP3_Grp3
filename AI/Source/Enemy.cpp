@@ -185,10 +185,10 @@ float CEnemy::GetTime(void)
 }
 
 // Check current mode
-void CEnemy::CheckMode(CPosNode* heroPosNode, int tileSize)
+void CEnemy::CheckMode(CPosNode* heroPosNode, int tileSize, Vector3 heroPos)
 {
-	float DistFromHeroToEnemy = (theENEMYPosition - heroPosNode->pos).Length();
-	float DistFromHeroToEnemyInit = (heroPosNode->pos - theENEMYInitialPosNode->pos).Length();
+	float DistFromHeroToEnemy = (theENEMYPosition - heroPos).Length();
+	float DistFromHeroToEnemyInit = (heroPos - theENEMYInitialPosNode->pos).Length();
 	// If within range of detection
 	if(DistFromHeroToEnemy <= maxRangeToDetect && DistFromHeroToEnemyInit <= maxRangeToDetect * 2)
 	{
@@ -365,7 +365,7 @@ void CEnemy::CalculateVel(void)
 /********************************************************************************
 Hero Update
 ********************************************************************************/
-void CEnemy::Update(int tileSize, float timeDiff, CPosNode* heroPosNode)
+void CEnemy::Update(int tileSize, float timeDiff, CPosNode* heroPosNode, Vector3 heroPos)
 {
 	Vector3 theENEMYPrevPosition = theENEMYPosition;
 	switch(currentMode)
@@ -373,7 +373,7 @@ void CEnemy::Update(int tileSize, float timeDiff, CPosNode* heroPosNode)
 	case CHASE:
 		{
 			moving(timeDiff);
-			float DistFromHeroToEnemy = (theENEMYPosition - heroPosNode->pos).Length();
+			float DistFromHeroToEnemy = (theENEMYPosition - heroPos).Length();
 			// If within range of attack
 			if(DistFromHeroToEnemy <= tileSize * 0.5)
 			{
@@ -384,6 +384,7 @@ void CEnemy::Update(int tileSize, float timeDiff, CPosNode* heroPosNode)
 					hitHero = true;
 					time = 0.5f;
 					enemyPath.push_back(theENEMYTargetPosNode);
+
 					// If target at up side
 					if(theENEMYCurrentPosNode->up == theENEMYTargetPosNode)
 					{
@@ -412,6 +413,23 @@ void CEnemy::Update(int tileSize, float timeDiff, CPosNode* heroPosNode)
 						theENEMYCurrentPosNode = theENEMYCurrentPosNode->left;
 						theENEMYPosition = theENEMYCurrentPosNode->pos;
 					}
+
+					while(theENEMYCurrentPosNode->posType > CPosNode::NONE 
+						&& theENEMYCurrentPosNode->posType < CPosNode::ENEMY_INITIAL_POS)
+					{
+						theENEMYCurrentPosNode = theENEMYTargetPosNode;
+						theENEMYPosition = theENEMYCurrentPosNode->pos;
+						if(enemyPath.size() != 0)
+						{
+							theENEMYTargetPosNode = enemyPath.back();
+							enemyPath.pop_back();
+						}
+						else
+						{
+							theENEMYTargetPosNode = heroPosNode;
+						}
+					}
+
 				}
 			}
 			else
@@ -419,7 +437,7 @@ void CEnemy::Update(int tileSize, float timeDiff, CPosNode* heroPosNode)
 				if(currentMode == NIL)
 				{
 					currentMode = CHASE;
-					CheckMode(heroPosNode, tileSize);
+					CheckMode(heroPosNode, tileSize, heroPos);
 				}
 			}
 		}
@@ -430,7 +448,7 @@ void CEnemy::Update(int tileSize, float timeDiff, CPosNode* heroPosNode)
 			if(time <= 0.f)
 			{
 				currentMode = CHASE;
-				CheckMode(heroPosNode, tileSize);
+				CheckMode(heroPosNode, tileSize, heroPos);
 			}
 		}
 		break;
@@ -440,7 +458,7 @@ void CEnemy::Update(int tileSize, float timeDiff, CPosNode* heroPosNode)
 			if(currentMode == NIL)
 			{
 				currentMode = RETURN;
-				CheckMode(heroPosNode, tileSize);
+				CheckMode(heroPosNode, tileSize, heroPos);
 			}
 		}
 		break;
@@ -457,7 +475,7 @@ void CEnemy::Update(int tileSize, float timeDiff, CPosNode* heroPosNode)
 				{
 					currentMode = PATROL;
 				}
-				CheckMode(heroPosNode, tileSize);
+				CheckMode(heroPosNode, tileSize, heroPos);
 				if(currentMode == PATROL)
 				{
 					ChoosePatrolOrIdleMode();
@@ -468,7 +486,7 @@ void CEnemy::Update(int tileSize, float timeDiff, CPosNode* heroPosNode)
 	case IDLE:
 		{
 			time -=timeDiff;
-			CheckMode(heroPosNode, tileSize);
+			CheckMode(heroPosNode, tileSize, heroPos);
 			if(time <= 0.f)
 			{
 				ChoosePatrolOrIdleMode();
