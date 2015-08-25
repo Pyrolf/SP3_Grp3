@@ -5,7 +5,7 @@ class ActiveGameObject : public GameObject
 {
 public:
 	bool active, canActivate;
-	float frameTime, currentFrameTime;
+	float frameTime, currentFrameTime, timmer;
 
 	ActiveGameObject();
 	ActiveGameObject(int type, Vector3 pos);

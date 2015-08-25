@@ -66,7 +66,7 @@ private:
 	void UpdateInputs(double dt);
 	void HeroColision(GameObject* goCollidedWith, bool updown, bool upORleft, double dt);
 
-	vector<Mesh*> wallMesh, holeMesh, doorMesh, wetFloorMesh, timmingDoorMesh, lockedDoorMesh, hackMesh, healthMesh;
+	vector<Mesh*> wallMesh, holeMesh, doorMesh, wetFloorMesh, timmingDoorMesh, lockedDoorMesh, hackMesh, healthMesh, fireMesh, arrowMesh;
 	void InitGoMeshes();
 	void DeleteGoMeshes();
 	void UpdateActiveGO(double dt);

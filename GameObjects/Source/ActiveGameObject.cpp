@@ -14,6 +14,8 @@ ActiveGameObject::ActiveGameObject(int type, Vector3 pos)
 	active = false;
 	canActivate = true;
 
+	frameTime = currentFrameTime = timmer = 0;
+
 	InitRanodmVars();
 }
 
@@ -24,7 +26,6 @@ void ActiveGameObject::InitRanodmVars()
 	case WET_FLOOR:
 	{
 		frameTime = 0.1;
-		currentFrameTime = 0; 
 		break;
 	}
 	case TIMING_DOOR:
@@ -42,6 +43,11 @@ void ActiveGameObject::InitRanodmVars()
 	case HEALTH_PACK:
 		{
 			active = true;
+			break;
+		}
+	case FIRE:
+		{
+			frameTime = 0.1;
 			break;
 		}
 	}
@@ -107,6 +113,40 @@ void ActiveGameObject::update(double dt)
 				{
 					currentFrame = 1;
 				}
+			break;
+		}
+	case FIRE:
+		{
+			if(active)
+			{
+				timmer += dt;
+				if(timmer > 2)
+				{
+					timmer = 0;
+					active = false;
+				}
+
+				currentFrameTime += dt;
+				if(currentFrameTime >= frameTime)
+				{
+					currentFrame += 1;
+					currentFrameTime = 0;
+				}
+				if(currentFrame >= 5)
+				{
+					currentFrame = 1;
+				}
+			}
+			else
+			{
+				timmer += dt;
+				if(timmer > 2)
+				{
+					timmer = 0;
+					active = true;
+				}
+				currentFrame = 0;
+			}
 			break;
 		}
 	}

@@ -157,7 +157,7 @@ void SceneSP3::InitLevels()
 	levelList.push_back(new Level);
 	levelList[0]->m_cMap = new CMap();
 	levelList[0]->m_cMap->Init( 768 + 64, 1024, 12 + 1, 16, 3200 + 64, 2048, 64);
-	levelList[0]->m_cMap->LoadMap( "Image//MapDesignLv5.csv" );
+	levelList[0]->m_cMap->LoadMap( "Image//MapDesignLv1.csv" );
 	levelList[0]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL1", Color(1, 1, 1), 0.0f, 0.0f, 2048, 3200);
 	levelList[0]->background->textureID = LoadTGA("Image//background_level1.tga");
 	levelList[0]->sideView = false;
@@ -484,7 +484,7 @@ void SceneSP3::Update(double dt)
 		for(vector<CEnemy *>::iterator it = currentLevel->AI_Manager->enemiesList.begin(); it != currentLevel->AI_Manager->enemiesList.end(); ++it)
 		{
 			CEnemy *enemy = (CEnemy *)*it;
-			if((enemy->GetPos()- theHero->GetPos()).Length() < enemy->GetMaxRangeToDetect() * 3)
+			//if((enemy->GetPos()- theHero->GetPos()).Length() < enemy->GetMaxRangeToDetect() * 3)
 			{
 				enemy->Update(currentLevel->gameObjectsManager->tileSize, dt, theHero->GetCurrentPosNode(), theHero->GetPos());
 				if(enemy->GetHitHero())
@@ -773,6 +773,46 @@ void SceneSP3::RenderGameObjects()
 					Render2DMesh(healthMesh[go->currentFrame], false, 1.0f, go->pos.x, go->pos.y);
 				break;
 			}
+		case GameObject::FIRE:
+			{
+				Render2DMesh(fireMesh[go->currentFrame], false, 1.0f, go->pos.x, go->pos.y);
+				break;
+			}
+		case GameObject::MOVE_UP:
+			{
+				Render2DMesh(arrowMesh[go->currentFrame], false, 1.0f, go->pos.x, go->pos.y);
+				break;
+			}
+		case GameObject::MOVE_DOWN:
+			{
+				modelStack.PushMatrix();
+				modelStack.Translate(go->pos.x + currentLevel->m_cMap->GetTileSize()*0.5, go->pos.y + currentLevel->m_cMap->GetTileSize()*0.5, 0);
+				modelStack.Rotate(180, 0, 0, 1);
+				modelStack.Translate(-currentLevel->m_cMap->GetTileSize()*0.5, -currentLevel->m_cMap->GetTileSize()*0.5, 0);
+				Render2DMesh(arrowMesh[go->currentFrame], false, 1.0f);
+				modelStack.PopMatrix();
+				break;
+			}
+		case GameObject::MOVE_LEFT:
+			{
+				modelStack.PushMatrix();
+				modelStack.Translate(go->pos.x + currentLevel->m_cMap->GetTileSize()*0.5, go->pos.y + currentLevel->m_cMap->GetTileSize()*0.5, 0);
+				modelStack.Rotate(90, 0, 0, 1);
+				modelStack.Translate(-currentLevel->m_cMap->GetTileSize()*0.5, -currentLevel->m_cMap->GetTileSize()*0.5, 0);
+				Render2DMesh(arrowMesh[go->currentFrame], false, 1.0f);
+				modelStack.PopMatrix();
+				break;
+			}
+		case GameObject::MOVE_RIGHT:
+			{
+				modelStack.PushMatrix();
+				modelStack.Translate(go->pos.x + currentLevel->m_cMap->GetTileSize()*0.5, go->pos.y + currentLevel->m_cMap->GetTileSize()*0.5, 0);
+				modelStack.Rotate(270, 0, 0, 1);
+				modelStack.Translate(-currentLevel->m_cMap->GetTileSize()*0.5, -currentLevel->m_cMap->GetTileSize()*0.5, 0);
+				Render2DMesh(arrowMesh[go->currentFrame], false, 1.0f);
+				modelStack.PopMatrix();
+				break;
+			}
 		}
 	}
 }
@@ -926,6 +966,20 @@ void SceneSP3::InitGoMeshes()
 
 	healthMesh.push_back(MeshBuilder::Generate2DMesh("health", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
 	healthMesh.back()->textureID = LoadTGA("Image//health pack.tga");
+
+	fireMesh.push_back(MeshBuilder::Generate2DMesh("fire", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
+	fireMesh.back()->textureID = LoadTGA("Image//fire 0.tga");
+	fireMesh.push_back(MeshBuilder::Generate2DMesh("fire", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
+	fireMesh.back()->textureID = LoadTGA("Image//fire 1.tga");
+	fireMesh.push_back(MeshBuilder::Generate2DMesh("fire", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
+	fireMesh.back()->textureID = LoadTGA("Image//fire 2.tga");
+	fireMesh.push_back(MeshBuilder::Generate2DMesh("fire", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
+	fireMesh.back()->textureID = LoadTGA("Image//fire 3.tga");
+	fireMesh.push_back(MeshBuilder::Generate2DMesh("fire", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
+	fireMesh.back()->textureID = LoadTGA("Image//fire 4.tga");
+
+	arrowMesh.push_back(MeshBuilder::Generate2DMesh("arrow", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
+	arrowMesh.back()->textureID = LoadTGA("Image//arrow arrow.tga");
 }
 
 void SceneSP3::DeleteGoMeshes()

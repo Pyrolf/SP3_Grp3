@@ -764,6 +764,26 @@ bool CPlayerInfo::CheckCollisionTarget(void)
 		{
 			return false;
 		}
+	case CPosNode::FIRE:
+		{
+			return false;
+		}
+	case CPosNode::MOVE_UP:
+		{
+			return false;
+		}
+	case CPosNode::MOVE_DOWN:
+		{
+			return false;
+		}
+	case CPosNode::MOVE_LEFT:
+		{
+			return false;
+		}
+	case CPosNode::MOVE_RIGHT:
+		{
+			return false;
+		}
 	case CPosNode::ENEMY_INITIAL_POS:
 		return false;
 	case CPosNode::HERO_INIT_POS:
@@ -842,7 +862,11 @@ void CPlayerInfo::CollisionResponseCurrent(void)
 				&& theHeroTargetPosNode->gameObject->type > 0 
 				&& theHeroTargetPosNode->gameObject->type < GameObject::TOTAL 
 				&& theHeroTargetPosNode->gameObject->type != GameObject::WET_FLOOR 
-				&& theHeroTargetPosNode->gameObject->type != GameObject::HOLE)
+				&& theHeroTargetPosNode->gameObject->type != GameObject::HOLE
+				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_UP
+				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_DOWN
+				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_LEFT
+				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_RIGHT)
 			{
 				theHeroTargetPosNode = theHeroCurrentPosNode;
 				currentState = NIL;
@@ -875,6 +899,127 @@ void CPlayerInfo::CollisionResponseCurrent(void)
 			{
 				++health;
 				temp->active = false;
+			}
+		}
+		break;
+	case GameObject::FIRE:
+		{
+			ActiveGameObject* temp = dynamic_cast<ActiveGameObject*>(theHeroCurrentPosNode->gameObject);
+			if(temp->active && health > 0 && !justGotDamged)
+			{
+				--health;
+				justGotDamged = true;
+				
+			}
+			else if(health == 0)
+			{
+				currentState = DYING;
+			}
+		}
+		break;
+	case GameObject::MOVE_UP:
+		{
+			theHeroTargetPosNode = theHeroTargetPosNode->up;
+			vel.Set(0, movementSpeed, 0);
+			heroAnimationDirection = UP;
+
+			if(theHeroTargetPosNode->gameObject != NULL 
+				&& theHeroTargetPosNode->gameObject->type > 0 
+				&& theHeroTargetPosNode->gameObject->type < GameObject::TOTAL 
+				&& theHeroTargetPosNode->gameObject->type != GameObject::WET_FLOOR 
+				&& theHeroTargetPosNode->gameObject->type != GameObject::HOLE
+				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_UP
+				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_DOWN
+				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_LEFT
+				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_RIGHT)
+			{
+				theHeroTargetPosNode = theHeroCurrentPosNode;
+				currentState = NIL;
+			}
+			else
+			{
+				currentState = SLIDING;
+				heroAnimationCounter = 0.0f;
+			}
+		}
+		break;
+	case GameObject::MOVE_DOWN:
+		{
+			theHeroTargetPosNode = theHeroTargetPosNode->down;
+			vel.Set(0, -movementSpeed, 0);
+			heroAnimationDirection = DOWN;
+
+			if(theHeroTargetPosNode->gameObject != NULL 
+				&& theHeroTargetPosNode->gameObject->type > 0 
+				&& theHeroTargetPosNode->gameObject->type < GameObject::TOTAL 
+				&& theHeroTargetPosNode->gameObject->type != GameObject::WET_FLOOR 
+				&& theHeroTargetPosNode->gameObject->type != GameObject::HOLE
+				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_UP
+				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_DOWN
+				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_LEFT
+				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_RIGHT)
+			{
+				theHeroTargetPosNode = theHeroCurrentPosNode;
+				currentState = NIL;
+			}
+			else
+			{
+				currentState = SLIDING;
+				heroAnimationCounter = 0.0f;
+			}
+		}
+		break;
+	case GameObject::MOVE_LEFT:
+		{
+			theHeroTargetPosNode = theHeroTargetPosNode->left;
+			vel.Set(-movementSpeed, 0, 0);
+			heroAnimationDirection = LEFT;
+			heroAnimationInvert = true;
+
+			if(theHeroTargetPosNode->gameObject != NULL 
+				&& theHeroTargetPosNode->gameObject->type > 0 
+				&& theHeroTargetPosNode->gameObject->type < GameObject::TOTAL 
+				&& theHeroTargetPosNode->gameObject->type != GameObject::WET_FLOOR 
+				&& theHeroTargetPosNode->gameObject->type != GameObject::HOLE
+				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_UP
+				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_DOWN
+				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_LEFT
+				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_RIGHT)
+			{
+				theHeroTargetPosNode = theHeroCurrentPosNode;
+				currentState = NIL;
+			}
+			else
+			{
+				currentState = SLIDING;
+				heroAnimationCounter = 0.0f;
+			}
+		}
+		break;
+	case GameObject::MOVE_RIGHT:
+		{
+			theHeroTargetPosNode = theHeroTargetPosNode->right;
+			vel.Set(movementSpeed, 0, 0);
+			heroAnimationDirection = RIGHT;
+			heroAnimationInvert = false;
+
+			if(theHeroTargetPosNode->gameObject != NULL 
+				&& theHeroTargetPosNode->gameObject->type > 0 
+				&& theHeroTargetPosNode->gameObject->type < GameObject::TOTAL 
+				&& theHeroTargetPosNode->gameObject->type != GameObject::WET_FLOOR 
+				&& theHeroTargetPosNode->gameObject->type != GameObject::HOLE
+				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_UP
+				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_DOWN
+				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_LEFT
+				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_RIGHT)
+			{
+				theHeroTargetPosNode = theHeroCurrentPosNode;
+				currentState = NIL;
+			}
+			else
+			{
+				currentState = SLIDING;
+				heroAnimationCounter = 0.0f;
 			}
 		}
 		break;
