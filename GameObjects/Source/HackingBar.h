@@ -5,7 +5,7 @@ class HackingBar
 {
 public:
 	bool active, goingUp;
-	float speed;
+	double speed;
 	Vector3 bottomPos, topPos, vel;
 
 	HackingBar(void);

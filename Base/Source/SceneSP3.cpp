@@ -325,6 +325,15 @@ void SceneSP3::UpdateInputs(double dt)
 		{
 			spaceDown = false;
 		}
+
+		if(Application::IsKeyPressed(VK_LMENU) && blackout.fullyCharged)
+		{
+			blackout.lightOn = true;
+		}
+		else
+		{
+			blackout.lightOn = false;
+		}
 	}
 	// Others
 	{
@@ -605,22 +614,25 @@ void SceneSP3::Render()
 				currentLevel->m_cMap->GetNumOfTiles_Height() * currentLevel->m_cMap->GetTileSize() * 0.5 - theHero->GetPos().y - currentLevel->m_cMap->GetTileSize() - theHero->GetMapOffset().y, 0);
 
 			// Render the background image
-			if(!blackout.blackout)
+			RenderBackground();
+			// Render the Game Objects
+			RenderGameObjects();
+			// Render the zombie
+			RenderEnemies();
+			// Render the hero
+			if(this->theHero->GetRenderHero())
 			{
-				RenderBackground();
-
-				// Render the Game Objects
-				RenderGameObjects();
-				// Render the zombie
-				RenderEnemies();
-				// Render the hero
-				if(this->theHero->GetRenderHero())
-				{
-					RenderHero();
-				}
+				RenderHero();
+			}
+			if(blackout.blackout)
+			{
+				if(blackout.lightSize > 1)
+					Render2DMesh(meshList[GEO_BLACK_HOLE], false, blackout.lightSize, theHero->GetPos().x - currentLevel->gameObjectsManager->tileSize * 0.5, theHero->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, true);
+				else
+					Render2DMesh(meshList[GEO_BLACK], false, 1.0f, -(currentLevel->m_cMap->GetNumOfTiles_Width() * currentLevel->m_cMap->GetTileSize() * 0.5 - theHero->GetPos().x - currentLevel->m_cMap->GetTileSize() - theHero->GetMapOffset().x), -(currentLevel->m_cMap->GetNumOfTiles_Height() * currentLevel->m_cMap->GetTileSize() * 0.5 - theHero->GetPos().y - currentLevel->m_cMap->GetTileSize() - theHero->GetMapOffset().y));
 			}
 			modelStack.PopMatrix();
-
+		
 
 			if(hackingGame.active)
 			{
@@ -876,6 +888,18 @@ void SceneSP3::RenderGUI()
 		if(theHero->GetHealth() == 3)
 			RenderMeshIn2D(meshList[GEO_LIVE_3], false, 1.0f, -69 + 7 * i, 69.5);
 	}
+
+	////////////////////////FLASHLIGHT UI BY IVAN DO NOT TOUCH//////////////////////////////////
+	modelStack.PushMatrix();
+	modelStack.Translate(260, 703, 0);
+	modelStack.Scale(blackout.battery * 45 , 65, 0);
+	if(blackout.fullyCharged)
+		Render2DMesh(meshList[GEO_HACK_YELLOW_BAR], false, 1.f, 0 , 0);
+	else
+		Render2DMesh(meshList[GEO_HACK_RED_BAR], false, 1.f, 0 , 0);
+	modelStack.PopMatrix();
+	Render2DMesh(meshList[GEO_FLASHLIGHT], false, 1.f, 260 , 703);
+	////////////////////////////////////////////////////////////////////////////////////////////
 
 	std::ostringstream time;
 	time.precision(3);

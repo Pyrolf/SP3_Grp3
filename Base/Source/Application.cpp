@@ -214,3 +214,12 @@ void Application::Exit()
 	//Finalize and clean up GLFW
 	glfwTerminate();
 }
+
+int Application::getWindowWidth()
+{
+	return m_window_width;
+}
+int Application::getWindowHeight()
+{
+	return m_window_height;
+}

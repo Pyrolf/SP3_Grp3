@@ -4,9 +4,10 @@
 class Blackout
 {
 public:
-	bool blackout;
+	bool blackout, lightOn, fullyCharged;
 	float blackoutTime, blackoutTreshold, cooldown, cooldownTreshold;
 	int noOfBlinks;
+	double battery, lightSize;
 
 	Blackout(void);
 	~Blackout(void);
