@@ -499,7 +499,7 @@ void SceneSP3::Update(double dt)
 						}
 						else
 						{
-							this->theHero->knockBackEnabled(enemy->GetPos());
+							this->theHero->knockBackEnabled(enemy->GetVel());
 							this->theHero->SetJustGotDamged(true);
 						}
 					}

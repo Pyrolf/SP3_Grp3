@@ -105,6 +105,11 @@ CPosNode* CEnemy::GetTargetPosNode(void)
 	return theENEMYTargetPosNode;
 }
 
+// Get velocity of the player
+Vector3 CEnemy::GetVel(void)
+{
+	return vel;
+}
 
 // Set Animation Invert status of the player
 void CEnemy::SetAnimationInvert(bool enemyAnimationInvert)
@@ -190,7 +195,7 @@ void CEnemy::CheckMode(CPosNode* heroPosNode, int tileSize, Vector3 heroPos)
 	float DistFromHeroToEnemy = (theENEMYPosition - heroPos).Length();
 	float DistFromHeroToEnemyInit = (heroPos - theENEMYInitialPosNode->pos).Length();
 	// If within range of detection
-	if(DistFromHeroToEnemy <= maxRangeToDetect && DistFromHeroToEnemyInit <= maxRangeToDetect * 2)
+	if(checkIfHeroIsWithinSight(heroPos) && DistFromHeroToEnemyInit <= maxRangeToDetect * 2)
 	{
 		// If not chase or attack
 		if(currentMode != CHASE && currentMode != ATTACK)
@@ -300,6 +305,30 @@ void CEnemy::ReturnCheck(int tileSize)
 		ChoosePatrolOrIdleMode();
 	}
 }
+
+
+bool CEnemy::checkIfHeroIsWithinSight(Vector3 heroPos)
+{
+	// if within radius
+	if((theENEMYPosition - heroPos).Length() <= maxRangeToDetect)
+	{
+		// if enemy looking up and hero is on top
+		if((enemyAnimationDirection == UP) && (heroPos.y > theENEMYPosition.y)
+		// if enemy looking down and hero is below
+			||(enemyAnimationDirection == DOWN) && (heroPos.y < theENEMYPosition.y)
+		// if enemy looking left and hero is on the left
+			||(enemyAnimationDirection == LEFT) && (heroPos.x < theENEMYPosition.x)
+		// if enemy looking right and hero is on the right
+			||(enemyAnimationDirection == RIGHT) && (heroPos.x > theENEMYPosition.x))
+		{
+			return true;
+		}
+	}
+
+	// If not within sight
+	return false;
+}
+
 
 // Choose patrol or idle mode
 void CEnemy::ChoosePatrolOrIdleMode(void)
@@ -455,30 +484,154 @@ void CEnemy::Update(int tileSize, float timeDiff, CPosNode* heroPosNode, Vector3
 	case RETURN:
 		{
 			moving(timeDiff);
-			if(currentMode == NIL)
+			float DistFromHeroToEnemy = (theENEMYPosition - heroPos).Length();
+			// If within range of attack
+			if(DistFromHeroToEnemy <= tileSize * 0.5)
 			{
-				currentMode = RETURN;
-				CheckMode(heroPosNode, tileSize, heroPos);
+				// If not attack
+				if(currentMode != ATTACK)
+				{
+					currentMode = ATTACK;
+					hitHero = true;
+					time = 0.5f;
+					enemyPath.push_back(theENEMYTargetPosNode);
+
+					// If target at up side
+					if(theENEMYCurrentPosNode->up == theENEMYTargetPosNode)
+					{
+						theENEMYTargetPosNode = theENEMYTargetPosNode->down;
+						theENEMYCurrentPosNode = theENEMYCurrentPosNode->down;
+						theENEMYPosition = theENEMYCurrentPosNode->pos;
+					}
+					// If target at down side
+					else if(theENEMYCurrentPosNode->down == theENEMYTargetPosNode)
+					{
+						theENEMYTargetPosNode = theENEMYTargetPosNode->up;
+						theENEMYCurrentPosNode = theENEMYCurrentPosNode->up;
+						theENEMYPosition = theENEMYCurrentPosNode->pos;
+					}
+					// If target at left side
+					else if(theENEMYCurrentPosNode->left == theENEMYTargetPosNode)
+					{
+						theENEMYTargetPosNode = theENEMYTargetPosNode->right;
+						theENEMYCurrentPosNode = theENEMYCurrentPosNode->right;
+						theENEMYPosition = theENEMYCurrentPosNode->pos;
+					}
+					// If target at right side
+					else if(theENEMYCurrentPosNode->right == theENEMYTargetPosNode)
+					{
+						theENEMYTargetPosNode = theENEMYTargetPosNode->left;
+						theENEMYCurrentPosNode = theENEMYCurrentPosNode->left;
+						theENEMYPosition = theENEMYCurrentPosNode->pos;
+					}
+
+					while(theENEMYCurrentPosNode->posType > CPosNode::NONE 
+						&& theENEMYCurrentPosNode->posType < CPosNode::ENEMY_INITIAL_POS)
+					{
+						theENEMYCurrentPosNode = theENEMYTargetPosNode;
+						theENEMYPosition = theENEMYCurrentPosNode->pos;
+						if(enemyPath.size() != 0)
+						{
+							theENEMYTargetPosNode = enemyPath.back();
+							enemyPath.pop_back();
+						}
+						else
+						{
+							theENEMYTargetPosNode = heroPosNode;
+						}
+					}
+
+				}
+			}
+			else
+			{
+				if(currentMode == NIL)
+				{
+					currentMode = RETURN;
+					CheckMode(heroPosNode, tileSize, heroPos);
+				}
 			}
 		}
 		break;
 	case PATROL:
 		{
 			moving(timeDiff);
-			if(currentMode == NIL)
+			float DistFromHeroToEnemy = (theENEMYPosition - heroPos).Length();
+			// If within range of attack
+			if(DistFromHeroToEnemy <= tileSize * 0.5)
 			{
-				if((theENEMYCurrentPosNode->pos - theENEMYInitialPosNode->pos).Length() > maxRangeToDetect * 2)
+				// If not attack
+				if(currentMode != ATTACK)
 				{
-					currentMode = RETURN;
+					currentMode = ATTACK;
+					hitHero = true;
+					time = 0.5f;
+					enemyPath.push_back(theENEMYTargetPosNode);
+
+					// If target at up side
+					if(theENEMYCurrentPosNode->up == theENEMYTargetPosNode)
+					{
+						theENEMYTargetPosNode = theENEMYTargetPosNode->down;
+						theENEMYCurrentPosNode = theENEMYCurrentPosNode->down;
+						theENEMYPosition = theENEMYCurrentPosNode->pos;
+					}
+					// If target at down side
+					else if(theENEMYCurrentPosNode->down == theENEMYTargetPosNode)
+					{
+						theENEMYTargetPosNode = theENEMYTargetPosNode->up;
+						theENEMYCurrentPosNode = theENEMYCurrentPosNode->up;
+						theENEMYPosition = theENEMYCurrentPosNode->pos;
+					}
+					// If target at left side
+					else if(theENEMYCurrentPosNode->left == theENEMYTargetPosNode)
+					{
+						theENEMYTargetPosNode = theENEMYTargetPosNode->right;
+						theENEMYCurrentPosNode = theENEMYCurrentPosNode->right;
+						theENEMYPosition = theENEMYCurrentPosNode->pos;
+					}
+					// If target at right side
+					else if(theENEMYCurrentPosNode->right == theENEMYTargetPosNode)
+					{
+						theENEMYTargetPosNode = theENEMYTargetPosNode->left;
+						theENEMYCurrentPosNode = theENEMYCurrentPosNode->left;
+						theENEMYPosition = theENEMYCurrentPosNode->pos;
+					}
+
+					while(theENEMYCurrentPosNode->posType > CPosNode::NONE 
+						&& theENEMYCurrentPosNode->posType < CPosNode::ENEMY_INITIAL_POS)
+					{
+						theENEMYCurrentPosNode = theENEMYTargetPosNode;
+						theENEMYPosition = theENEMYCurrentPosNode->pos;
+						if(enemyPath.size() != 0)
+						{
+							theENEMYTargetPosNode = enemyPath.back();
+							enemyPath.pop_back();
+						}
+						else
+						{
+							theENEMYTargetPosNode = heroPosNode;
+						}
+					}
+
 				}
-				else
+			}
+			else
+			{
+				if(currentMode == NIL)
 				{
-					currentMode = PATROL;
-				}
-				CheckMode(heroPosNode, tileSize, heroPos);
-				if(currentMode == PATROL)
-				{
-					ChoosePatrolOrIdleMode();
+					if((theENEMYCurrentPosNode->pos - theENEMYInitialPosNode->pos).Length() > maxRangeToDetect * 2)
+					{
+						currentMode = RETURN;
+					}
+					else
+					{
+						currentMode = PATROL;
+					}
+					CheckMode(heroPosNode, tileSize, heroPos);
+					if(currentMode == PATROL)
+					{
+						ChoosePatrolOrIdleMode();
+					}
 				}
 			}
 		}

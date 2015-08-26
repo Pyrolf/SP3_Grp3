@@ -43,6 +43,9 @@ public:
 	// Get target position node of the enemy
 	CPosNode* GetTargetPosNode(void);
 	
+	// Get velocity of the enemy
+	Vector3 GetVel(void);
+
 	// Set time of the enemy
 	void SetTime(float time);
 	// Get time of the enemy
@@ -93,6 +96,7 @@ public:
 	void CheckMode(CPosNode* heroPosNode, int tileSize, Vector3 heroPos);
 	void ChaseCheck(CPosNode* heroPosNode, int tileSize);
 	void ReturnCheck(int tileSize);
+	bool checkIfHeroIsWithinSight(Vector3 heroPos);
 
 	// Choose patrol or idle mode
 	void ChoosePatrolOrIdleMode(void);

@@ -456,11 +456,11 @@ void CPlayerInfo::HeroUpdate(float timeDiff, CAIManager* ai_manager, GameObjectF
 }
 
 
-void CPlayerInfo::knockBackEnabled(Vector3 AI_Pos)
+void CPlayerInfo::knockBackEnabled(Vector3 AI_Vel)
 {
 	if(theHeroCurrentPosNode == theHeroTargetPosNode)
 	{
-		if(AI_Pos.y > theHeroCurrentPosNode->pos.y)
+		if(AI_Vel.y < 0)
 		{
 			theHeroTargetPosNode = theHeroTargetPosNode->down;
 			if(!CPlayerInfo::CheckCollisionTarget())
@@ -477,7 +477,7 @@ void CPlayerInfo::knockBackEnabled(Vector3 AI_Pos)
 				theHeroTargetPosNode = theHeroCurrentPosNode;
 			}
 		}
-		else if(AI_Pos.y < theHeroCurrentPosNode->pos.y)
+		else if(AI_Vel.y > 0)
 		{
 			theHeroTargetPosNode = theHeroTargetPosNode->up;
 			if(!CPlayerInfo::CheckCollisionTarget())
@@ -494,7 +494,7 @@ void CPlayerInfo::knockBackEnabled(Vector3 AI_Pos)
 				theHeroTargetPosNode = theHeroCurrentPosNode;
 			}
 		}
-		else if(AI_Pos.x > theHeroCurrentPosNode->pos.x)
+		else if(AI_Vel.x < 0)
 		{
 			theHeroTargetPosNode = theHeroTargetPosNode->left;
 			if(!CPlayerInfo::CheckCollisionTarget())
@@ -511,7 +511,7 @@ void CPlayerInfo::knockBackEnabled(Vector3 AI_Pos)
 				theHeroTargetPosNode = theHeroCurrentPosNode;
 			}
 		}
-		else if(AI_Pos.x < theHeroCurrentPosNode->pos.x)
+		else if(AI_Vel.x > 0)
 		{
 			theHeroTargetPosNode = theHeroTargetPosNode->right;
 			if(!CPlayerInfo::CheckCollisionTarget())
