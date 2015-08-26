@@ -313,13 +313,13 @@ bool CEnemy::checkIfHeroIsWithinSight(Vector3 heroPos)
 	if((theENEMYPosition - heroPos).Length() <= maxRangeToDetect)
 	{
 		// if enemy looking up and hero is on top
-		if((enemyAnimationDirection == UP) && (heroPos.y > theENEMYPosition.y)
-		// if enemy looking down and hero is below
-			||(enemyAnimationDirection == DOWN) && (heroPos.y < theENEMYPosition.y)
-		// if enemy looking left and hero is on the left
-			||(enemyAnimationDirection == LEFT) && (heroPos.x < theENEMYPosition.x)
-		// if enemy looking right and hero is on the right
-			||(enemyAnimationDirection == RIGHT) && (heroPos.x > theENEMYPosition.x))
+		if((enemyAnimationDirection == UP) && (heroPos.y >= theENEMYPosition.y)
+			// if enemy looking down and hero is below
+			||(enemyAnimationDirection == DOWN) && (heroPos.y <= theENEMYPosition.y)
+			// if enemy looking left and hero is on the left
+			||(enemyAnimationDirection == LEFT) && (heroPos.x <= theENEMYPosition.x)
+			// if enemy looking right and hero is on the right
+			||(enemyAnimationDirection == RIGHT) && (heroPos.x >= theENEMYPosition.x))
 		{
 			return true;
 		}
@@ -622,15 +622,16 @@ void CEnemy::Update(int tileSize, float timeDiff, CPosNode* heroPosNode, Vector3
 					if((theENEMYCurrentPosNode->pos - theENEMYInitialPosNode->pos).Length() > maxRangeToDetect * 2)
 					{
 						currentMode = RETURN;
+						ReturnCheck(tileSize);
 					}
 					else
 					{
 						currentMode = PATROL;
-					}
-					CheckMode(heroPosNode, tileSize, heroPos);
-					if(currentMode == PATROL)
-					{
-						ChoosePatrolOrIdleMode();
+						CheckMode(heroPosNode, tileSize, heroPos);
+						if(currentMode == PATROL)
+						{
+							ChoosePatrolOrIdleMode();
+						}
 					}
 				}
 			}
@@ -751,8 +752,15 @@ vector<CPosNode*> CEnemy::PathFinding(CPosNode* TargetPosNode, int tileSize)
 				else
 				{
 					A = A->parent;
-					deletedList.push_back(A);
-					closedList.pop_back();
+					if(A != theENEMYCurrentPosNode)
+					{
+						deletedList.push_back(A);
+						closedList.pop_back();
+					}
+					else
+					{
+						break;
+					}
 				}
 			}
 		}
