@@ -151,3 +151,15 @@ void ActiveGameObject::update(double dt)
 		}
 	}
 }
+
+void ActiveGameObject::Reset()
+{
+	currentFrame = 0;
+
+	active = false;
+	canActivate = true;
+
+	frameTime = currentFrameTime = timmer = 0;
+
+	InitRanodmVars();
+}

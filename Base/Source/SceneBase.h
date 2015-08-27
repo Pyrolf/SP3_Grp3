@@ -131,6 +131,7 @@ public:
 		GEO_BLACK_HOLE,
 
 		GEO_FLASHLIGHT,
+		GEO_FLASH,
 		NUM_GEOMETRY,
 	};
 

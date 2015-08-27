@@ -228,9 +228,11 @@ void SceneBase::Init()
 	meshList[GEO_BLACK] = MeshBuilder::Generate2DMesh("BLACK", Color(0, 0, 0), 0.0f, 0.0f, Application::getWindowWidth(),  Application::getWindowHeight());
 	meshList[GEO_BLACK_HOLE] = MeshBuilder::GenerateRing("BLACK HOLE", Color(0, 0, 0), 36, Application::getWindowWidth() * 2, Application::getWindowWidth() * 0.01);
 
-	meshList[GEO_FLASHLIGHT] = MeshBuilder::Generate2DMesh("ff", Color(1, 1, 1), 0.0f, 0.0f, 180.f, 65.f);
+	meshList[GEO_FLASHLIGHT] = MeshBuilder::Generate2DMesh("ff", Color(1, 1, 1), 0.0f, 0.0f, 170.f, 170.f);
 	meshList[GEO_FLASHLIGHT]->textureID = LoadTGA("Image//flash ui.tga");
-	
+	meshList[GEO_FLASH] = MeshBuilder::Generate2DMesh("ff", Color(1, 1, 1), 0.0f, 0.0f, 60.f, 60.f);
+	meshList[GEO_FLASH]->textureID = LoadTGA("Image//flash.tga");
+
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 1000 units
 	Mtx44 perspective;
 	perspective.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);

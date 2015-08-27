@@ -17,4 +17,5 @@ public:
 
 	void generateGO(CMap *map);
 	GameObject* CheckColision(Vector3 pos);
+	void ResetUGO();
 };

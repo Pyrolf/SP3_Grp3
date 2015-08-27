@@ -13,4 +13,5 @@ public:
 	~Blackout(void);
 
 	void Update(double dt);
+	void Reset();
 };

@@ -6,7 +6,7 @@ Blackout::Blackout(void)
 	blackout = false;
 	blackoutTime = Math::RandFloatMinMax(4, 6);
 	blackoutTreshold = 0;
-	cooldown = Math::RandFloatMinMax(4, 8);
+	cooldown = Math::RandFloatMinMax(6, 8);
 	cooldownTreshold = 0;
 	noOfBlinks = 0;
 
@@ -50,7 +50,7 @@ void Blackout::Update(double dt)
 		else if(cooldownTreshold > cooldown)
 		{
 			cooldownTreshold = 0;
-			cooldown = Math::RandFloatMinMax(4, 8);
+			cooldown = Math::RandFloatMinMax(6, 8);
 			noOfBlinks = Math::RandIntMinMax(2, 4);
 		}
 	}
@@ -58,7 +58,7 @@ void Blackout::Update(double dt)
 	if(lightOn && fullyCharged)
 	{
 		battery -= dt;
-		lightSize += dt * 12;
+		lightSize += dt * 26;
 
 		if(battery < 0)
 		{
@@ -66,16 +66,16 @@ void Blackout::Update(double dt)
 			lightOn = false;
 			fullyCharged = false;
 		}
-		if(lightSize > 8)
+		if(lightSize > 10)
 		{
-			lightSize = 8;
+			lightSize = 10;
 		}
 	}
 	else if(!lightOn && battery < 4 || lightSize > 1)
 	{
 		if(battery < 4)
 		{
-			battery += dt/2.5;
+			battery += dt/2;
 			if(battery > 4)
 			{
 				battery = 4;
@@ -84,11 +84,26 @@ void Blackout::Update(double dt)
 		}
 		if(lightSize > 1)
 		{
-			lightSize -= dt * 16;
+			lightSize -= dt * 30;
 			if(lightSize < 1)
 			{
 				lightSize = 1;
 			}
 		}
 	}
+}
+
+void Blackout::Reset()
+{
+	blackout = false;
+	blackoutTime = Math::RandFloatMinMax(4, 6);
+	blackoutTreshold = 0;
+	cooldown = Math::RandFloatMinMax(6, 8);
+	cooldownTreshold = 0;
+	noOfBlinks = 0;
+
+	lightOn = false;
+	fullyCharged;
+	battery = 4;
+	lightSize = 1;
 }

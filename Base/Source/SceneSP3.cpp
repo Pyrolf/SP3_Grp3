@@ -381,6 +381,8 @@ void SceneSP3::UpdateInputs(double dt)
 					this->theHero->Reset();
 					this->theHero->SetCurrentState(this->theHero->NIL);
 					clock.Reset();
+					currentLevel->gameObjectsManager->ResetUGO();
+					blackout.Reset();
 					currentLevel->AI_Manager->Reset();
 				}
 				choice = NONE;
@@ -403,6 +405,8 @@ void SceneSP3::UpdateInputs(double dt)
 				gameState = MAINMENU;
 				this->theHero->Reset();
 				clock.Reset();
+				currentLevel->gameObjectsManager->ResetUGO();
+				blackout.Reset();
 				this->theHero->SetCurrentState(this->theHero->NIL);
 				currentLevel->AI_Manager->Reset();
 			}
@@ -436,6 +440,8 @@ void SceneSP3::Update(double dt)
 			if(this->theHero->GetTimeElasped() >= 1.f)
 			{
 				currentLevel->AI_Manager->Reset();
+				currentLevel->gameObjectsManager->ResetUGO();
+				blackout.Reset();
 				for(int index = 0; index < levelList.size(); index++)
 				{
 					if(currentLevel == levelList[index])
@@ -878,14 +884,19 @@ void SceneSP3::RenderGUI()
 
 	////////////////////////FLASHLIGHT UI BY IVAN DO NOT TOUCH//////////////////////////////////
 	modelStack.PushMatrix();
-	modelStack.Translate(260, 703, 0);
-	modelStack.Scale(blackout.battery * 45 , 65, 0);
+	modelStack.Translate(268, 725, 0);
+	modelStack.Scale(blackout.battery * 30, 20, 0);
 	if(blackout.fullyCharged)
 		Render2DMesh(meshList[GEO_HACK_YELLOW_BAR], false, 1.f, 0 , 0);
 	else
 		Render2DMesh(meshList[GEO_HACK_RED_BAR], false, 1.f, 0 , 0);
 	modelStack.PopMatrix();
-	Render2DMesh(meshList[GEO_FLASHLIGHT], false, 1.f, 260 , 703);
+	Render2DMesh(meshList[GEO_FLASHLIGHT], false, 1.f, 260 , 650);
+	
+	if(blackout.lightSize > 1)
+	{
+		Render2DMesh(meshList[GEO_FLASH], false, 1.f, 435 , 705);
+	}
 	////////////////////////////////////////////////////////////////////////////////////////////
 
 	std::ostringstream time;

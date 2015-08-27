@@ -13,4 +13,5 @@ public:
 
 	void update(double dt);
 	void InitRanodmVars();
+	void Reset();
 };

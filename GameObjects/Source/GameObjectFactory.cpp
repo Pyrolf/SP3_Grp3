@@ -67,3 +67,10 @@ GameObject* GameObjectFactory::CheckColision(Vector3 pos)
 	return NULL;
 }
 
+void GameObjectFactory::ResetUGO()
+{
+	for(int i = 0; i < UpdatableGoList.size(); ++i)
+	{
+		UpdatableGoList[i]->Reset();
+	}
+}
