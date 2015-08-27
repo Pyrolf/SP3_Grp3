@@ -480,7 +480,7 @@ void SceneSP3::Update(double dt)
 		for(vector<CEnemy *>::iterator it = currentLevel->AI_Manager->enemiesList.begin(); it != currentLevel->AI_Manager->enemiesList.end(); ++it)
 		{
 			CEnemy *enemy = (CEnemy *)*it;
-			//if((enemy->GetPos()- theHero->GetPos()).Length() < enemy->GetMaxRangeToDetect() * 3)
+			if(enemy->active)
 			{
 				enemy->Update(currentLevel->gameObjectsManager->tileSize, dt, theHero->GetCurrentPosNode(), theHero->GetPos());
 				if(enemy->GetHitHero())
@@ -826,36 +826,43 @@ void SceneSP3::RenderEnemies()
 	{
 		CEnemy *enemy = (CEnemy *)*it;
 
-		if(enemy->GetAnimationDirection() == enemy->DOWN)
+		if(enemy->active)
 		{
-			Render2DMesh(meshList[GEO_ENEMY_FRONT_0 + (int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos().x, enemy->GetPos().y);
-		}
-		else if(enemy->GetAnimationDirection() == enemy->UP)
-		{
-			Render2DMesh(meshList[GEO_ENEMY_BACK_0 + (int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos().x, enemy->GetPos().y);
+			if(enemy->GetAnimationDirection() == enemy->DOWN)
+			{
+				Render2DMesh(meshList[GEO_ENEMY_FRONT_0 + (int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos().x, enemy->GetPos().y);
+			}
+			else if(enemy->GetAnimationDirection() == enemy->UP)
+			{
+				Render2DMesh(meshList[GEO_ENEMY_BACK_0 + (int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos().x, enemy->GetPos().y);
+			}
+			else
+			{
+				// enemy move right
+				if(enemy->GetAnimationInvert() == false)
+				{
+					Render2DMesh(meshList[GEO_ENEMY_SIDE_0 + (int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos().x, enemy->GetPos().y);
+				}
+				// enemy move left
+				else
+				{
+
+					Render2DMesh(meshList[GEO_ENEMY_SIDE_0 + (int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos().x, enemy->GetPos().y, true);
+				}
+			}
+			if(enemy->GetCurrentMode() == enemy->CHASE || enemy->GetCurrentMode() == enemy->ATTACK)
+			{
+				Render2DMesh(meshList[GEO_ENEMY_ALERT_SIGN], false, 1.0f, enemy->GetPos().x, enemy->GetPos().y + currentLevel->gameObjectsManager->tileSize);
+			}
+
+			// Render ranges
+			Render2DMesh(meshList[GEO_ATTACK_RANGE], false, 1.0f, enemy->GetPos().x - currentLevel->gameObjectsManager->tileSize * 0.5, enemy->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, true);
+			Render2DMesh(meshList[GEO_REPEL_RANGE], false, 1.0f, enemy->GetPos().x - currentLevel->gameObjectsManager->tileSize * 0.5, enemy->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, true);
 		}
 		else
 		{
-			// enemy move right
-			if(enemy->GetAnimationInvert() == false)
-			{
-				Render2DMesh(meshList[GEO_ENEMY_SIDE_0 + (int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos().x, enemy->GetPos().y);
-			}
-			// enemy move left
-			else
-			{
-
-				Render2DMesh(meshList[GEO_ENEMY_SIDE_0 + (int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos().x, enemy->GetPos().y, true);
-			}
+			Render2DMesh(meshList[GEO_ENEMY_BACK_0], false, 1.0f, enemy->GetPos().x + currentLevel->gameObjectsManager->tileSize * 0.5, enemy->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, false, 90.f);
 		}
-		if(enemy->GetCurrentMode() == enemy->CHASE || enemy->GetCurrentMode() == enemy->ATTACK)
-		{
-			Render2DMesh(meshList[GEO_ENEMY_ALERT_SIGN], false, 1.0f, enemy->GetPos().x, enemy->GetPos().y + currentLevel->gameObjectsManager->tileSize);
-		}
-
-		// Render ranges
-		Render2DMesh(meshList[GEO_ATTACK_RANGE], false, 1.0f, enemy->GetPos().x - currentLevel->gameObjectsManager->tileSize * 0.5, enemy->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, true);
-		Render2DMesh(meshList[GEO_REPEL_RANGE], false, 1.0f, enemy->GetPos().x - currentLevel->gameObjectsManager->tileSize * 0.5, enemy->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, true);
 	}
 }
 

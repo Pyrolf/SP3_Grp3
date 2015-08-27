@@ -15,6 +15,7 @@ CEnemy::CEnemy(void)
 	, theENEMYTargetPosNode(NULL)
 	, vel(Vector3(0,0,0))
 	, movementSpeed(200.0f)
+	, active(true)
 {
 }
 
@@ -46,6 +47,8 @@ void CEnemy::Reset(void)
 	enemyAnimationDirection = DOWN;
 	enemyAnimationCounter = 0.0f;
 	enemyAnimationInvert = false;
+
+	active = true;
 }
 
 

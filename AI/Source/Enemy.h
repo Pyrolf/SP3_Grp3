@@ -119,6 +119,7 @@ public:
 
 	int Calculate_F(CPosNode* CurrentPosNode, CPosNode* TargetPosNode, float tileSize, vector<CPosNode*> list);
 
+	bool active;
 private:
 	// ENEMY's information
 	Vector3 theENEMYPosition;
@@ -126,7 +127,7 @@ private:
 	CPosNode* theENEMYCurrentPosNode;
 	CPosNode* theENEMYTargetPosNode;
 	Vector3 vel;
-	vector<CPosNode*> enemyPath;
+	vector<CPosNode*> enemyPath; 
 	
 	float movementSpeed;
 
