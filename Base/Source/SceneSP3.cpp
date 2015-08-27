@@ -154,24 +154,38 @@ void SceneSP3::InitHero()
 void SceneSP3::InitLevels()
 {
 	// Initialise and load the tile map
-	levelList.push_back(new Level);
-	levelList[0]->m_cMap = new CMap();
-	levelList[0]->m_cMap->Init( 768 + 64, 1024, 12 + 1, 16, 3200 + 64, 2048, 64);
+	const int noOfLevel = 3;
+	for(int i = 0; i < noOfLevel; i++)
+	{
+		levelList.push_back(new Level);
+		levelList[i]->m_cMap = new CMap();
+		levelList[i]->m_cMap->Init( 768 + 64, 1024, 12 + 1, 16, 3200 + 64, 2048, 64);
+	}
+
+	// Level 1
 	levelList[0]->m_cMap->LoadMap( "Image//MapDesignLv1.csv" );
-	levelList[0]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL1", Color(1, 1, 1), 0.0f, 0.0f, 2048, 3200);
-	levelList[0]->background->textureID = LoadTGA("Image//background_level1.tga");
-	levelList[0]->sideView = false;
+	// Level 2
+	levelList[1]->m_cMap->LoadMap( "Image//MapDesignLv5.csv" );
+	// Level 3
+	levelList[2]->m_cMap->LoadMap( "Image//MapDesignLv6.csv" );
+	
+	for(int i = 0; i < noOfLevel; i++)
+	{
+		levelList[i]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL1", Color(1, 1, 1), 0.0f, 0.0f, 2048, 3200);
+		levelList[i]->background->textureID = LoadTGA("Image//background_level1.tga");
+		levelList[i]->sideView = false;
 
-	levelList[0]->gameObjectsManager = new GameObjectFactory;
-	levelList[0]->gameObjectsManager->generateGO(levelList[0]->m_cMap);
+		levelList[i]->gameObjectsManager = new GameObjectFactory;
+		levelList[i]->gameObjectsManager->generateGO(levelList[i]->m_cMap);
 
-	levelList[0]->AI_Manager = new CAIManager;
-	levelList[0]->AI_Manager->generateEnemies(levelList[0]->m_cMap);
+		levelList[i]->AI_Manager = new CAIManager;
+		levelList[i]->AI_Manager->generateEnemies(levelList[i]->m_cMap);
 
-	levelList[0]->LevelMap_Nodes = new CLevelMap_Nodes;
-	levelList[0]->LevelMap_Nodes->GenerateNodes(levelList[0]->m_cMap, levelList[0]->AI_Manager, levelList[0]->gameObjectsManager);
+		levelList[i]->LevelMap_Nodes = new CLevelMap_Nodes;
+		levelList[i]->LevelMap_Nodes->GenerateNodes(levelList[i]->m_cMap, levelList[i]->AI_Manager, levelList[i]->gameObjectsManager);
 
-	levelList[0]->HeroStartPosNode = levelList[0]->LevelMap_Nodes->FindHeroInitialNode();
+		levelList[i]->HeroStartPosNode = levelList[i]->LevelMap_Nodes->FindHeroInitialNode();
+	}
 }
 
 int SceneSP3::InitSound()
@@ -204,24 +218,7 @@ void SceneSP3::UpdateInputs(double dt)
 		{
 			if(this->theHero->GetCurrentState() == this->theHero->NIL
 				&& gameState == PLAYING)
-			{/*
-				Vector3 attackPos = Vector3(this->theHero->GetPos_x(), this->theHero->GetPos_y());
-				if(this->theHero->GetAnimationDirection() == this->theHero->UP)
-				{
-					attackPos.y += currentLevel->gameObjectsManager->tileSize;
-				}
-				else if(this->theHero->GetAnimationDirection() == this->theHero->DOWN)
-				{
-					attackPos.y -= currentLevel->gameObjectsManager->tileSize;
-				}
-				else if(this->theHero->GetAnimationDirection() == this->theHero->RIGHT)
-				{
-					attackPos.x += currentLevel->gameObjectsManager->tileSize;
-				}
-				else if(this->theHero->GetAnimationDirection() == this->theHero->LEFT)
-				{
-					attackPos.x -= currentLevel->gameObjectsManager->tileSize;
-				}*/
+			{
 				this->theHero->attackingEnabled();
 			}
 		}
@@ -232,9 +229,6 @@ void SceneSP3::UpdateInputs(double dt)
 			if(this->theHero->GetCurrentState() == this->theHero->NIL 
 				&& gameState == PLAYING)
 			{
-				//GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x(), this->theHero->GetPos_y() + currentLevel->gameObjectsManager->tileSize));
-
-				//HeroColision(goCollidedWith, true, true, dt);
 				this->theHero->MoveUpDown(true);
 			}
 		}
@@ -244,9 +238,6 @@ void SceneSP3::UpdateInputs(double dt)
 			if(this->theHero->GetCurrentState() == this->theHero->NIL
 				&& gameState == PLAYING)
 			{
-				/*GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x(), this->theHero->GetPos_y() - currentLevel->gameObjectsManager->tileSize));
-
-				HeroColision(goCollidedWith, true, false, dt);*/
 				this->theHero->MoveUpDown(false);
 			}
 		}
@@ -257,9 +248,6 @@ void SceneSP3::UpdateInputs(double dt)
 			if(this->theHero->GetCurrentState() == this->theHero->NIL
 				&& gameState == PLAYING)
 			{
-				/*GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x() - currentLevel->gameObjectsManager->tileSize, this->theHero->GetPos_y()));
-
-				HeroColision(goCollidedWith, false, true, dt);*/
 				this->theHero->MoveLeftRight(true);
 			}
 		}
@@ -270,13 +258,11 @@ void SceneSP3::UpdateInputs(double dt)
 			if(this->theHero->GetCurrentState() == this->theHero->NIL
 				&& gameState == PLAYING)
 			{
-				/*GameObject* goCollidedWith = currentLevel->gameObjectsManager->CheckColision(Vector3(this->theHero->GetPos_x() + currentLevel->gameObjectsManager->tileSize, this->theHero->GetPos_y()));
-
-				HeroColision(goCollidedWith, false, false, dt);*/
 				this->theHero->MoveLeftRight(false);
 			}
 		}
 
+		// if not pressing anything and moving
 		if(!Application::IsKeyPressed('W') && !Application::IsKeyPressed('A') && !Application::IsKeyPressed('S') && !Application::IsKeyPressed('D') && !Application::IsKeyPressed('F')
 			&& gameState == PLAYING
 			&& this->theHero->GetCurrentState() == this->theHero->NIL)
@@ -439,12 +425,12 @@ void SceneSP3::Update(double dt)
 
 	if(gameState == PLAYING)
 	{
-		// Exiting
 		if(this->theHero->GetCurrentState() != this->theHero->DYING && this->theHero->GetCurrentState() != this->theHero->EXITING)
 		{
 			clock.update(dt);
 		}
 		
+		// Exiting
 		if(this->theHero->GetCurrentState() == this->theHero->EXITING)
 		{
 			if(this->theHero->GetTimeElasped() >= 1.f)
@@ -457,12 +443,13 @@ void SceneSP3::Update(double dt)
 						if(index + 1 < levelList.size())
 						{
 							currentLevel = levelList[index + 1];
-							theHero->SetPos(currentLevel->HeroStartPosNode->pos);
-							theHero->SetInitialPosNode(currentLevel->HeroStartPosNode);
-							theHero->SetCurrentPosNode(currentLevel->HeroStartPosNode);
-							theHero->SetTargetPosNode(currentLevel->HeroStartPosNode);
+							this->theHero->SetPos(currentLevel->HeroStartPosNode->pos);
+							this->theHero->SetInitialPosNode(currentLevel->HeroStartPosNode);
+							this->theHero->SetCurrentPosNode(currentLevel->HeroStartPosNode);
+							this->theHero->SetTargetPosNode(currentLevel->HeroStartPosNode);
 							this->theHero->SetCurrentState(this->theHero->NIL);
 							this->theHero->SetTimeElasped( 0.f );
+							this->theHero->SetAnimationDirection(CPlayerInfo::DOWN);
 							break;
 						}
 						else
