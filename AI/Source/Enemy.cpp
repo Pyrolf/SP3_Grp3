@@ -15,6 +15,7 @@ CEnemy::CEnemy(void)
 	, theENEMYTargetPosNode(NULL)
 	, vel(Vector3(0,0,0))
 	, movementSpeed(200.0f)
+	, active(true)
 {
 }
 
@@ -46,6 +47,8 @@ void CEnemy::Reset(void)
 	enemyAnimationDirection = DOWN;
 	enemyAnimationCounter = 0.0f;
 	enemyAnimationInvert = false;
+
+	active = true;
 }
 
 
@@ -261,9 +264,12 @@ void CEnemy::ChaseCheck(CPosNode* heroPosNode, int tileSize)
 		{
 			enemyPath.pop_back();
 		}
-		theENEMYTargetPosNode = enemyPath.back();
-		enemyPath.pop_back();
-		CalculateVel();
+		if(enemyPath.size() != 0)
+		{
+			theENEMYTargetPosNode = enemyPath.back();
+			enemyPath.pop_back();
+			CalculateVel();
+		}
 	}
 	// if path is empty
 	else
@@ -289,9 +295,12 @@ void CEnemy::ReturnCheck(int tileSize)
 			{
 				enemyPath.pop_back();
 			}
-			theENEMYTargetPosNode = enemyPath.back();
-			enemyPath.pop_back();
-			CalculateVel();
+			if(enemyPath.size() != 0)
+			{
+				theENEMYTargetPosNode = enemyPath.back();
+				enemyPath.pop_back();
+				CalculateVel();
+			}
 		}
 		else
 		{

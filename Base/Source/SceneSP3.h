@@ -6,8 +6,11 @@
 #include "Vector3.h"
 #include "PlayerInfo.h"
 #include "HackingGame.h"
-#include "Timing.h"
+
 #include "Blackout.h"
+#include "Minimap.h"
+#include "Highscore.h"
+#include "Record.h"
 
 #include <irrKlang.h>
 #pragma comment(lib, "irrKlang.lib")
@@ -28,10 +31,11 @@ public:
 	{
 		NONE,
 		PLAY,
-		QUIT,
+		SCORE,
 		EXIT,
+		QUIT,
 	};
-	CHOICE choice;
+	int choice;
 
 private:
 
@@ -52,30 +56,33 @@ private:
 	void RenderGameObjects();
 	void RenderEnemies();
 	void RenderGUI();
+	void RenderMinimap();
 
 	enum GAME_STATE
 	{
 		MAINMENU,
 		PLAYING,
+		HIGHSCORE,
 		PAUSE,
 		GAMEOVER,
 	};
 	GAME_STATE gameState;
-	int highscore;
+	Highscore score;
+	CRecord playerRecord;
+	CMinimap* m_cMiniMap;
 
 	void UpdateInputs(double dt);
-	void HeroColision(GameObject* goCollidedWith, bool updown, bool upORleft, double dt);
 
 	vector<Mesh*> wallMesh, holeMesh, doorMesh, wetFloorMesh, timmingDoorMesh, lockedDoorMesh, hackMesh, healthMesh, fireMesh, arrowMesh;
 	void InitGoMeshes();
+	void InitMinimap();
 	void DeleteGoMeshes();
 	void UpdateActiveGO(double dt);
-
+	int menustate;
 	HackingGame hackingGame;
 
 	void RenderHackGame();
 
-	CTiming clock;
 	Blackout blackout;
 };
 

@@ -102,13 +102,13 @@ public:
 	Vector3 GetMapOffset(void);
 
 	// Update Movements
-	void MoveUpDown(const bool mode);
-	void MoveLeftRight(const bool mode);
+	void MoveUpDown(const bool mode, CAIManager* ai_manager, int tileSize);
+	void MoveLeftRight(const bool mode, CAIManager* ai_manager, int tileSize);
 
 	// Hero Update
 	void HeroUpdate(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager, CMap* map);
 
-	void knockBackEnabled(Vector3 AI_Pos);
+	void knockBackEnabled(Vector3 AI_Pos, CAIManager* ai_manager, int tileSize);
 
 	void moving(float timeDiff, CMap* map);
 	void moveAnimation(float timeDiff, Vector3 prevPos);
@@ -116,7 +116,7 @@ public:
 	void attackingEnabled();
 	void Attacking(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager);
 	
-	bool CheckCollisionTarget(void);
+	bool CheckCollisionTarget(CAIManager* ai_manager, int tileSize);
 	bool CheckCollisionCurrent(void);
 	void CollisionResponseCurrent(void);
 

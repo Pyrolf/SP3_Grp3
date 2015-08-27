@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include "Record.h"
 
 using namespace std;
 
@@ -19,12 +20,9 @@ public:
 	void reset();
 
 	bool ReadFromTextFile();
-	void SaveTextFile();
+	//void SaveTextFile();
 	//void HighscoreCheck(double b);
-
-private:	
-	CTiming timerin[5];
+    CRecord record[5];                                                                                                       
+private:		
 	int counter;
-	CTiming highscore;
-	string PlayerName;
 };
