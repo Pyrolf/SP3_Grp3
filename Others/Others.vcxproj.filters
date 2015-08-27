@@ -20,6 +20,9 @@
     <ClCompile Include="Source\Timing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Record.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Highscore.h">
@@ -29,6 +32,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Timing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Record.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

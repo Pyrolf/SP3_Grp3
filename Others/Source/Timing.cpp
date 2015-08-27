@@ -33,7 +33,7 @@ void CTiming::Normalising()
 
 void CTiming::setMin(int m)
 {
-	min = m;
+	this->min = m;
 }
 
 int CTiming::getMin()
@@ -43,7 +43,7 @@ int CTiming::getMin()
 
 void CTiming::setSec(double s)
 {
-	sec = s;
+	this->sec = s;
 }
 
 double CTiming::getSec()

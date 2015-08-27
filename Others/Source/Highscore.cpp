@@ -13,8 +13,8 @@ void Highscore::newScore(CTiming timeringa)
 {
 	if(counter < 5)
 	{
-		timerin[counter].setMin(timeringa.getMin());
-		timerin[counter].setSec(timeringa.getSec());
+		record[counter].getTiming().setMin(timeringa.getMin());
+		record[counter].getTiming().setSec(timeringa.getSec());
 		counter++;
 	}
 }
@@ -28,34 +28,50 @@ void Highscore::reset()
 {
 	for(int i = 0; i < counter; ++i)
 	{
-		timerin[counter].setMin(0);
-		timerin[counter].setSec(0);
+		record[counter].getTiming().setMin(0);
+		record[counter].getTiming().setSec(0);
 	}
 
 }
 
-
 bool Highscore::ReadFromTextFile()
 {
-	stringstream line;
-	std::ifstream myfile ("HighScore.txt");
+	string line;
+	std::ifstream myfile;
+	myfile.open("Highscore.txt");
+	
+
 	if (myfile.is_open())
 	{
-		myfile >> highscore;
+		cout << "File opened" << endl;
+		int i = 0;
+		while(i != 5)
+		{
+			std::getline(myfile, line);
+			//std::stringstream myLine (line);
+			line >> record[i];
+			i += 1;
+		}
 	}
 	else
+	{
+		cout << "File not opened" << endl;	
 		return false;
+	}
+	
+	myfile.close();
+
 	return true;
 }
 
 
-void Highscore::SaveTextFile()
-{
-	std::ofstream myfile;
-	myfile.open ("HighScore.txt", std::ios::in|std::ios::trunc);
-	myfile << highscore.getMin() << highscore.getSec() << endl;
-	myfile.close();
-}
+//void Highscore::SaveTextFile()
+//{
+//	std::ofstream myfile;
+//	myfile.open ("Highscore.txt", std::ios::in|std::ios::trunc);
+//	myfile << highscore.getMin() << highscore.getSec() << endl;
+//	myfile.close();
+//}
 
 //void Highscore::HighscoreCheck(double b)
 //{

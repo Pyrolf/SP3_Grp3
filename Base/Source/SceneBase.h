@@ -116,6 +116,7 @@ public:
 		GEO_MAINMENU,
 		GEO_PAUSE,
 		GEO_GAMEOVER,
+		GEO_HIGHSCORE,
 
 		GEO_TILE_KILLZONE,
 		GEO_TILE_SAFEZONE,
@@ -149,6 +150,7 @@ public:
 	void RenderMesh(Mesh *mesh, bool enableLight);
 	void Render2DMesh(Mesh *mesh, const bool enableLight, const float size=1.0f, const float x=0.0f, const float y=0.0f, const bool rotateY=false, const float rotateZ = 0.0f);
 
+
 	MS modelStack;
 	MS viewStack;
 	MS projectionStack;
@@ -160,7 +162,6 @@ private:
 	unsigned m_parameters[U_TOTAL];
 
 	Camera3 camera;
-
 
 	Light lights[2];
 

@@ -231,6 +231,10 @@ void SceneBase::Init()
 	meshList[GEO_FLASHLIGHT] = MeshBuilder::Generate2DMesh("ff", Color(1, 1, 1), 0.0f, 0.0f, 180.f, 65.f);
 	meshList[GEO_FLASHLIGHT]->textureID = LoadTGA("Image//flash ui.tga");
 	
+	meshList[GEO_HIGHSCORE] = MeshBuilder::Generate2DMesh("GEO_HIGHSCORE", Color(1, 1, 1), 0.0f, 0.0f, 1024.0f, 800.0f);
+	meshList[GEO_HIGHSCORE]->textureID = LoadTGA("Image//highscorebg.tga");
+	
+
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 1000 units
 	Mtx44 perspective;
 	perspective.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);
@@ -294,6 +298,7 @@ void SceneBase::Update(double dt)
 }
 
 static const float SKYBOXSIZE = 1000.f;
+
 
 void SceneBase::RenderText(Mesh* mesh, std::string text, Color color)
 {
@@ -374,6 +379,7 @@ void SceneBase::RenderMeshIn2D(Mesh *mesh, const bool enableLight, const float s
 	modelStack.LoadIdentity();
 	modelStack.Translate(x, y, 0);
 	modelStack.Scale(size, size, size);
+
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
 
 	MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();

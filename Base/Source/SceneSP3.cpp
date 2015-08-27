@@ -12,7 +12,7 @@ ISoundEngine * engine;
 
 SceneSP3::SceneSP3()
 	: gameState(MAINMENU)
-	, highscore(0)
+	, m_cMiniMap(NULL)
 	, choice(NONE)
 	, currentLevel(NULL)
 {
@@ -25,16 +25,17 @@ SceneSP3::~SceneSP3()
 void SceneSP3::Init()
 {
 	SceneBase::Init();
-
+	menustate = 0;
 	InitHero();
 	InitGoMeshes();
 	InitLevels();
-	
+	InitMinimap();
 	meshList[GEO_ATTACK_RANGE] = MeshBuilder::GenerateRing("ATTACK_RANGE", Color(0, 1, 0), 36.f, levelList[0]->AI_Manager->enemiesList[0]->GetMaxRangeToDetect(), levelList[0]->AI_Manager->enemiesList[0]->GetMaxRangeToDetect() - 1.f);
 	meshList[GEO_REPEL_RANGE] = MeshBuilder::GenerateRing("REPEL_RANGE", Color(1, 0, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 0.5, levelList[0]->gameObjectsManager->tileSize * 0.5 - 1.f);
-
+	score.ReadFromTextFile();
 	InitSound();
 	hackingGame.Init(Vector3(270, 335, 0), Vector3(753, 365, 0));
+	
 }
 
 void SceneSP3::InitHero()
@@ -149,6 +150,15 @@ void SceneSP3::InitHero()
 	theHero->attackSideMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
 	theHero->attackSideMeshes.push_back(MeshBuilder::GeneratePartOfSpriteSheet2D("TILE_HERO_FRAME5_ATTACK_SIDE", 64.0f, 64.0f, 4, 6, 5, 3));
 	theHero->attackSideMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
+}
+
+void SceneSP3::InitMinimap()
+{
+	m_cMiniMap = new CMinimap();
+	m_cMiniMap->SetBackground(MeshBuilder::GenerateMinimap("MINIMAP", Color(1,1,1), 1.f));
+	m_cMiniMap->GetBackground()->textureID = LoadTGA("Image//");
+	m_cMiniMap->SetBorder(MeshBuilder::GenerateMinimapBorder("MINIMAPBORDER", Color(1,1,0), 1.f));
+	m_cMiniMap->SetAvatar(MeshBuilder::GenerateMinimapAvatar("MINIMAPAVATAR", Color(1,1,0), 1.f));
 }
 
 void SceneSP3::InitLevels()
@@ -323,17 +333,35 @@ void SceneSP3::UpdateInputs(double dt)
 	}
 	// Others
 	{
+		static bool IsKeyPressedReturn = false;
 		// Choose play
 		if(Application::IsKeyPressed(VK_UP) && upkey == false)
 		{
-			if(gameState == PAUSE || gameState == MAINMENU)
+			if(gameState == PAUSE)
 			{
 				if(choice != PLAY)
 				{
 					choice = PLAY;
 				}
-				engine->play2D("../media/click-click-mono.wav");
+
+				
 			}
+			if(gameState == MAINMENU)
+			{
+				switch(choice)
+				{
+				case NONE:
+					choice = EXIT;
+					break;
+				case PLAY:
+					choice = EXIT;
+					break;
+				default:
+					choice -= 1;					
+					break;
+				}
+			}
+			engine->play2D("../media/click-click-mono.wav");
 			upkey = true;
 
 		}
@@ -350,16 +378,25 @@ void SceneSP3::UpdateInputs(double dt)
 				{
 					choice = QUIT;
 				}
-				engine->play2D("../media/click-click-mono.wav");
+				
 			}
 			else if(gameState == MAINMENU)
 			{
-				if(choice != EXIT)
+				switch(choice)
 				{
-					choice = EXIT;
+				case EXIT:
+					choice = PLAY;
+					break;
+				case PLAY:
+					choice = SCORE;
+					break;
+				default:
+					choice += 1;
+					break;
 				}
-				engine->play2D("../media/click-click-mono.wav");
+
 			}
+			engine->play2D("../media/click-click-mono.wav");
 			downkey = true;
 		}
 		else if(Application::IsKeyPressed(VK_DOWN) == false && downkey == true)
@@ -367,7 +404,7 @@ void SceneSP3::UpdateInputs(double dt)
 			downkey = false;
 		}
 		// Confirm choice
-		else if(Application::IsKeyPressed(VK_RETURN))
+		else if(Application::IsKeyPressed(VK_RETURN) && !IsKeyPressedReturn)
 		{
 			if(gameState == PAUSE)
 			{
@@ -380,7 +417,7 @@ void SceneSP3::UpdateInputs(double dt)
 					gameState = MAINMENU;
 					this->theHero->Reset();
 					this->theHero->SetCurrentState(this->theHero->NIL);
-					clock.Reset();
+					playerRecord.getTiming().Reset();
 					currentLevel->AI_Manager->Reset();
 				}
 				choice = NONE;
@@ -397,26 +434,58 @@ void SceneSP3::UpdateInputs(double dt)
 					theHero->SetCurrentPosNode(currentLevel->HeroStartPosNode);
 					theHero->SetTargetPosNode(currentLevel->HeroStartPosNode);
 				}
+				else if(choice == SCORE)
+				{
+					gameState = HIGHSCORE;
+					RenderHighscore();
+				}
+			}
+			else if(gameState == HIGHSCORE)
+			{
+				gameState = MAINMENU;
 			}
 			else if(gameState == GAMEOVER)
 			{
 				gameState = MAINMENU;
 				this->theHero->Reset();
-				clock.Reset();
+				playerRecord.getTiming().Reset();
 				this->theHero->SetCurrentState(this->theHero->NIL);
 				currentLevel->AI_Manager->Reset();
 			}
+			IsKeyPressedReturn = true;
 		}
+		else if(!Application::IsKeyPressed(VK_RETURN) && IsKeyPressedReturn)
+			IsKeyPressedReturn = false;
 	}
 }
+
+void SceneSP3::RenderMinimap()
+{
+	RenderMeshIn2D(m_cMiniMap->GetAvatar(), false, 20.f, 68, -48);
+	RenderMeshIn2D(m_cMiniMap->GetBorder(), false, 20.f, 68, -48);
+	RenderMeshIn2D(m_cMiniMap->GetBackground(), false, 20.f, 68, -48);
+}
+
 
 void SceneSP3::RenderHighscore()
 {
 	// string playername;
 	// cout << "Enter your name: " << endl;
 	// cin >> playername;
+	//RenderTextOnScreen(meshList[GEO_TEXT],, Color(1,1,1), 1.f, 20.f, 20.f);
+	/*std::ostringstream ss;
+	ss.precision(3);
+	ss << "X" << theHero->GetHealth();
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(1, 1, 1), 3, 3, 57);*/
+	Render2DMesh(meshList[GEO_HIGHSCORE], false);
+	for(int i = 0; i < 5; ++i)
+	{
+		int temp = i;
+		std::ostringstream scoring;
+		scoring << temp + 1 << "." << score.record[i].getName() << score.record[i].getTiming().getMin() << ":" << score.record[i].getTiming().getSec();
+		RenderTextOnScreen(meshList[GEO_TEXT], scoring.str(), Color(1, 1, 1), 5, 5, 40 - i * 5);
+	}
 
-	//RenderTextOnScreen(meshList[GEO_TEXT], );
 }
 
 void SceneSP3::Update(double dt)
@@ -427,7 +496,7 @@ void SceneSP3::Update(double dt)
 	{
 		if(this->theHero->GetCurrentState() != this->theHero->DYING && this->theHero->GetCurrentState() != this->theHero->EXITING)
 		{
-			clock.update(dt);
+			playerRecord.getTiming().update(dt);
 		}
 		
 		// Exiting
@@ -551,9 +620,14 @@ void SceneSP3::Render()
 			Render2DMesh(meshList[GEO_MAINMENU], false);
 			
 			//On screen text
-			RenderTextOnScreen(meshList[GEO_TEXT], "START GAME", Color(1, 1, 1), 5, 25, 15);
+			RenderTextOnScreen(meshList[GEO_TEXT], "START GAME", Color(1, 1, 1), 5, 25, 20);
+			RenderTextOnScreen(meshList[GEO_TEXT], "HIGHSCORE", Color(1, 1, 1), 5, 25, 15);
 			RenderTextOnScreen(meshList[GEO_TEXT], "EXIT", Color(1, 1, 1), 5, 25, 10);
 			if(choice == PLAY)
+			{
+				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 15, 20);
+			}
+			else if(choice == SCORE)
 			{
 				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 15, 15);
 			}
@@ -567,6 +641,12 @@ void SceneSP3::Render()
 				soundplayed = true;
 			}
 		}
+		break;
+	case HIGHSCORE:
+		{
+			RenderHighscore();	
+			RenderTextOnScreen(meshList[GEO_TEXT], "Press enter to return", Color(1, 1, 1), 2.5, 13, 5);
+		}		
 		break;
 	case PAUSE:
 		{
@@ -589,10 +669,10 @@ void SceneSP3::Render()
 	case GAMEOVER:
 		{
 			Render2DMesh(meshList[GEO_GAMEOVER], false);
-			RenderHighscore();	
 			RenderTextOnScreen(meshList[GEO_TEXT], "Press enter to return", Color(1, 1, 1), 2.5, 13, 5);
 		}
 		break;
+
 	default:
 		{		
 			modelStack.PushMatrix();
@@ -635,6 +715,11 @@ void SceneSP3::Render()
 void SceneSP3::Exit()
 {
 	delete theHero;
+	if(m_cMiniMap)
+	{
+		delete m_cMiniMap;
+		m_cMiniMap = NULL;
+	}
 	engine->stopAllSounds();
 	DeleteGoMeshes();
 }
@@ -897,7 +982,7 @@ void SceneSP3::RenderGUI()
 
 	std::ostringstream time;
 	time.precision(3);
-	time << clock.getMin() << ":" << clock.getSec();
+	time << playerRecord.getTiming().getMin() << ":" << playerRecord.getTiming().getSec();
 	RenderTextOnScreen(meshList[GEO_TEXT], time.str(), Color(1,1,1), 5.f, 40.f, 55.f);
 
 
