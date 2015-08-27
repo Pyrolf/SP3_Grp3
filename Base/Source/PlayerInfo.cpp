@@ -303,12 +303,12 @@ Vector3 CPlayerInfo::GetMapOffset(void)
 /********************************************************************************
 Hero Move Up Down
 ********************************************************************************/
-void CPlayerInfo::MoveUpDown(const bool mode)
+void CPlayerInfo::MoveUpDown(const bool mode, CAIManager* ai_manager, int tileSize)
 {
 	if (mode)
 	{
 		theHeroTargetPosNode = theHeroTargetPosNode->up;
-		if(!CPlayerInfo::CheckCollisionTarget())
+		if(!CPlayerInfo::CheckCollisionTarget(ai_manager, tileSize))
 		{
 			vel.Set(0, movementSpeed, 0);
 			currentState = MOVING;
@@ -321,7 +321,7 @@ void CPlayerInfo::MoveUpDown(const bool mode)
 	else
 	{
 		theHeroTargetPosNode = theHeroTargetPosNode->down;
-		if(!CPlayerInfo::CheckCollisionTarget())
+		if(!CPlayerInfo::CheckCollisionTarget(ai_manager, tileSize))
 		{
 			vel.Set(0, -movementSpeed, 0);
 			currentState = MOVING;
@@ -336,12 +336,12 @@ void CPlayerInfo::MoveUpDown(const bool mode)
 /********************************************************************************
 Hero Move Left Right
 ********************************************************************************/
-void CPlayerInfo::MoveLeftRight(const bool mode)
+void CPlayerInfo::MoveLeftRight(const bool mode, CAIManager* ai_manager, int tileSize)
 {
 	if (mode)
 	{
 		theHeroTargetPosNode = theHeroTargetPosNode->left;
-		if(!CPlayerInfo::CheckCollisionTarget())
+		if(!CPlayerInfo::CheckCollisionTarget(ai_manager, tileSize))
 		{
 			vel.Set(-movementSpeed, 0, 0);
 			currentState = MOVING;
@@ -354,7 +354,7 @@ void CPlayerInfo::MoveLeftRight(const bool mode)
 	else
 	{
 		theHeroTargetPosNode = theHeroTargetPosNode->right;
-		if(!CPlayerInfo::CheckCollisionTarget())
+		if(!CPlayerInfo::CheckCollisionTarget(ai_manager, tileSize))
 		{
 			vel.Set(movementSpeed, 0, 0);
 			currentState = MOVING;
@@ -456,14 +456,14 @@ void CPlayerInfo::HeroUpdate(float timeDiff, CAIManager* ai_manager, GameObjectF
 }
 
 
-void CPlayerInfo::knockBackEnabled(Vector3 AI_Vel)
+void CPlayerInfo::knockBackEnabled(Vector3 AI_Vel, CAIManager* ai_manager, int tileSize)
 {
 	if(theHeroCurrentPosNode == theHeroTargetPosNode)
 	{
 		if(AI_Vel.y < 0)
 		{
 			theHeroTargetPosNode = theHeroTargetPosNode->down;
-			if(!CPlayerInfo::CheckCollisionTarget())
+			if(!CPlayerInfo::CheckCollisionTarget(ai_manager, tileSize))
 			{
 				vel.Set(0, -movementSpeed * 3, 0);
 				currentState = KNOCKED_BACKING;
@@ -480,7 +480,7 @@ void CPlayerInfo::knockBackEnabled(Vector3 AI_Vel)
 		else if(AI_Vel.y > 0)
 		{
 			theHeroTargetPosNode = theHeroTargetPosNode->up;
-			if(!CPlayerInfo::CheckCollisionTarget())
+			if(!CPlayerInfo::CheckCollisionTarget(ai_manager, tileSize))
 			{
 				vel.Set(0, movementSpeed * 3, 0);
 				currentState = KNOCKED_BACKING;
@@ -497,7 +497,7 @@ void CPlayerInfo::knockBackEnabled(Vector3 AI_Vel)
 		else if(AI_Vel.x < 0)
 		{
 			theHeroTargetPosNode = theHeroTargetPosNode->left;
-			if(!CPlayerInfo::CheckCollisionTarget())
+			if(!CPlayerInfo::CheckCollisionTarget(ai_manager, tileSize))
 			{
 				vel.Set(-movementSpeed * 3, 0, 0);
 				currentState = KNOCKED_BACKING;
@@ -514,7 +514,7 @@ void CPlayerInfo::knockBackEnabled(Vector3 AI_Vel)
 		else if(AI_Vel.x > 0)
 		{
 			theHeroTargetPosNode = theHeroTargetPosNode->right;
-			if(!CPlayerInfo::CheckCollisionTarget())
+			if(!CPlayerInfo::CheckCollisionTarget(ai_manager, tileSize))
 			{
 				vel.Set(movementSpeed * 3, 0, 0);
 				currentState = KNOCKED_BACKING;
@@ -732,8 +732,16 @@ void CPlayerInfo::Attacking(float timeDiff, CAIManager* ai_manager, GameObjectFa
 	}
 }
 
-bool CPlayerInfo::CheckCollisionTarget(void)
+bool CPlayerInfo::CheckCollisionTarget(CAIManager* ai_manager, int tileSize)
 {
+	// check if zombie there
+	for(int i = 0; i < ai_manager->enemiesList.size(); ++i)
+	{
+		if( (Vector3(theHeroTargetPosNode->pos.x - ai_manager->enemiesList[i]->GetPos().x).Length() < tileSize * 0.5)
+			&& (Vector3(theHeroTargetPosNode->pos.y - ai_manager->enemiesList[i]->GetPos().y).Length() < tileSize * 0.5) )
+			return true;
+	}
+
 	switch(theHeroTargetPosNode->posType)
 	{
 	case CPosNode::NONE:

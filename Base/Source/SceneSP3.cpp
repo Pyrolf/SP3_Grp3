@@ -154,7 +154,7 @@ void SceneSP3::InitHero()
 void SceneSP3::InitLevels()
 {
 	// Initialise and load the tile map
-	const int noOfLevel = 3;
+	const int noOfLevel = 1;
 	for(int i = 0; i < noOfLevel; i++)
 	{
 		levelList.push_back(new Level);
@@ -164,10 +164,10 @@ void SceneSP3::InitLevels()
 
 	// Level 1
 	levelList[0]->m_cMap->LoadMap( "Image//MapDesignLv1.csv" );
-	// Level 2
-	levelList[1]->m_cMap->LoadMap( "Image//MapDesignLv5.csv" );
-	// Level 3
-	levelList[2]->m_cMap->LoadMap( "Image//MapDesignLv6.csv" );
+	// Level 5
+	//levelList[4]->m_cMap->LoadMap( "Image//MapDesignLv5.csv" );
+	// Level 6
+	//levelList[5]->m_cMap->LoadMap( "Image//MapDesignLv6.csv" );
 	
 	for(int i = 0; i < noOfLevel; i++)
 	{
@@ -229,7 +229,7 @@ void SceneSP3::UpdateInputs(double dt)
 			if(this->theHero->GetCurrentState() == this->theHero->NIL 
 				&& gameState == PLAYING)
 			{
-				this->theHero->MoveUpDown(true);
+				this->theHero->MoveUpDown(true, currentLevel->AI_Manager, currentLevel->gameObjectsManager->tileSize);
 			}
 		}
 		// Check Collision of th hero before moving down
@@ -238,7 +238,7 @@ void SceneSP3::UpdateInputs(double dt)
 			if(this->theHero->GetCurrentState() == this->theHero->NIL
 				&& gameState == PLAYING)
 			{
-				this->theHero->MoveUpDown(false);
+				this->theHero->MoveUpDown(false, currentLevel->AI_Manager, currentLevel->gameObjectsManager->tileSize);
 			}
 		}
 
@@ -248,7 +248,7 @@ void SceneSP3::UpdateInputs(double dt)
 			if(this->theHero->GetCurrentState() == this->theHero->NIL
 				&& gameState == PLAYING)
 			{
-				this->theHero->MoveLeftRight(true);
+				this->theHero->MoveLeftRight(true, currentLevel->AI_Manager, currentLevel->gameObjectsManager->tileSize);
 			}
 		}
 		// Check Collision of th hero before moving right
@@ -258,7 +258,7 @@ void SceneSP3::UpdateInputs(double dt)
 			if(this->theHero->GetCurrentState() == this->theHero->NIL
 				&& gameState == PLAYING)
 			{
-				this->theHero->MoveLeftRight(false);
+				this->theHero->MoveLeftRight(false, currentLevel->AI_Manager, currentLevel->gameObjectsManager->tileSize);
 			}
 		}
 
@@ -495,7 +495,7 @@ void SceneSP3::Update(double dt)
 						}
 						else
 						{
-							this->theHero->knockBackEnabled(enemy->GetVel());
+							this->theHero->knockBackEnabled(enemy->GetVel(), currentLevel->AI_Manager, currentLevel->gameObjectsManager->tileSize);
 							this->theHero->SetJustGotDamged(true);
 						}
 					}
@@ -899,49 +899,6 @@ void SceneSP3::RenderGUI()
 	ss.precision(3);
 	ss << "X" << theHero->GetHealth();
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(1, 1, 1), 3, 3, 57);*/
-}
-
-/********************************************************************************
-Do colision check and response when the hero move
-********************************************************************************/
-void SceneSP3::HeroColision(GameObject* goCollidedWith, bool updown, bool upORleft, double dt)
-{
-	if(goCollidedWith)
-	{
-		switch (goCollidedWith->type)
-		{
-		case GameObject::WALL:
-			break;
-		case GameObject::DOOR:
-			{
-				this->theHero->SetPos_x(goCollidedWith->pos.x);
-				this->theHero->SetPos_y(goCollidedWith->pos.y);
-				this->theHero->SetCurrentState( this->theHero->EXITING );
-			}
-			break;
-		default :
-			if(updown == true && upORleft == true)
-				this->theHero->MoveUpDown( true);
-			else if(updown == true && upORleft == false)
-				this->theHero->MoveUpDown( false);
-			else if(updown == false && upORleft == true)
-				this->theHero->MoveLeftRight( true);
-			else
-				this->theHero->MoveLeftRight( false);
-			break;
-		}
-	}
-	else
-	{
-		if(updown == true && upORleft == true)
-			this->theHero->MoveUpDown( true);
-		else if(updown == true && upORleft == false)
-			this->theHero->MoveUpDown( false);
-		else if(updown == false && upORleft == true)
-			this->theHero->MoveLeftRight( true);
-		else
-			this->theHero->MoveLeftRight( false);
-	}
 }
 
 void SceneSP3::InitGoMeshes()

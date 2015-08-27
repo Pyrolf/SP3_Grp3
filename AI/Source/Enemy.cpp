@@ -261,9 +261,12 @@ void CEnemy::ChaseCheck(CPosNode* heroPosNode, int tileSize)
 		{
 			enemyPath.pop_back();
 		}
-		theENEMYTargetPosNode = enemyPath.back();
-		enemyPath.pop_back();
-		CalculateVel();
+		if(enemyPath.size() != 0)
+		{
+			theENEMYTargetPosNode = enemyPath.back();
+			enemyPath.pop_back();
+			CalculateVel();
+		}
 	}
 	// if path is empty
 	else
@@ -289,9 +292,12 @@ void CEnemy::ReturnCheck(int tileSize)
 			{
 				enemyPath.pop_back();
 			}
-			theENEMYTargetPosNode = enemyPath.back();
-			enemyPath.pop_back();
-			CalculateVel();
+			if(enemyPath.size() != 0)
+			{
+				theENEMYTargetPosNode = enemyPath.back();
+				enemyPath.pop_back();
+				CalculateVel();
+			}
 		}
 		else
 		{
