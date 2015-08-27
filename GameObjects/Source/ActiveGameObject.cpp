@@ -120,7 +120,7 @@ void ActiveGameObject::update(double dt)
 			if(active)
 			{
 				timmer += dt;
-				if(timmer > 2)
+				if(timmer > 1)
 				{
 					timmer = 0;
 					active = false;
@@ -140,7 +140,7 @@ void ActiveGameObject::update(double dt)
 			else
 			{
 				timmer += dt;
-				if(timmer > 2)
+				if(timmer > 1)
 				{
 					timmer = 0;
 					active = true;

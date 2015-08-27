@@ -912,7 +912,7 @@ void CPlayerInfo::CollisionResponseCurrent(void)
 				justGotDamged = true;
 				
 			}
-			else if(health == 0)
+			if(health == 0)
 			{
 				currentState = DYING;
 			}
@@ -932,7 +932,8 @@ void CPlayerInfo::CollisionResponseCurrent(void)
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_UP
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_DOWN
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_LEFT
-				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_RIGHT)
+				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_RIGHT
+				&& theHeroTargetPosNode->gameObject->type != GameObject::FIRE)
 			{
 				theHeroTargetPosNode = theHeroCurrentPosNode;
 				currentState = NIL;
@@ -958,7 +959,8 @@ void CPlayerInfo::CollisionResponseCurrent(void)
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_UP
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_DOWN
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_LEFT
-				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_RIGHT)
+				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_RIGHT
+				&& theHeroTargetPosNode->gameObject->type != GameObject::FIRE)
 			{
 				theHeroTargetPosNode = theHeroCurrentPosNode;
 				currentState = NIL;
@@ -985,7 +987,8 @@ void CPlayerInfo::CollisionResponseCurrent(void)
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_UP
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_DOWN
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_LEFT
-				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_RIGHT)
+				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_RIGHT
+				&& theHeroTargetPosNode->gameObject->type != GameObject::FIRE)
 			{
 				theHeroTargetPosNode = theHeroCurrentPosNode;
 				currentState = NIL;
@@ -1012,7 +1015,8 @@ void CPlayerInfo::CollisionResponseCurrent(void)
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_UP
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_DOWN
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_LEFT
-				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_RIGHT)
+				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_RIGHT
+				&& theHeroTargetPosNode->gameObject->type != GameObject::FIRE)
 			{
 				theHeroTargetPosNode = theHeroCurrentPosNode;
 				currentState = NIL;
