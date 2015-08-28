@@ -22,7 +22,10 @@ public:
 	bool ReadFromTextFile();
 	//void SaveTextFile();
 	//void HighscoreCheck(double b);
-    CRecord record[5];                                                                                                       
+	CRecord record[5];            
+	int writehighscore(string, CRecord);
+    bool HighscoreCheck(CRecord recs);
+    void storeNewRecord(CRecord recs);
 private:		
 	int counter;
 };

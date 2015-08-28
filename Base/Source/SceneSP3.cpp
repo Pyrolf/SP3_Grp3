@@ -15,6 +15,8 @@ SceneSP3::SceneSP3()
 	, m_cMiniMap(NULL)
 	, choice(NONE)
 	, currentLevel(NULL)
+	, tempName("     ")
+	, currentLetter(0)
 {
 }
 
@@ -25,7 +27,6 @@ SceneSP3::~SceneSP3()
 void SceneSP3::Init()
 {
 	SceneBase::Init();
-	menustate = 0;
 	InitHero();
 	InitGoMeshes();
 	InitLevels();
@@ -44,6 +45,12 @@ void SceneSP3::Init()
 	meshList[GEO_HUNTER_ZOMBIE_REPEL_RANGE] = MeshBuilder::GenerateRing("HUNTER_REPEL_RANGE", Color(1, 0, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 0.5, levelList[0]->gameObjectsManager->tileSize * 0.5 - 1.f);
 	
 	score.ReadFromTextFile();
+		
+	for(int i = 0; i < 32; ++i)
+	{
+		chara[i] = false;
+	}
+	
 	InitSound();
 	hackingGame.Init(Vector3(270, 335, 0), Vector3(753, 365, 0));
 	
@@ -220,6 +227,43 @@ int SceneSP3::InitSound()
 
 void SceneSP3::UpdateInputs(double dt)
 {
+	static bool backsp = false;
+
+	for(int i = 0; i < 32 ; ++i)
+	{
+		if(Application::IsKeyPressed('A' + i) && !chara[i])
+		{
+			chara[i] = true;
+
+			if(gameState == GETTINGPLAYERNAME && currentLetter < 5)
+			{
+				tempName[currentLetter] = 'A' + i;
+				currentLetter++;
+			}
+			//tempName += i;
+			//cout << tempName << endl;
+			//playerRecord.setName(tempName);
+		}
+		else if(!Application::IsKeyPressed('A' + i) && chara[i])
+		{				
+			chara[i] = false;
+		}
+	}
+
+	if(Application::IsKeyPressed(VK_BACK) && !backsp)
+	{
+		backsp = true;
+		if(gameState == GETTINGPLAYERNAME)
+		{
+			tempName[currentLetter - 1] = NULL;
+			currentLetter--;
+		}
+	}
+	else if(!Application::IsKeyPressed(VK_BACK) && backsp)
+	{				
+		backsp = false;
+	}
+
 	static bool upkey = false;
 	static bool downkey = false;
 
@@ -427,18 +471,14 @@ void SceneSP3::UpdateInputs(double dt)
 					gameState = MAINMENU;
 					this->theHero->Reset();
 					this->theHero->SetCurrentState(this->theHero->NIL);
-					currentLevel->gameObjectsManager->ResetUGO();
-					blackout.Reset();
-					playerRecord.getTiming().Reset();
+					playerRecord.reset();
 					currentLevel->AI_Manager->Reset();
 				}
-				choice = NONE;
 			}
 			else if(gameState == MAINMENU)
 			{
 				if(choice == PLAY)
 				{
-					choice = NONE;
 					gameState = PLAYING;
 					currentLevel = levelList[0];
 					theHero->SetPos(currentLevel->HeroStartPosNode->pos);
@@ -449,7 +489,6 @@ void SceneSP3::UpdateInputs(double dt)
 				else if(choice == SCORE)
 				{
 					gameState = HIGHSCORE;
-					RenderHighscore();
 				}
 			}
 			else if(gameState == HIGHSCORE)
@@ -458,14 +497,55 @@ void SceneSP3::UpdateInputs(double dt)
 			}
 			else if(gameState == GAMEOVER)
 			{
-				gameState = MAINMENU;
+				if(theHero->GetCurrentState() != CPlayerInfo::DYING 
+					&& score.HighscoreCheck(playerRecord))
+				{
+					if(playerRecord.getName().size() == 0)
+					{
+						gameState = GETTINGPLAYERNAME;
+					}
+					else
+					{
+						//store record
+						score.storeNewRecord(playerRecord);
+
+						gameState = MAINMENU;
+						playerRecord.reset();
+
+					}
+
+				}
+				else
+				{
+					gameState = MAINMENU;
+					playerRecord.reset();
+				}
+
+
 				this->theHero->Reset();
-				currentLevel->gameObjectsManager->ResetUGO();
-				blackout.Reset();
-				playerRecord.getTiming().Reset();
 				this->theHero->SetCurrentState(this->theHero->NIL);
 				currentLevel->AI_Manager->Reset();
 			}
+			else if(gameState == GETTINGPLAYERNAME)
+			{
+				string tempd = "      ";
+				for(int i = 1; i < 6; ++i)
+				{
+					if(tempName[i - 1] != NULL)
+					{
+						tempd[i] = tempName[i - 1];
+					}
+					else 
+						break;
+				}
+				playerRecord.setName(tempd);
+				//store record
+				score.storeNewRecord(playerRecord);
+
+				playerRecord.getTiming().Reset();
+				gameState = MAINMENU;
+			}
+			choice = NONE;
 			IsKeyPressedReturn = true;
 		}
 		else if(!Application::IsKeyPressed(VK_RETURN) && IsKeyPressedReturn)
@@ -510,7 +590,7 @@ void SceneSP3::Update(double dt)
 	{
 		if(this->theHero->GetCurrentState() != this->theHero->DYING && this->theHero->GetCurrentState() != this->theHero->EXITING)
 		{
-			playerRecord.getTiming().update(dt);
+			playerRecord.update(dt);
 		}
 		
 		// Exiting
@@ -519,8 +599,6 @@ void SceneSP3::Update(double dt)
 			if(this->theHero->GetTimeElasped() >= 1.f)
 			{
 				currentLevel->AI_Manager->Reset();
-				currentLevel->gameObjectsManager->ResetUGO();
-				blackout.Reset();
 				for(int index = 0; index < levelList.size(); index++)
 				{
 					if(currentLevel == levelList[index])
@@ -616,6 +694,17 @@ void SceneSP3::Update(double dt)
 		UpdateActiveGO(dt);
 		blackout.Update(dt);
 	}
+
+
+	//	for(char i = 'A'; i < '[' && tempName.length() < 6 ; ++i)
+	//	{
+	//		if(Application::IsKeyPressed(i) && !chara[i])
+	//		{
+	//			tempName += i;
+	//			cout << tempName << endl;
+	//			playerRecord.setName(tempName);
+	//		}
+	//  }
 }
 
 void SceneSP3::RenderBackground()
@@ -664,6 +753,11 @@ void SceneSP3::Render()
 			RenderTextOnScreen(meshList[GEO_TEXT], "Press enter to return", Color(1, 1, 1), 2.5, 13, 5);
 		}		
 		break;
+	case GETTINGPLAYERNAME:
+		{
+			RenderTextOnScreen(meshList[GEO_TEXT], tempName, Color(1,1,1), 2.5, 13, 20);
+		}
+		break;
 	case PAUSE:
 		{
 			Render2DMesh(meshList[GEO_PAUSE], false);
@@ -685,6 +779,11 @@ void SceneSP3::Render()
 	case GAMEOVER:
 		{
 			Render2DMesh(meshList[GEO_GAMEOVER], false);
+
+			std::ostringstream gamoev;
+			gamoev << playerRecord.getTiming().getMin() << ":" << playerRecord.getTiming().getSec();
+			RenderTextOnScreen(meshList[GEO_TEXT], gamoev.str(), Color(1,1,1), 5.f, 20.f, 20.f);
+		
 			RenderTextOnScreen(meshList[GEO_TEXT], "Press enter to return", Color(1, 1, 1), 2.5, 13, 5);
 		}
 		break;
@@ -1080,19 +1179,14 @@ void SceneSP3::RenderGUI()
 
 	////////////////////////FLASHLIGHT UI BY IVAN DO NOT TOUCH//////////////////////////////////
 	modelStack.PushMatrix();
-	modelStack.Translate(268, 725, 0);
-	modelStack.Scale(blackout.battery * 30, 20, 0);
+	modelStack.Translate(260, 703, 0);
+	modelStack.Scale(blackout.battery * 45 , 65, 0);
 	if(blackout.fullyCharged)
 		Render2DMesh(meshList[GEO_HACK_YELLOW_BAR], false, 1.f, 0 , 0);
 	else
 		Render2DMesh(meshList[GEO_HACK_RED_BAR], false, 1.f, 0 , 0);
 	modelStack.PopMatrix();
-	Render2DMesh(meshList[GEO_FLASHLIGHT], false, 1.f, 260 , 650);
-	
-	if(blackout.lightSize > 1)
-	{
-		Render2DMesh(meshList[GEO_FLASH], false, 1.f, 435 , 705);
-	}
+	Render2DMesh(meshList[GEO_FLASHLIGHT], false, 1.f, 260 , 703);
 	////////////////////////////////////////////////////////////////////////////////////////////
 
 	std::ostringstream time;

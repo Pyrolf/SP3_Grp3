@@ -63,6 +63,7 @@ private:
 		MAINMENU,
 		PLAYING,
 		HIGHSCORE,
+		GETTINGPLAYERNAME,
 		PAUSE,
 		GAMEOVER,
 	};
@@ -72,18 +73,21 @@ private:
 	CMinimap* m_cMiniMap;
 
 	void UpdateInputs(double dt);
-
+	
 	vector<Mesh*> wallMesh, holeMesh, doorMesh, wetFloorMesh, timmingDoorMesh, lockedDoorMesh, hackMesh, healthMesh, fireMesh, arrowMesh;
 	void InitGoMeshes();
 	void InitMinimap();
 	void DeleteGoMeshes();
 	void UpdateActiveGO(double dt);
-	int menustate;
 	HackingGame hackingGame;
+
 
 	void RenderHackGame();
 
 	Blackout blackout;
+	bool chara[32];
+	string tempName;
+	int currentLetter;
 };
 
 #endif

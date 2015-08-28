@@ -39,7 +39,8 @@ public:
 
 		return line;
     };
-
+	void update(double dt);
+	void reset();
 private:
 	CTiming timing;
 	string playername;

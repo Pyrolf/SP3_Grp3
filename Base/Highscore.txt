@@ -1,5 +1,5 @@
-1 0 I    
-2 0 Like 
-3 0 To   
-4 2 Say  
-5 0 Hi   
+0 5.85353 DASDA
+0 4.71593 VASDA
+5 1 Like 
+5 3 To   
+5 4 Say  

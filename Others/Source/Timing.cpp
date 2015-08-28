@@ -82,14 +82,14 @@ bool CTiming::operator>(const CTiming& t)
 	}
 }
 
-void CTiming::update(double dt)
-{
-	sec += dt;
-	Normalising();
-}
-
 void CTiming::Reset()
 {
 	min = 0;
 	sec = 0;
 }
+
+//void CTiming::update(double dt)
+//{
+//	sec += dt;
+//	Normalising();
+//}

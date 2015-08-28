@@ -20,7 +20,7 @@ public:
 	CTiming operator+(const CTiming&);
 	bool operator>(const CTiming&);
 
-	void update(double dt);
+	//void update(double dt);
 	void Reset();
 
    
