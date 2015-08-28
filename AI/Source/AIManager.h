@@ -1,5 +1,8 @@
 #pragma once
-#include "Enemy.h"
+#include "NormalZombie.h"
+#include "SmartZombie.h"
+#include "TankZombie.h"
+#include "HunterZombie.h"
 #include "Mesh.h"
 
 #include <vector>
@@ -12,10 +15,9 @@ public:
 	CAIManager();
 	~CAIManager();
 
-	vector<CEnemy*> enemiesList;
+	vector<CZombie*> zombieList;
 	
 	void generateEnemies(CMap *map);
-	CEnemy* CheckColisionBetweenEnemies(CEnemy* enemy, int tileSize);
 
 	void Reset(void);
 };

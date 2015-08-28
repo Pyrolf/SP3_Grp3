@@ -30,8 +30,19 @@ void SceneSP3::Init()
 	InitGoMeshes();
 	InitLevels();
 	InitMinimap();
-	meshList[GEO_ATTACK_RANGE] = MeshBuilder::GenerateRing("ATTACK_RANGE", Color(0, 1, 0), 36.f, levelList[0]->AI_Manager->enemiesList[0]->GetMaxRangeToDetect(), levelList[0]->AI_Manager->enemiesList[0]->GetMaxRangeToDetect() - 1.f);
-	meshList[GEO_REPEL_RANGE] = MeshBuilder::GenerateRing("REPEL_RANGE", Color(1, 0, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 0.5, levelList[0]->gameObjectsManager->tileSize * 0.5 - 1.f);
+	// Normal zombie
+	meshList[GEO_NORMAL_ZOMBIE_ATTACK_RANGE] = MeshBuilder::GenerateRing("NORMAL_ATTACK_RANGE", Color(0, 1, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 3, levelList[0]->gameObjectsManager->tileSize * 3 - 1.f);
+	meshList[GEO_NORMAL_ZOMBIE_REPEL_RANGE] = MeshBuilder::GenerateRing("NORMAL_REPEL_RANGE", Color(1, 0, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 0.5, levelList[0]->gameObjectsManager->tileSize * 0.5 - 1.f);
+	// Smart zombie
+	meshList[GEO_SMART_ZOMBIE_ATTACK_RANGE] = MeshBuilder::GenerateRing("SMART_ATTACK_RANGE", Color(0, 1, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 4, levelList[0]->gameObjectsManager->tileSize * 4 - 1.f);
+	meshList[GEO_SMART_ZOMBIE_REPEL_RANGE] = MeshBuilder::GenerateRing("SMART_REPEL_RANGE", Color(1, 0, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 0.5, levelList[0]->gameObjectsManager->tileSize * 0.5 - 1.f);
+	// Tank zombie
+	meshList[GEO_TANK_ZOMBIE_ATTACK_RANGE] = MeshBuilder::GenerateRing("TANK_ATTACK_RANGE", Color(0, 1, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 5, levelList[0]->gameObjectsManager->tileSize * 5 - 1.f);
+	meshList[GEO_TANK_ZOMBIE_REPEL_RANGE] = MeshBuilder::GenerateRing("TANK_REPEL_RANGE", Color(1, 0, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 0.5, levelList[0]->gameObjectsManager->tileSize * 0.5 - 1.f);
+	// Hunter zombie
+	meshList[GEO_HUNTER_ZOMBIE_ATTACK_RANGE] = MeshBuilder::GenerateRing("HUNTER_ATTACK_RANGE", Color(0, 1, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 5, levelList[0]->gameObjectsManager->tileSize * 5 - 1.f);
+	meshList[GEO_HUNTER_ZOMBIE_REPEL_RANGE] = MeshBuilder::GenerateRing("HUNTER_REPEL_RANGE", Color(1, 0, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 0.5, levelList[0]->gameObjectsManager->tileSize * 0.5 - 1.f);
+	
 	score.ReadFromTextFile();
 	InitSound();
 	hackingGame.Init(Vector3(270, 335, 0), Vector3(753, 365, 0));
@@ -189,7 +200,6 @@ void SceneSP3::InitLevels()
 		levelList[i]->gameObjectsManager->generateGO(levelList[i]->m_cMap);
 
 		levelList[i]->AI_Manager = new CAIManager;
-		levelList[i]->AI_Manager->generateEnemies(levelList[i]->m_cMap);
 
 		levelList[i]->LevelMap_Nodes = new CLevelMap_Nodes;
 		levelList[i]->LevelMap_Nodes->GenerateNodes(levelList[i]->m_cMap, levelList[i]->AI_Manager, levelList[i]->gameObjectsManager);
@@ -552,13 +562,13 @@ void SceneSP3::Update(double dt)
 		theHero->HeroUpdate(dt, currentLevel->AI_Manager, currentLevel->gameObjectsManager, currentLevel->m_cMap);
 
 		//Enemies
-		for(vector<CEnemy *>::iterator it = currentLevel->AI_Manager->enemiesList.begin(); it != currentLevel->AI_Manager->enemiesList.end(); ++it)
+		for(vector<CZombie *>::iterator it = currentLevel->AI_Manager->zombieList.begin(); it != currentLevel->AI_Manager->zombieList.end(); ++it)
 		{
-			CEnemy *enemy = (CEnemy *)*it;
-			if(enemy->active)
+			CZombie *zombie = (CZombie *)*it;
+			if(zombie->active)
 			{
-				enemy->Update(currentLevel->gameObjectsManager->tileSize, dt, theHero->GetCurrentPosNode(), theHero->GetPos());
-				if(enemy->GetHitHero())
+				zombie->Update(currentLevel->gameObjectsManager->tileSize, dt, theHero->GetCurrentPosNode(), theHero->GetPos());
+				if(zombie->GetHitHero())
 				{
 					if(!this->theHero->GetJustGotDamged() && this->theHero->GetCurrentState() != CPlayerInfo::DYING)
 					{
@@ -570,11 +580,11 @@ void SceneSP3::Update(double dt)
 						}
 						else
 						{
-							this->theHero->knockBackEnabled(enemy->GetVel(), currentLevel->AI_Manager, currentLevel->gameObjectsManager->tileSize);
+							this->theHero->knockBackEnabled(zombie->GetVel(), currentLevel->AI_Manager, currentLevel->gameObjectsManager->tileSize);
 							this->theHero->SetJustGotDamged(true);
 						}
 					}
-					enemy->SetHitHero(false);
+					zombie->SetHitHero(false);
 					break;
 				}
 			}
@@ -699,11 +709,11 @@ void SceneSP3::Render()
 			}
 			if(blackout.blackout)
 			{
-				if(blackout.lightSize > 1)
+				/*if(blackout.lightSize > 1)
 					Render2DMesh(meshList[GEO_BLACK_HOLE], false, blackout.lightSize, theHero->GetPos().x - currentLevel->gameObjectsManager->tileSize * 0.5, theHero->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, true);
 				else
 					Render2DMesh(meshList[GEO_BLACK], false, 1.0f, -(currentLevel->m_cMap->GetNumOfTiles_Width() * currentLevel->m_cMap->GetTileSize() * 0.5 - theHero->GetPos().x - currentLevel->m_cMap->GetTileSize() - theHero->GetMapOffset().x), -(currentLevel->m_cMap->GetNumOfTiles_Height() * currentLevel->m_cMap->GetTileSize() * 0.5 - theHero->GetPos().y - currentLevel->m_cMap->GetTileSize() - theHero->GetMapOffset().y));
-			}
+			*/}
 			modelStack.PopMatrix();
 		
 
@@ -913,46 +923,140 @@ Render the Enemies. This is a private function for use in this class only
 void SceneSP3::RenderEnemies()
 {
 	// Render the enemies
-	for(vector<CEnemy *>::iterator it = currentLevel->AI_Manager->enemiesList.begin(); it != currentLevel->AI_Manager->enemiesList.end(); ++it)
+	for(vector<CZombie *>::iterator it = currentLevel->AI_Manager->zombieList.begin(); it != currentLevel->AI_Manager->zombieList.end(); ++it)
 	{
-		CEnemy *enemy = (CEnemy *)*it;
+		CZombie *zombie = (CZombie *)*it;
 
-		if(enemy->active)
+		if(zombie->active)
 		{
-			if(enemy->GetAnimationDirection() == enemy->DOWN)
+			if(zombie->GetAnimationDirection() == zombie->DOWN)
 			{
-				Render2DMesh(meshList[GEO_ENEMY_FRONT_0 + (int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos().x, enemy->GetPos().y);
+				switch(zombie->zombie_type)
+				{
+				case CZombie::NORMAL:
+					Render2DMesh(meshList[GEO_NORMAL_ZOMBIE_FRONT_0 + (int)zombie->GetAnimationCounter()], false, 1.0f, zombie->GetPos().x, zombie->GetPos().y);
+					break;
+				case CZombie::SMART:
+					Render2DMesh(meshList[GEO_SMART_ZOMBIE_FRONT_0 + (int)zombie->GetAnimationCounter()], false, 1.0f, zombie->GetPos().x, zombie->GetPos().y);
+					break;
+				case CZombie::TANK:
+					Render2DMesh(meshList[GEO_TANK_ZOMBIE_FRONT_0 + (int)zombie->GetAnimationCounter()], false, 1.0f, zombie->GetPos().x, zombie->GetPos().y);
+					break;
+				case CZombie::HUNTER:
+					Render2DMesh(meshList[GEO_HUNTER_ZOMBIE_FRONT_0 + (int)zombie->GetAnimationCounter()], false, 1.0f, zombie->GetPos().x, zombie->GetPos().y);
+					break;
+				}
 			}
-			else if(enemy->GetAnimationDirection() == enemy->UP)
+			else if(zombie->GetAnimationDirection() == zombie->UP)
 			{
-				Render2DMesh(meshList[GEO_ENEMY_BACK_0 + (int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos().x, enemy->GetPos().y);
+				switch(zombie->zombie_type)
+				{
+				case CZombie::NORMAL:
+					Render2DMesh(meshList[GEO_NORMAL_ZOMBIE_BACK_0 + (int)zombie->GetAnimationCounter()], false, 1.0f, zombie->GetPos().x, zombie->GetPos().y);
+					break;
+				case CZombie::SMART:
+					Render2DMesh(meshList[GEO_SMART_ZOMBIE_BACK_0 + (int)zombie->GetAnimationCounter()], false, 1.0f, zombie->GetPos().x, zombie->GetPos().y);
+					break;
+				case CZombie::TANK:
+					Render2DMesh(meshList[GEO_TANK_ZOMBIE_BACK_0 + (int)zombie->GetAnimationCounter()], false, 1.0f, zombie->GetPos().x, zombie->GetPos().y);
+					break;
+				case CZombie::HUNTER:
+					Render2DMesh(meshList[GEO_HUNTER_ZOMBIE_BACK_0 + (int)zombie->GetAnimationCounter()], false, 1.0f, zombie->GetPos().x, zombie->GetPos().y);
+					break;
+				}
 			}
 			else
 			{
-				// enemy move right
-				if(enemy->GetAnimationInvert() == false)
+				// zombie move right
+				if(zombie->GetAnimationInvert() == false)
 				{
-					Render2DMesh(meshList[GEO_ENEMY_SIDE_0 + (int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos().x, enemy->GetPos().y);
+					switch(zombie->zombie_type)
+					{
+					case CZombie::NORMAL:
+						Render2DMesh(meshList[GEO_NORMAL_ZOMBIE_SIDE_0 + (int)zombie->GetAnimationCounter()], false, 1.0f, zombie->GetPos().x, zombie->GetPos().y);
+						break;
+					case CZombie::SMART:
+						Render2DMesh(meshList[GEO_SMART_ZOMBIE_SIDE_0 + (int)zombie->GetAnimationCounter()], false, 1.0f, zombie->GetPos().x, zombie->GetPos().y);
+						break;
+					case CZombie::TANK:
+						Render2DMesh(meshList[GEO_TANK_ZOMBIE_SIDE_0 + (int)zombie->GetAnimationCounter()], false, 1.0f, zombie->GetPos().x, zombie->GetPos().y);
+						break;
+					case CZombie::HUNTER:
+						Render2DMesh(meshList[GEO_HUNTER_ZOMBIE_SIDE_0 + (int)zombie->GetAnimationCounter()], false, 1.0f, zombie->GetPos().x, zombie->GetPos().y);
+						break;
+					}
 				}
-				// enemy move left
+				// zombie move left
 				else
 				{
-
-					Render2DMesh(meshList[GEO_ENEMY_SIDE_0 + (int)enemy->GetAnimationCounter()], false, 1.0f, enemy->GetPos().x, enemy->GetPos().y, true);
+					switch(zombie->zombie_type)
+					{
+					case CZombie::NORMAL:
+						Render2DMesh(meshList[GEO_NORMAL_ZOMBIE_SIDE_0 + (int)zombie->GetAnimationCounter()], false, 1.0f, zombie->GetPos().x, zombie->GetPos().y, true);
+						break;
+					case CZombie::SMART:
+						Render2DMesh(meshList[GEO_SMART_ZOMBIE_SIDE_0 + (int)zombie->GetAnimationCounter()], false, 1.0f, zombie->GetPos().x, zombie->GetPos().y, true);
+						break;
+					case CZombie::TANK:
+						Render2DMesh(meshList[GEO_TANK_ZOMBIE_SIDE_0 + (int)zombie->GetAnimationCounter()], false, 1.0f, zombie->GetPos().x, zombie->GetPos().y, true);
+						break;
+					case CZombie::HUNTER:
+						Render2DMesh(meshList[GEO_HUNTER_ZOMBIE_SIDE_0 + (int)zombie->GetAnimationCounter()], false, 1.0f, zombie->GetPos().x, zombie->GetPos().y, true);
+						break;
+					}
 				}
 			}
-			if(enemy->GetCurrentMode() == enemy->CHASE || enemy->GetCurrentMode() == enemy->ATTACK)
+			if(zombie->GetCurrentMode() == zombie->CHASE || zombie->GetCurrentMode() == zombie->ATTACK)
 			{
-				Render2DMesh(meshList[GEO_ENEMY_ALERT_SIGN], false, 1.0f, enemy->GetPos().x, enemy->GetPos().y + currentLevel->gameObjectsManager->tileSize);
+				Render2DMesh(meshList[GEO_ZOMBIE_ALERT_SIGN], false, 1.0f, zombie->GetPos().x, zombie->GetPos().y + currentLevel->gameObjectsManager->tileSize);
 			}
 
 			// Render ranges
-			Render2DMesh(meshList[GEO_ATTACK_RANGE], false, 1.0f, enemy->GetPos().x - currentLevel->gameObjectsManager->tileSize * 0.5, enemy->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, true);
-			Render2DMesh(meshList[GEO_REPEL_RANGE], false, 1.0f, enemy->GetPos().x - currentLevel->gameObjectsManager->tileSize * 0.5, enemy->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, true);
+			switch(zombie->zombie_type)
+			{
+			case CZombie::NORMAL:
+				{
+					Render2DMesh(meshList[GEO_NORMAL_ZOMBIE_ATTACK_RANGE], false, 1.0f, zombie->GetPos().x - currentLevel->gameObjectsManager->tileSize * 0.5, zombie->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, true);
+					Render2DMesh(meshList[GEO_NORMAL_ZOMBIE_REPEL_RANGE], false, 1.0f, zombie->GetPos().x - currentLevel->gameObjectsManager->tileSize * 0.5, zombie->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, true);
+				}
+				break;
+			case CZombie::SMART:
+				{
+					Render2DMesh(meshList[GEO_SMART_ZOMBIE_ATTACK_RANGE], false, 1.0f, zombie->GetPos().x - currentLevel->gameObjectsManager->tileSize * 0.5, zombie->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, true);
+					Render2DMesh(meshList[GEO_SMART_ZOMBIE_REPEL_RANGE], false, 1.0f, zombie->GetPos().x - currentLevel->gameObjectsManager->tileSize * 0.5, zombie->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, true);
+				}break;
+			case CZombie::TANK:
+				{
+					Render2DMesh(meshList[GEO_TANK_ZOMBIE_ATTACK_RANGE], false, 1.0f, zombie->GetPos().x - currentLevel->gameObjectsManager->tileSize * 0.5, zombie->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, true);
+					Render2DMesh(meshList[GEO_TANK_ZOMBIE_REPEL_RANGE], false, 1.0f, zombie->GetPos().x - currentLevel->gameObjectsManager->tileSize * 0.5, zombie->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, true);
+				}
+				break;
+			case CZombie::HUNTER:
+				{
+					Render2DMesh(meshList[GEO_HUNTER_ZOMBIE_ATTACK_RANGE], false, 1.0f, zombie->GetPos().x - currentLevel->gameObjectsManager->tileSize * 0.5, zombie->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, true);
+					Render2DMesh(meshList[GEO_HUNTER_ZOMBIE_REPEL_RANGE], false, 1.0f, zombie->GetPos().x - currentLevel->gameObjectsManager->tileSize * 0.5, zombie->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, true);
+				}
+				break;
+			}
 		}
+		// Death
 		else
 		{
-			Render2DMesh(meshList[GEO_ENEMY_BACK_0], false, 1.0f, enemy->GetPos().x + currentLevel->gameObjectsManager->tileSize * 0.5, enemy->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, false, 90.f);
+			switch(zombie->zombie_type)
+			{
+			case CZombie::NORMAL:
+				Render2DMesh(meshList[GEO_NORMAL_ZOMBIE_BACK_0], false, 1.0f, zombie->GetPos().x + currentLevel->gameObjectsManager->tileSize * 0.5, zombie->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, false, 90.f);
+				break;
+			case CZombie::SMART:
+				Render2DMesh(meshList[GEO_SMART_ZOMBIE_BACK_0], false, 1.0f, zombie->GetPos().x + currentLevel->gameObjectsManager->tileSize * 0.5, zombie->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, false, 90.f);
+				break;
+			case CZombie::TANK:
+				Render2DMesh(meshList[GEO_TANK_ZOMBIE_BACK_0], false, 1.0f, zombie->GetPos().x + currentLevel->gameObjectsManager->tileSize * 0.5, zombie->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, false, 90.f);
+				break;
+			case CZombie::HUNTER:
+				Render2DMesh(meshList[GEO_HUNTER_ZOMBIE_BACK_0], false, 1.0f, zombie->GetPos().x + currentLevel->gameObjectsManager->tileSize * 0.5, zombie->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, false, 90.f);
+				break;
+			}
 		}
 	}
 }

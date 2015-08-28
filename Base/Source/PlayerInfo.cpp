@@ -673,64 +673,66 @@ void CPlayerInfo::Attacking(float timeDiff, CAIManager* ai_manager, GameObjectFa
 	if(PrevHeroAnimationCounter <= (attackFrontMeshes.size() - 1) * 0.5 
 		&& heroAnimationCounter >= (attackFrontMeshes.size() - 1) * 0.5)
 	{
-		for(int i = 0; i < ai_manager->enemiesList.size(); ++i)
+		for(int i = 0; i < ai_manager->zombieList.size(); ++i)
 		{
-			// See if enemy is active
-			if(ai_manager->enemiesList[i]->active)
+			// See if zombie is active
+			if(ai_manager->zombieList[i]->active)
 			{
-				// Check distance from enemy to hero
-				if((ai_manager->enemiesList[i]->GetPos() - theHeroTargetPosNode->pos).Length() < go_manager->tileSize)
+				// Check distance from zombie to hero
+				if((ai_manager->zombieList[i]->GetPos() - theHeroTargetPosNode->pos).Length() < go_manager->tileSize)
 				{
-					if(ai_manager->enemiesList[i]->GetCurrentMode() != CEnemy::CHASE)
+					if(ai_manager->zombieList[i]->GetCurrentMode() != CZombie::CHASE)
 					{
-						ai_manager->enemiesList[i]->active = false;
+						if(ai_manager->zombieList[i]->zombie_type == CZombie::NORMAL
+							|| ai_manager->zombieList[i]->zombie_type == CZombie::SMART)
+						ai_manager->zombieList[i]->active = false;
 					}
 					else
 					{
-						// if enemy current node is equal to attack target node
-						if(ai_manager->enemiesList[i]->GetCurrentPosNode() == theHeroTargetPosNode)
+						// if zombie current node is equal to attack target node
+						if(ai_manager->zombieList[i]->GetCurrentPosNode() == theHeroTargetPosNode)
 						{
-							// Set enemy target node to hero target node
-							ai_manager->enemiesList[i]->SetTargetPosNode(theHeroTargetPosNode);
+							// Set zombie target node to hero target node
+							ai_manager->zombieList[i]->SetTargetPosNode(theHeroTargetPosNode);
 						}
 
 						// Repel to one unit away in direction of attack
 						if(theHeroCurrentPosNode->up == theHeroTargetPosNode)
 						{
-							ai_manager->enemiesList[i]->SetPos(theHeroTargetPosNode->up->pos);
-							ai_manager->enemiesList[i]->SetCurrentPosNode(theHeroTargetPosNode->up);
-							ai_manager->enemiesList[i]->SetAnimationDirection(CEnemy::DOWN);
+							ai_manager->zombieList[i]->SetPos(theHeroTargetPosNode->up->pos);
+							ai_manager->zombieList[i]->SetCurrentPosNode(theHeroTargetPosNode->up);
+							ai_manager->zombieList[i]->SetAnimationDirection(CZombie::DOWN);
 						}
 						else if(theHeroCurrentPosNode->down == theHeroTargetPosNode)
 						{
-							ai_manager->enemiesList[i]->SetPos(theHeroTargetPosNode->down->pos);
-							ai_manager->enemiesList[i]->SetCurrentPosNode(theHeroTargetPosNode->down);
-							ai_manager->enemiesList[i]->SetAnimationDirection(CEnemy::UP);
+							ai_manager->zombieList[i]->SetPos(theHeroTargetPosNode->down->pos);
+							ai_manager->zombieList[i]->SetCurrentPosNode(theHeroTargetPosNode->down);
+							ai_manager->zombieList[i]->SetAnimationDirection(CZombie::UP);
 						}
 						else if(theHeroCurrentPosNode->left == theHeroTargetPosNode)
 						{
-							ai_manager->enemiesList[i]->SetPos(theHeroTargetPosNode->left->pos);
-							ai_manager->enemiesList[i]->SetCurrentPosNode(theHeroTargetPosNode->left);
-							ai_manager->enemiesList[i]->SetAnimationDirection(CEnemy::RIGHT);
+							ai_manager->zombieList[i]->SetPos(theHeroTargetPosNode->left->pos);
+							ai_manager->zombieList[i]->SetCurrentPosNode(theHeroTargetPosNode->left);
+							ai_manager->zombieList[i]->SetAnimationDirection(CZombie::RIGHT);
 						}
 						else if(theHeroCurrentPosNode->right == theHeroTargetPosNode)
 						{
-							ai_manager->enemiesList[i]->SetPos(theHeroTargetPosNode->right->pos);
-							ai_manager->enemiesList[i]->SetCurrentPosNode(theHeroTargetPosNode->right);
-							ai_manager->enemiesList[i]->SetAnimationDirection(CEnemy::LEFT);
+							ai_manager->zombieList[i]->SetPos(theHeroTargetPosNode->right->pos);
+							ai_manager->zombieList[i]->SetCurrentPosNode(theHeroTargetPosNode->right);
+							ai_manager->zombieList[i]->SetAnimationDirection(CZombie::LEFT);
 						}
 
-						if(ai_manager->enemiesList[i]->GetCurrentPosNode()->posType > CPosNode::NONE 
-							&& ai_manager->enemiesList[i]->GetCurrentPosNode()->posType < CPosNode::ENEMY_INITIAL_POS)
+						if(ai_manager->zombieList[i]->GetCurrentPosNode()->posType > CPosNode::NONE 
+							&& ai_manager->zombieList[i]->GetCurrentPosNode()->posType < CPosNode::NORMAL_ZOMBIE_INITIAL_POS)
 						{
-							ai_manager->enemiesList[i]->SetPos(theHeroTargetPosNode->pos);
-							ai_manager->enemiesList[i]->SetCurrentPosNode(theHeroTargetPosNode);
-							ai_manager->enemiesList[i]->SetTargetPosNode(theHeroCurrentPosNode);
+							ai_manager->zombieList[i]->SetPos(theHeroTargetPosNode->pos);
+							ai_manager->zombieList[i]->SetCurrentPosNode(theHeroTargetPosNode);
+							ai_manager->zombieList[i]->SetTargetPosNode(theHeroCurrentPosNode);
 						}
 
-						ai_manager->enemiesList[i]->CalculateVel();
-						ai_manager->enemiesList[i]->SetCurrentMode(CEnemy::ATTACK);
-						ai_manager->enemiesList[i]->SetTime(0.25f);
+						ai_manager->zombieList[i]->CalculateVel();
+						ai_manager->zombieList[i]->SetCurrentMode(CZombie::ATTACK);
+						ai_manager->zombieList[i]->SetTime(0.25f);
 					}
 				}
 			}
@@ -747,12 +749,12 @@ void CPlayerInfo::Attacking(float timeDiff, CAIManager* ai_manager, GameObjectFa
 bool CPlayerInfo::CheckCollisionTarget(CAIManager* ai_manager, int tileSize)
 {
 	// check if zombie there
-	for(int i = 0; i < ai_manager->enemiesList.size(); ++i)
+	for(int i = 0; i < ai_manager->zombieList.size(); ++i)
 	{
-		if(ai_manager->enemiesList[i]->active)
+		if(ai_manager->zombieList[i]->active)
 		{
-			if( (Vector3(theHeroTargetPosNode->pos.x - ai_manager->enemiesList[i]->GetPos().x).Length() < tileSize * 0.5)
-				&& (Vector3(theHeroTargetPosNode->pos.y - ai_manager->enemiesList[i]->GetPos().y).Length() < tileSize * 0.5) )
+			if( (Vector3(theHeroTargetPosNode->pos.x - ai_manager->zombieList[i]->GetPos().x).Length() < tileSize * 0.5)
+				&& (Vector3(theHeroTargetPosNode->pos.y - ai_manager->zombieList[i]->GetPos().y).Length() < tileSize * 0.5) )
 				return true;
 		}
 	}
@@ -807,7 +809,7 @@ bool CPlayerInfo::CheckCollisionTarget(CAIManager* ai_manager, int tileSize)
 		{
 			return false;
 		}
-	case CPosNode::ENEMY_INITIAL_POS:
+	case CPosNode::NORMAL_ZOMBIE_INITIAL_POS:
 		return false;
 	case CPosNode::HERO_INIT_POS:
 		return false;
@@ -822,7 +824,7 @@ bool CPlayerInfo::CheckCollisionCurrent(void)
 	{
 	case CPosNode::NONE:
 		return false;
-	case CPosNode::ENEMY_INITIAL_POS:
+	case CPosNode::NORMAL_ZOMBIE_INITIAL_POS:
 		return false;
 	case CPosNode::HERO_INIT_POS:
 		return false;

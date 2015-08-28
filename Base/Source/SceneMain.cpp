@@ -90,8 +90,8 @@
 //	levelList[1]->background = meshList[GEO_ICECAVE_BACKGROUND];
 //	levelList[1]->sideView = true;
 //
-//	meshList[GEO_ATTACK_RANGE] = MeshBuilder::GenerateRing("ATTACK_RANGE", Color(0, 1, 0), 36.f, 4 * levelList[0]->m_cMap->GetTileSize(), 4 * levelList[0]->m_cMap->GetTileSize() - 1.f);
-//	meshList[GEO_REPEL_RANGE] = MeshBuilder::GenerateRing("REPEL_RANGE", Color(1, 0, 0), 36.f, 1 * levelList[0]->m_cMap->GetTileSize(), 1 * levelList[0]->m_cMap->GetTileSize() - 1.f);
+//	meshList[GEO_NORMAL_ZOMBIE_ATTACK_RANGE] = MeshBuilder::GenerateRing("ATTACK_RANGE", Color(0, 1, 0), 36.f, 4 * levelList[0]->m_cMap->GetTileSize(), 4 * levelList[0]->m_cMap->GetTileSize() - 1.f);
+//	meshList[GEO_NORMAL_ZOMBIE_REPEL_RANGE] = MeshBuilder::GenerateRing("REPEL_RANGE", Color(1, 0, 0), 36.f, 1 * levelList[0]->m_cMap->GetTileSize(), 1 * levelList[0]->m_cMap->GetTileSize() - 1.f);
 //
 //	// Initialise and load the REAR tile map
 //	levelList[1]->m_cRearMap = new CMap();
@@ -837,8 +837,8 @@
 //				else
 //					Render2DMesh(meshList[GEO_TILEENEMY_FRAME0], false, 1.0f, enemy_x, enemy_y, true);
 //			}
-//			//Render2DMesh(meshList[GEO_ATTACK_RANGE], false, 1.0f, enemy_x - currentLevel->m_cMap->GetTileSize() * 0.5, enemy_y + currentLevel->m_cMap->GetTileSize() * 0.5, true);
-//			//Render2DMesh(meshList[GEO_REPEL_RANGE], false, 1.0f, enemy_x - currentLevel->m_cMap->GetTileSize() * 0.5, enemy_y + currentLevel->m_cMap->GetTileSize() * 0.5, true);
+//			//Render2DMesh(meshList[GEO_NORMAL_ZOMBIE_ATTACK_RANGE], false, 1.0f, enemy_x - currentLevel->m_cMap->GetTileSize() * 0.5, enemy_y + currentLevel->m_cMap->GetTileSize() * 0.5, true);
+//			//Render2DMesh(meshList[GEO_NORMAL_ZOMBIE_REPEL_RANGE], false, 1.0f, enemy_x - currentLevel->m_cMap->GetTileSize() * 0.5, enemy_y + currentLevel->m_cMap->GetTileSize() * 0.5, true);
 //		}
 //	}
 //}

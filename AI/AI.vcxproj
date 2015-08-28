@@ -12,14 +12,22 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\AIManager.cpp" />
-    <ClCompile Include="Source\Enemy.cpp" />
+    <ClCompile Include="Source\HunterZombie.cpp" />
+    <ClCompile Include="Source\SmartZombie.cpp" />
+    <ClCompile Include="Source\TankZombie.cpp" />
+    <ClCompile Include="Source\Zombie.cpp" />
     <ClCompile Include="Source\LevelMap_Nodes.cpp" />
+    <ClCompile Include="Source\NormalZombie.cpp" />
     <ClCompile Include="Source\PosNode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\AIManager.h" />
-    <ClInclude Include="Source\Enemy.h" />
+    <ClInclude Include="Source\HunterZombie.h" />
+    <ClInclude Include="Source\SmartZombie.h" />
+    <ClInclude Include="Source\TankZombie.h" />
+    <ClInclude Include="Source\Zombie.h" />
     <ClInclude Include="Source\LevelMap_Nodes.h" />
+    <ClInclude Include="Source\NormalZombie.h" />
     <ClInclude Include="Source\PosNode.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

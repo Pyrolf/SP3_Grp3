@@ -134,13 +134,45 @@ void CLevelMap_Nodes::GenerateNodes(CMap* map, CAIManager* ai_manager, GameObjec
 				prev->gameObject = go_manager->GoList[go_index];
 				++go_index;
 			}
-			else if(prev->posType == CPosNode::ENEMY_INITIAL_POS)
+			else if(prev->posType == CPosNode::NORMAL_ZOMBIE_INITIAL_POS)
 			{
-				ai_manager->enemiesList[ai_index]->SetInitialPosNode(prev);
-				ai_manager->enemiesList[ai_index]->SetPos(prev->pos);
-				ai_manager->enemiesList[ai_index]->SetCurrentPosNode(prev);
-				ai_manager->enemiesList[ai_index]->SetTargetPosNode(prev);
-				++ai_index;
+				ai_manager->zombieList.push_back(new CNormalZombie);
+
+				ai_manager->zombieList.back()->Init(map);
+				ai_manager->zombieList.back()->SetInitialPosNode(prev);
+				ai_manager->zombieList.back()->SetPos(prev->pos);
+				ai_manager->zombieList.back()->SetCurrentPosNode(prev);
+				ai_manager->zombieList.back()->SetTargetPosNode(prev);
+			}
+			else if(prev->posType == CPosNode::SMART_ZOMBIE_INITIAL_POS)
+			{
+				ai_manager->zombieList.push_back(new CSmartZombie);
+
+				ai_manager->zombieList.back()->Init(map);
+				ai_manager->zombieList.back()->SetInitialPosNode(prev);
+				ai_manager->zombieList.back()->SetPos(prev->pos);
+				ai_manager->zombieList.back()->SetCurrentPosNode(prev);
+				ai_manager->zombieList.back()->SetTargetPosNode(prev);
+			}
+			else if(prev->posType == CPosNode::TANK_ZOMBIE_INITIAL_POS)
+			{
+				ai_manager->zombieList.push_back(new CTankZombie);
+
+				ai_manager->zombieList.back()->Init(map);
+				ai_manager->zombieList.back()->SetInitialPosNode(prev);
+				ai_manager->zombieList.back()->SetPos(prev->pos);
+				ai_manager->zombieList.back()->SetCurrentPosNode(prev);
+				ai_manager->zombieList.back()->SetTargetPosNode(prev);
+			}
+			else if(prev->posType == CPosNode::HUNTER_ZOMBIE_INITIAL_POS)
+			{
+				ai_manager->zombieList.push_back(new CHunterZombie);
+
+				ai_manager->zombieList.back()->Init(map);
+				ai_manager->zombieList.back()->SetInitialPosNode(prev);
+				ai_manager->zombieList.back()->SetPos(prev->pos);
+				ai_manager->zombieList.back()->SetCurrentPosNode(prev);
+				ai_manager->zombieList.back()->SetTargetPosNode(prev);
 			}
 		}
 	}
