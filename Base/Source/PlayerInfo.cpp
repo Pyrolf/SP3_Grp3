@@ -580,23 +580,31 @@ void CPlayerInfo::moving(float timeDiff, CMap* map)
 		vel.SetZero();
 	}
 	// Mapoffset_x
-	if(theHeroPosition.x < map->GetNumOfTiles_Width() * map->GetTileSize() * 0.5)
+	if(theHeroPosition.x < map->GetNumOfTiles_Width() * map->GetTileSize() * 0.5 - map->GetTileSize() * 0.5)
 	{
 		mapOffset.x = (map->GetNumOfTiles_Width() * map->GetTileSize() * 0.5) - map->GetTileSize() - theHeroPosition.x;
 	}
-	else if(theHeroPosition.x > (map->getNumOfTiles_MapWidth() * map->GetTileSize()) - (map->GetNumOfTiles_Width() * map->GetTileSize() * 0.5))
+	else if(theHeroPosition.x > (map->getNumOfTiles_MapWidth() * map->GetTileSize()) - (map->GetNumOfTiles_Width() * map->GetTileSize() * 0.5 + map->GetTileSize() * 0.5))
 	{
 		mapOffset.x = (map->getNumOfTiles_MapWidth() * map->GetTileSize()) - (map->GetNumOfTiles_Width() * map->GetTileSize() * 0.5) - map->GetTileSize() - theHeroPosition.x;
 	}
+	else
+	{
+		mapOffset.x = -map->GetTileSize() * 0.5;
+	}
 	
 	// Mapoffset_y
-	if(theHeroPosition.y < map->GetNumOfTiles_Height() * map->GetTileSize() * 0.5)
+	if(theHeroPosition.y < map->GetNumOfTiles_Height() * map->GetTileSize() * 0.5 - map->GetTileSize())
 	{
 		mapOffset.y = (map->GetNumOfTiles_Height() * map->GetTileSize() * 0.5) - map->GetTileSize() - theHeroPosition.y;
 	}
-	else if(theHeroPosition.y > (map->getNumOfTiles_MapHeight() * map->GetTileSize()) - (map->GetNumOfTiles_Height() * map->GetTileSize() * 0.5))
+	else if(theHeroPosition.y > (map->getNumOfTiles_MapHeight() * map->GetTileSize()) - (map->GetNumOfTiles_Height() * map->GetTileSize() * 0.5) - map->GetTileSize())
 	{
 		mapOffset.y = (map->getNumOfTiles_MapHeight() * map->GetTileSize()) - (map->GetNumOfTiles_Height() * map->GetTileSize() * 0.5) - map->GetTileSize() - theHeroPosition.y;
+	}
+	else
+	{
+		mapOffset.y = 0;
 	}
 }
 
