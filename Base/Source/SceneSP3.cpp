@@ -182,7 +182,7 @@ void SceneSP3::InitMinimap()
 void SceneSP3::InitLevels()
 {
 	// Initialise and load the tile map
-	const int noOfLevel = 1;
+	const int noOfLevel = 2;
 	for(int i = 0; i < noOfLevel; i++)
 	{
 		levelList.push_back(new Level);
@@ -195,13 +195,13 @@ void SceneSP3::InitLevels()
 	//levelList[0]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL1", Color(1, 1, 1), 0.0f, 0.0f, 2048, 3200);
 	//levelList[0]->background->textureID = LoadTGA("Image//level1_background.tga");
 	// Level 2
-	//levelList[0]->m_cMap->LoadMap( "Image//MapDesignLv2.csv" );
-	//levelList[0]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL2", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
-	//levelList[0]->background->textureID = LoadTGA("Image//level2_background.tga");
+	levelList[0]->m_cMap->LoadMap( "Image//MapDesignLv2.csv" );
+	levelList[0]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL2", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
+	levelList[0]->background->textureID = LoadTGA("Image//level2_background.tga");
 	// Level 3
-	levelList[0]->m_cMap->LoadMap( "Image//MapDesignLv3.csv" );
-	levelList[0]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL3", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
-	levelList[0]->background->textureID = LoadTGA("Image//level3_background.tga");
+	levelList[1]->m_cMap->LoadMap( "Image//MapDesignLv3.csv" );
+	levelList[1]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL3", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
+	levelList[1]->background->textureID = LoadTGA("Image//level3_background.tga");
 
 
 	for(int i = 0; i < noOfLevel; i++)
@@ -1196,7 +1196,7 @@ void SceneSP3::RenderGUI()
 	////////////////////////FLASHLIGHT UI BY IVAN DO NOT TOUCH//////////////////////////////////
 	modelStack.PushMatrix();
 	modelStack.Translate(268, 725, 0);
-	modelStack.Scale(blackout.battery * 30 , 20, 0);
+	modelStack.Scale(blackout.battery * 17.1 , 20, 0);
 	if(blackout.fullyCharged)
 		Render2DMesh(meshList[GEO_HACK_YELLOW_BAR], false, 1.f, 0 , 0);
 	else

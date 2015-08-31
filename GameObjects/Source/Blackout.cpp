@@ -12,7 +12,7 @@ Blackout::Blackout(void)
 
 	lightOn = false;
 	fullyCharged;
-	battery = 4;
+	battery = 7;
 	lightSize = 1;
 	ableToCharge = false;
 }
@@ -81,12 +81,12 @@ void Blackout::Update(double dt)
 			ableToCharge = true;
 			cooldown = 0;
 		}
-		if(battery < 8 && ableToCharge)
+		if(battery < 7 && ableToCharge)
 		{
 			battery += dt/2;
-			if(battery > 8)
+			if(battery > 7)
 			{
-				battery = 8;
+				battery = 7;
 				fullyCharged = true;
 			}
 		}
@@ -112,7 +112,7 @@ void Blackout::Reset()
 
 	lightOn = false;
 	fullyCharged;
-	battery = 4;
+	battery = 7;
 	lightSize = 1;
 	ableToCharge = false;
 }
