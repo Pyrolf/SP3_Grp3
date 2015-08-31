@@ -187,20 +187,25 @@ void SceneSP3::InitLevels()
 	{
 		levelList.push_back(new Level);
 		levelList[i]->m_cMap = new CMap();
-		levelList[i]->m_cMap->Init( 768 + 64, 1024, 12 + 1, 16, 3200 + 64, 2048, 64);
+		levelList[i]->m_cMap->Init( 768 + 64, 1024, 12 + 1, 16, 3200 + 64, 3200, 64);
 	}
 
 	// Level 1
-	levelList[0]->m_cMap->LoadMap( "Image//MapDesignLv1.csv" );
-	// Level 5
-	//levelList[4]->m_cMap->LoadMap( "Image//MapDesignLv5.csv" );
-	// Level 6
-	//levelList[5]->m_cMap->LoadMap( "Image//MapDesignLv6.csv" );
-	
+	//levelList[0]->m_cMap->LoadMap( "Image//MapDesignLv1.csv" );
+	//levelList[0]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL1", Color(1, 1, 1), 0.0f, 0.0f, 2048, 3200);
+	//levelList[0]->background->textureID = LoadTGA("Image//level1_background.tga");
+	// Level 2
+	//levelList[0]->m_cMap->LoadMap( "Image//MapDesignLv2.csv" );
+	//levelList[0]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL2", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
+	//levelList[0]->background->textureID = LoadTGA("Image//level2_background.tga");
+	// Level 3
+	levelList[0]->m_cMap->LoadMap( "Image//MapDesignLv3.csv" );
+	levelList[0]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL3", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
+	levelList[0]->background->textureID = LoadTGA("Image//level3_background.tga");
+
+
 	for(int i = 0; i < noOfLevel; i++)
 	{
-		levelList[i]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL1", Color(1, 1, 1), 0.0f, 0.0f, 2048, 3200);
-		levelList[i]->background->textureID = LoadTGA("Image//background_level1.tga");
 		levelList[i]->sideView = false;
 
 		levelList[i]->gameObjectsManager = new GameObjectFactory;
@@ -932,7 +937,7 @@ void SceneSP3::RenderGameObjects()
 		{
 		case GameObject::WALL:
 			{
-				Render2DMesh(wallMesh[go->currentFrame], false, 1.0f, go->pos.x, go->pos.y);
+				//Render2DMesh(wallMesh[go->currentFrame], false, 1.0f, go->pos.x, go->pos.y);
 				break;
 			}
 		case  GameObject::HOLE:
