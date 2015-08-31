@@ -308,6 +308,8 @@ void CPlayerInfo::MoveUpDown(const bool mode, CAIManager* ai_manager, int tileSi
 	if (mode)
 	{
 		theHeroTargetPosNode = theHeroTargetPosNode->up;
+		heroAnimationInvert = false;
+		heroAnimationDirection = UP;
 		if(!CPlayerInfo::CheckCollisionTarget(ai_manager, tileSize))
 		{
 			vel.Set(0, movementSpeed, 0);
@@ -321,6 +323,8 @@ void CPlayerInfo::MoveUpDown(const bool mode, CAIManager* ai_manager, int tileSi
 	else
 	{
 		theHeroTargetPosNode = theHeroTargetPosNode->down;
+		heroAnimationInvert = false;
+		heroAnimationDirection = DOWN;
 		if(!CPlayerInfo::CheckCollisionTarget(ai_manager, tileSize))
 		{
 			vel.Set(0, -movementSpeed, 0);
@@ -341,6 +345,8 @@ void CPlayerInfo::MoveLeftRight(const bool mode, CAIManager* ai_manager, int til
 	if (mode)
 	{
 		theHeroTargetPosNode = theHeroTargetPosNode->left;
+		heroAnimationInvert = true;
+		heroAnimationDirection = LEFT;
 		if(!CPlayerInfo::CheckCollisionTarget(ai_manager, tileSize))
 		{
 			vel.Set(-movementSpeed, 0, 0);
@@ -354,6 +360,8 @@ void CPlayerInfo::MoveLeftRight(const bool mode, CAIManager* ai_manager, int til
 	else
 	{
 		theHeroTargetPosNode = theHeroTargetPosNode->right;
+		heroAnimationInvert = false;
+		heroAnimationDirection = RIGHT;
 		if(!CPlayerInfo::CheckCollisionTarget(ai_manager, tileSize))
 		{
 			vel.Set(movementSpeed, 0, 0);
@@ -691,7 +699,7 @@ void CPlayerInfo::Attacking(float timeDiff, CAIManager* ai_manager, GameObjectFa
 			if(ai_manager->zombieList[i]->active && ai_manager->zombieList[i]->GetCurrentMode() != CZombie::ATTACK)
 			{
 				// Check distance from zombie to hero
-				if((ai_manager->zombieList[i]->GetPos() - theHeroTargetPosNode->pos).Length() < go_manager->tileSize * 0.5
+				if((ai_manager->zombieList[i]->GetPos() - theHeroTargetPosNode->pos).Length() < go_manager->tileSize
 					&& (ai_manager->zombieList[i]->GetPos() - theHeroCurrentPosNode->pos).Length() < go_manager->tileSize * 1.2)
 				{
 					if(ai_manager->zombieList[i]->GetCurrentMode() != CZombie::CHASE)
@@ -736,7 +744,7 @@ void CPlayerInfo::Attacking(float timeDiff, CAIManager* ai_manager, GameObjectFa
 						}
 
 						if(ai_manager->zombieList[i]->GetCurrentPosNode()->posType > CPosNode::NONE 
-							&& ai_manager->zombieList[i]->GetCurrentPosNode()->posType < CPosNode::NORMAL_ZOMBIE_INITIAL_POS)
+							&& ai_manager->zombieList[i]->GetCurrentPosNode()->posType < CPosNode::TOTAL_NON_ACTIVE_GO)
 						{
 							ai_manager->zombieList[i]->SetPos(theHeroTargetPosNode->pos);
 							ai_manager->zombieList[i]->SetCurrentPosNode(theHeroTargetPosNode);

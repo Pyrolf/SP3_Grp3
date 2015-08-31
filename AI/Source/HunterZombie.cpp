@@ -48,6 +48,6 @@ void CHunterZombie::Reset(void)
 	active = true;
 	health = 5;
 
-	movementSpeed = 200.f;
+	movementSpeed = 400.f;
 	zombie_type = ZOMBIE_TYPE::HUNTER;
 }

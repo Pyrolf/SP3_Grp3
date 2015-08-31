@@ -48,6 +48,6 @@ void CTankZombie::Reset(void)
 	active = true;
 	health = 10;
 
-	movementSpeed = 200.f;
+	movementSpeed = 100.f;
 	zombie_type = ZOMBIE_TYPE::TANK;
 }

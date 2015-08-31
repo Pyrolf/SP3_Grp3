@@ -823,7 +823,7 @@ void SceneSP3::Render()
 				RenderHero();
 			}
 
-			Render2DMesh(meshList[GEO_BLACK_HOLE], false, blackout.lightSize, theHero->GetPos().x + currentLevel->gameObjectsManager->tileSize * 0.5 - Application::getWindowWidth() * blackout.lightSize, theHero->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5 - Application::getWindowWidth() * blackout.lightSize);
+			//Render2DMesh(meshList[GEO_BLACK_HOLE], false, blackout.lightSize, theHero->GetPos().x + currentLevel->gameObjectsManager->tileSize * 0.5 - Application::getWindowWidth() * blackout.lightSize, theHero->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5 - Application::getWindowWidth() * blackout.lightSize);
 
 			modelStack.PopMatrix();
 			if(hackingGame.active)

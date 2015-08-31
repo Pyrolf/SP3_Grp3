@@ -48,6 +48,6 @@ void CSmartZombie::Reset(void)
 	active = true;
 	health = 4;
 
-	movementSpeed = 200.f;
+	movementSpeed = 300.f;
 	zombie_type = ZOMBIE_TYPE::SMART;
 }

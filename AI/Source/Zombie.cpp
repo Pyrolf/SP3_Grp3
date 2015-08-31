@@ -441,29 +441,26 @@ bool CZombie::AttackCheck(CPosNode* heroPosNode, Vector3 heroPos, int tileSize)
 			{
 				theZombieTargetPosNode = theZombieTargetPosNode->down;
 				theZombieCurrentPosNode = theZombieCurrentPosNode->down;
-				theZombiePosition = theZombieCurrentPosNode->pos;
 			}
 			// If target at down side
 			else if(theZombieCurrentPosNode->down == theZombieTargetPosNode)
 			{
 				theZombieTargetPosNode = theZombieTargetPosNode->up;
 				theZombieCurrentPosNode = theZombieCurrentPosNode->up;
-				theZombiePosition = theZombieCurrentPosNode->pos;
 			}
 			// If target at left side
 			else if(theZombieCurrentPosNode->left == theZombieTargetPosNode)
 			{
 				theZombieTargetPosNode = theZombieTargetPosNode->right;
 				theZombieCurrentPosNode = theZombieCurrentPosNode->right;
-				theZombiePosition = theZombieCurrentPosNode->pos;
 			}
 			// If target at right side
 			else if(theZombieCurrentPosNode->right == theZombieTargetPosNode)
 			{
 				theZombieTargetPosNode = theZombieTargetPosNode->left;
 				theZombieCurrentPosNode = theZombieCurrentPosNode->left;
-				theZombiePosition = theZombieCurrentPosNode->pos;
 			}
+			theZombiePosition = theZombieCurrentPosNode->pos;
 
 			while(theZombieCurrentPosNode->posType > CPosNode::NONE 
 				&& theZombieCurrentPosNode->posType < CPosNode::NORMAL_ZOMBIE_INITIAL_POS)
