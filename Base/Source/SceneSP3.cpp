@@ -494,6 +494,8 @@ void SceneSP3::UpdateInputs(double dt)
 					this->theHero->SetCurrentState(this->theHero->NIL);
 					playerRecord.reset();
 					currentLevel->AI_Manager->Reset();
+					currentLevel->gameObjectsManager->ResetUGO();
+					blackout.Reset();
 				}
 			}
 			else if(gameState == MAINMENU)
@@ -546,6 +548,8 @@ void SceneSP3::UpdateInputs(double dt)
 				this->theHero->Reset();
 				this->theHero->SetCurrentState(this->theHero->NIL);
 				currentLevel->AI_Manager->Reset();
+				currentLevel->gameObjectsManager->ResetUGO();
+				blackout.Reset();
 			}
 			else if(gameState == GETTINGPLAYERNAME)
 			{

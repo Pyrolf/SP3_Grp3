@@ -4,8 +4,8 @@
 class Blackout
 {
 public:
-	bool /*blackout,*/ lightOn, fullyCharged;
-	float /*blackoutTime, blackoutTreshold,*/ cooldown, cooldownTreshold;
+	bool /*blackout,*/ lightOn, fullyCharged, ableToCharge;
+	float /*blackoutTime, blackoutTreshold, cooldownTreshold*/cooldown;
 	/*int noOfBlinks;*/
 	double battery, lightSize;
 
