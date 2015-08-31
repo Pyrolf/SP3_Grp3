@@ -258,7 +258,7 @@ void SceneSP3::UpdateInputs(double dt)
 	if(Application::IsKeyPressed(VK_BACK) && !backsp)
 	{
 		backsp = true;
-		if(gameState == GETTINGPLAYERNAME)
+		if(gameState == GETTINGPLAYERNAME && currentLetter > 0)
 		{
 			tempName[currentLetter - 1] = NULL;
 			currentLetter--;
@@ -551,7 +551,7 @@ void SceneSP3::UpdateInputs(double dt)
 				currentLevel->gameObjectsManager->ResetUGO();
 				blackout.Reset();
 			}
-			else if(gameState == GETTINGPLAYERNAME)
+			else if(gameState == GETTINGPLAYERNAME && currentLetter > 0)
 			{
 				string tempd = "      ";
 				for(int i = 1; i < 6; ++i)

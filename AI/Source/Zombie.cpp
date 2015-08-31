@@ -197,9 +197,12 @@ void CZombie::CheckMode(CPosNode* heroPosNode, int tileSize, Vector3 heroPos)
 {
 	float DistFromHeroTozombie = (theZombiePosition - heroPos).Length();
 	float DistFromHeroTozombieInit = (heroPos - theZombieInitialPosNode->pos).Length();
+	
 	// If within range of detection
-	if(checkIfHeroIsWithinSight(heroPos) && DistFromHeroTozombieInit <= maxRangeToDetect * 2
-		|| (checkIfHeroIsWithinSight(heroPos) && zombie_type != SMART))
+	if(DistFromHeroTozombieInit <= maxRangeToDetect * 2
+		&& (checkIfHeroIsWithinSight(heroPos)
+		|| currentMode == CHASE
+		|| zombie_type > SMART))
 	{
 		// If not chase or attack
 		if(currentMode != CHASE && currentMode != ATTACK)
@@ -226,7 +229,7 @@ void CZombie::CheckMode(CPosNode* heroPosNode, int tileSize, Vector3 heroPos)
 			}
 		}
 	}
-	else
+	else if(zombie_type == SMART)
 	{
 		// If not return/ patrol/ idle
 		if(currentMode != RETURN && currentMode != PATROL && currentMode != IDLE)
@@ -249,6 +252,14 @@ void CZombie::CheckMode(CPosNode* heroPosNode, int tileSize, Vector3 heroPos)
 			{
 				ChoosePatrolOrIdleMode();
 			}
+		}
+	}
+	else
+	{
+		// If not return/ patrol/ idle
+		if(currentMode != RETURN && currentMode != PATROL && currentMode != IDLE)
+		{
+			ChoosePatrolOrIdleMode();
 		}
 	}
 }
@@ -311,7 +322,6 @@ void CZombie::ReturnCheck(int tileSize)
 			ChoosePatrolOrIdleMode();
 		}
 	}
-	// if theZombieCurrentPosNode is theZombieInitialPosNode
 	else
 	{
 		ChoosePatrolOrIdleMode();
@@ -337,22 +347,8 @@ bool CZombie::checkIfHeroIsWithinSight(Vector3 heroPos)
 			// if zombie is a hunter type
 			|| zombie_type == HUNTER)
 		{
-		//	// Check above
-		//	if((heroPos.y > theZombiePosition.y
-		//		&& theZombieCurrentPosNode->up->posType != CPosNode::NONE
-		//		&& theZombieCurrentPosNode->up->posType >= CPosNode::HERO_INIT_POS)
-		//		||(heroPos.y < theZombiePosition.y
-		//		&& theZombieCurrentPosNode->down->posType != CPosNode::NONE
-		//		&& theZombieCurrentPosNode->down->posType >= CPosNode::HERO_INIT_POS)
-		//		|| (heroPos.x < theZombiePosition.x
-		//		&& theZombieCurrentPosNode->left->posType != CPosNode::NONE
-		//		&& theZombieCurrentPosNode->left->posType >= CPosNode::HERO_INIT_POS)
-		//		||(heroPos.x > theZombiePosition.x
-		//		&& theZombieCurrentPosNode->right->posType != CPosNode::NONE
-		//		&& theZombieCurrentPosNode->right->posType >= CPosNode::HERO_INIT_POS))
-			{
-				return true;
-			}
+			return true;
+
 		}
 	}
 
@@ -392,7 +388,10 @@ void CZombie::ChoosePatrolOrIdleMode(void)
 				CalculateVel();
 				break;
 			}
-			theZombieTargetPosNode = theZombieCurrentPosNode;
+			else
+			{
+				theZombieTargetPosNode = theZombieCurrentPosNode;
+			}
 		}
 	}
 	else
