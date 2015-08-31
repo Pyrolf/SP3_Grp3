@@ -3,6 +3,7 @@
 
 HackingGame::HackingGame(void)
 {
+	id =-1;
 	active = false;
 	bottomLeftPos.SetZero();
 	topRightPos.SetZero();
@@ -118,5 +119,6 @@ void HackingGame::Reset()
 		speed += 200;
 	}
 
+	id = -1;
 	currentBar = 0;
 }

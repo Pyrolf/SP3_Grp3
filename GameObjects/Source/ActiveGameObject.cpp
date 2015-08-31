@@ -7,6 +7,7 @@ ActiveGameObject::ActiveGameObject()
 
 ActiveGameObject::ActiveGameObject(int type, Vector3 pos)
 {
+	id = -1;
 	this->type = type;
 	this->pos = pos;
 	currentFrame = 0;
@@ -14,7 +15,7 @@ ActiveGameObject::ActiveGameObject(int type, Vector3 pos)
 	active = false;
 	canActivate = true;
 
-	frameTime = currentFrameTime = timmer = 0;
+	frameTime = currentFrameTime = 0;
 
 	InitRanodmVars();
 }
@@ -35,9 +36,9 @@ void ActiveGameObject::InitRanodmVars()
 			currentFrame = 1;
 			break;
 		}
-	case LOCKED_DOOR:
+	case BLOCK:
 		{
-			currentFrame = 1;
+			active = true;
 			break;
 		}
 	case HEALTH_PACK:
@@ -45,9 +46,9 @@ void ActiveGameObject::InitRanodmVars()
 			active = true;
 			break;
 		}
-	case FIRE:
+	case TRAP:
 		{
-			frameTime = 0.1;
+			frameTime = 0.015;
 			break;
 		}
 	}
@@ -103,48 +104,23 @@ void ActiveGameObject::update(double dt)
 			}
 			break;
 		}
-	case LOCKED_DOOR:
-		{
-			if(active)
-				{
-					currentFrame = 0;
-				}
-			else
-				{
-					currentFrame = 1;
-				}
-			break;
-		}
-	case FIRE:
+	case TRAP:
 		{
 			if(active)
 			{
-				timmer += dt;
-				if(timmer > 1)
-				{
-					timmer = 0;
-					active = false;
-				}
-
 				currentFrameTime += dt;
 				if(currentFrameTime >= frameTime)
 				{
 					currentFrame += 1;
 					currentFrameTime = 0;
 				}
-				if(currentFrame >= 5)
+				if(currentFrame >= 4)
 				{
-					currentFrame = 1;
+					currentFrame = 4;
 				}
 			}
 			else
 			{
-				timmer += dt;
-				if(timmer > 1)
-				{
-					timmer = 0;
-					active = true;
-				}
 				currentFrame = 0;
 			}
 			break;
@@ -159,7 +135,7 @@ void ActiveGameObject::Reset()
 	active = false;
 	canActivate = true;
 
-	frameTime = currentFrameTime = timmer = 0;
+	frameTime = currentFrameTime = 0;
 
 	InitRanodmVars();
 }

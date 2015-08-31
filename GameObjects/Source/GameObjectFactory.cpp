@@ -41,6 +41,26 @@ void GameObjectFactory::generateGO(CMap *map)
 
 				temp = NULL;
 			}
+			else if(map->theScreenMap[i][k] >= (GameObject::BLOCK * 10) && map->theScreenMap[i][k] < (GameObject::BLOCK * 10) + 10)
+			{
+				ActiveGameObject* temp = (new ActiveGameObject(GameObject::BLOCK, Vector3(k * map->GetTileSize(), ((map->getNumOfTiles_MapHeight() - i) * map->GetTileSize()) - map->GetTileSize(), 0)));
+				temp->id = map->theScreenMap[i][k] - (GameObject::BLOCK * 10);
+
+				GoList.push_back(temp);
+				UpdatableGoList.push_back(temp);
+
+				temp = NULL;
+			}
+			else if(map->theScreenMap[i][k] >= (GameObject::HACK_SYS * 10) && map->theScreenMap[i][k] < (GameObject::HACK_SYS * 10) + 10)
+			{
+				ActiveGameObject* temp = (new ActiveGameObject(GameObject::HACK_SYS, Vector3(k * map->GetTileSize(), ((map->getNumOfTiles_MapHeight() - i) * map->GetTileSize()) - map->GetTileSize(), 0)));
+				temp->id = map->theScreenMap[i][k] - (GameObject::HACK_SYS * 10);
+
+				GoList.push_back(temp);
+				UpdatableGoList.push_back(temp);
+
+				temp = NULL;
+			}
 		}
 	}
 

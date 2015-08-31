@@ -289,7 +289,8 @@ void SceneBase::Init()
 	meshList[GEO_HACK_YELLOW_BAR] = MeshBuilder::Generate2DMesh("GEO_HACK_WINDOW", Color(1, 1, 0), 0.0f, 0.0f, 1.0f, 1.0f);
 
 	meshList[GEO_BLACK] = MeshBuilder::Generate2DMesh("BLACK", Color(0, 0, 0), 0.0f, 0.0f, Application::getWindowWidth(),  Application::getWindowHeight());
-	meshList[GEO_BLACK_HOLE] = MeshBuilder::GenerateRing("BLACK HOLE", Color(0, 0, 0), 36, Application::getWindowWidth() * 2, Application::getWindowWidth() * 0.01);
+	meshList[GEO_BLACK_HOLE] = MeshBuilder::Generate2DMesh("BLACK HOLE", Color(0, 0, 0), 0.0f, 0.0f, Application::getWindowWidth() * 2, Application::getWindowWidth() * 2);
+	meshList[GEO_BLACK_HOLE]->textureID = LoadTGA("Image//black hole.tga");
 
 	meshList[GEO_FLASHLIGHT] = MeshBuilder::Generate2DMesh("ff", Color(1, 1, 1), 0.0f, 0.0f, 170.f, 170.f);
 	meshList[GEO_FLASHLIGHT]->textureID = LoadTGA("Image//flash ui.tga");

@@ -73,8 +73,9 @@ private:
 	CMinimap* m_cMiniMap;
 
 	void UpdateInputs(double dt);
-	
-	vector<Mesh*> wallMesh, holeMesh, doorMesh, wetFloorMesh, timmingDoorMesh, lockedDoorMesh, hackMesh, healthMesh, fireMesh, arrowMesh;
+
+	vector<Mesh*> wallMesh, holeMesh, doorMesh, wetFloorMesh, timmingDoorMesh, blockMesh, hackMesh, healthMesh, trapMesh, arrowMesh;
+
 	void InitGoMeshes();
 	void InitMinimap();
 	void DeleteGoMeshes();

@@ -174,6 +174,15 @@ void CLevelMap_Nodes::GenerateNodes(CMap* map, CAIManager* ai_manager, GameObjec
 				ai_manager->zombieList.back()->SetCurrentPosNode(prev);
 				ai_manager->zombieList.back()->SetTargetPosNode(prev);
 			}
+			else if(prev->posType >= CPosNode::BLOCK * 10
+				&& prev->posType < CPosNode::BLOCK * 10 + 10
+				|| prev->posType >= CPosNode::HACK_SYS * 10
+				&& prev->posType < CPosNode::HACK_SYS * 10 + 10)
+			{
+				prev->posType /= 10;
+				prev->gameObject = go_manager->GoList[go_index];
+				++go_index;
+			}
 		}
 	}
 }

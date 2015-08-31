@@ -351,25 +351,41 @@ void SceneSP3::UpdateInputs(double dt)
 				case this->theHero->UP:
 					{
 						if(this->theHero->GetCurrentPosNode()->up->posType == this->theHero->GetCurrentPosNode()->HACK_SYS)
+						{
+							ActiveGameObject* temp = dynamic_cast<ActiveGameObject*>(this->theHero->GetCurrentPosNode()->up->gameObject);
+							hackingGame.id = temp->id;
 							hackingGame.active = true;
+						}
 						
 					}break;
 				case this->theHero->DOWN:
 					{
 						if(this->theHero->GetCurrentPosNode()->down->posType == this->theHero->GetCurrentPosNode()->HACK_SYS)
+						{
+							ActiveGameObject* temp = dynamic_cast<ActiveGameObject*>(this->theHero->GetCurrentPosNode()->down->gameObject);
+							hackingGame.id = temp->id;
 							hackingGame.active = true;
+						}
 						
 					}break;
 				case this->theHero->LEFT:
 					{
 						if(this->theHero->GetCurrentPosNode()->left->posType == this->theHero->GetCurrentPosNode()->HACK_SYS)
+						{
+							ActiveGameObject* temp = dynamic_cast<ActiveGameObject*>(this->theHero->GetCurrentPosNode()->left->gameObject);
+							hackingGame.id = temp->id;
 							hackingGame.active = true;
+						}
 						
 					}break;
 				case this->theHero->RIGHT:
 					{
 						if(this->theHero->GetCurrentPosNode()->right->posType == this->theHero->GetCurrentPosNode()->HACK_SYS)
+						{
+							ActiveGameObject* temp = dynamic_cast<ActiveGameObject*>(this->theHero->GetCurrentPosNode()->right->gameObject);
+							hackingGame.id = temp->id;
 							hackingGame.active = true;
+						}
 						
 					}break;
 				}
@@ -681,14 +697,9 @@ void SceneSP3::Update(double dt)
 				{
 					for(int i = 0; i < currentLevel->gameObjectsManager->UpdatableGoList.size(); ++i)
 					{
-						if(currentLevel->gameObjectsManager->UpdatableGoList[i]->type == GameObject::LOCKED_DOOR)
+						if(currentLevel->gameObjectsManager->UpdatableGoList[i]->type == GameObject::BLOCK && currentLevel->gameObjectsManager->UpdatableGoList[i]->id == hackingGame.id)
 						{
-							if(currentLevel->gameObjectsManager->UpdatableGoList[i]->type == GameObject::LOCKED_DOOR)
-							{
-								currentLevel->gameObjectsManager->UpdatableGoList[i]->active = true;
-								break;
-							}
-							currentLevel->gameObjectsManager->UpdatableGoList[i]->active = true;
+							currentLevel->gameObjectsManager->UpdatableGoList[i]->active = false;
 						}
 					}
 				}
@@ -811,16 +822,10 @@ void SceneSP3::Render()
 			{
 				RenderHero();
 			}
-			if(blackout.blackout)
-			{
-				/*if(blackout.lightSize > 1)
-					Render2DMesh(meshList[GEO_BLACK_HOLE], false, blackout.lightSize, theHero->GetPos().x - currentLevel->gameObjectsManager->tileSize * 0.5, theHero->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, true);
-				else
-					Render2DMesh(meshList[GEO_BLACK], false, 1.0f, -(currentLevel->m_cMap->GetNumOfTiles_Width() * currentLevel->m_cMap->GetTileSize() * 0.5 - theHero->GetPos().x - currentLevel->m_cMap->GetTileSize() - theHero->GetMapOffset().x), -(currentLevel->m_cMap->GetNumOfTiles_Height() * currentLevel->m_cMap->GetTileSize() * 0.5 - theHero->GetPos().y - currentLevel->m_cMap->GetTileSize() - theHero->GetMapOffset().y));
-			*/}
-			modelStack.PopMatrix();
-		
 
+			Render2DMesh(meshList[GEO_BLACK_HOLE], false, blackout.lightSize, theHero->GetPos().x + currentLevel->gameObjectsManager->tileSize * 0.5 - Application::getWindowWidth() * blackout.lightSize, theHero->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5 - Application::getWindowWidth() * blackout.lightSize);
+
+			modelStack.PopMatrix();
 			if(hackingGame.active)
 			{
 				RenderHackGame();
@@ -960,9 +965,11 @@ void SceneSP3::RenderGameObjects()
 				Render2DMesh(timmingDoorMesh[go->currentFrame], false, 1.0f, go->pos.x, go->pos.y);
 				break;
 			}
-		case  GameObject::LOCKED_DOOR:
+		case  GameObject::BLOCK:
 			{
-				Render2DMesh(lockedDoorMesh[go->currentFrame], false, 1.0f, go->pos.x, go->pos.y);
+				ActiveGameObject* temp = dynamic_cast<ActiveGameObject*>(go);
+				if(temp->active == true)
+					Render2DMesh(blockMesh[go->currentFrame], false, 1.0f, go->pos.x, go->pos.y);
 				break;
 			}
 		case  GameObject::HACK_SYS:
@@ -977,9 +984,9 @@ void SceneSP3::RenderGameObjects()
 					Render2DMesh(healthMesh[go->currentFrame], false, 1.0f, go->pos.x, go->pos.y);
 				break;
 			}
-		case GameObject::FIRE:
+		case GameObject::TRAP:
 			{
-				Render2DMesh(fireMesh[go->currentFrame], false, 1.0f, go->pos.x, go->pos.y);
+				Render2DMesh(trapMesh[go->currentFrame], false, 1.0f, go->pos.x, go->pos.y);
 				break;
 			}
 		case GameObject::MOVE_UP:
@@ -1184,14 +1191,14 @@ void SceneSP3::RenderGUI()
 
 	////////////////////////FLASHLIGHT UI BY IVAN DO NOT TOUCH//////////////////////////////////
 	modelStack.PushMatrix();
-	modelStack.Translate(260, 703, 0);
-	modelStack.Scale(blackout.battery * 45 , 65, 0);
+	modelStack.Translate(268, 725, 0);
+	modelStack.Scale(blackout.battery * 30 , 20, 0);
 	if(blackout.fullyCharged)
 		Render2DMesh(meshList[GEO_HACK_YELLOW_BAR], false, 1.f, 0 , 0);
 	else
 		Render2DMesh(meshList[GEO_HACK_RED_BAR], false, 1.f, 0 , 0);
 	modelStack.PopMatrix();
-	Render2DMesh(meshList[GEO_FLASHLIGHT], false, 1.f, 260 , 703);
+	Render2DMesh(meshList[GEO_FLASHLIGHT], false, 1.f, 260 , 650);
 	////////////////////////////////////////////////////////////////////////////////////////////
 
 	std::ostringstream time;
@@ -1230,10 +1237,8 @@ void SceneSP3::InitGoMeshes()
 	timmingDoorMesh.push_back(MeshBuilder::Generate2DMesh("door closed", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
 	timmingDoorMesh.back()->textureID = LoadTGA("Image//door closed.tga");
 	
-	lockedDoorMesh.push_back(MeshBuilder::Generate2DMesh("door open", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
-	lockedDoorMesh.back()->textureID = LoadTGA("Image//door open.tga");
-	lockedDoorMesh.push_back(MeshBuilder::Generate2DMesh("door locked", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
-	lockedDoorMesh.back()->textureID = LoadTGA("Image//door locked.tga");
+	blockMesh.push_back(MeshBuilder::Generate2DMesh("block", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
+	blockMesh.back()->textureID = LoadTGA("Image//block.tga");
 
 	hackMesh.push_back(MeshBuilder::Generate2DMesh("hack", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
 	hackMesh.back()->textureID = LoadTGA("Image//hack station.tga");
@@ -1241,16 +1246,16 @@ void SceneSP3::InitGoMeshes()
 	healthMesh.push_back(MeshBuilder::Generate2DMesh("health", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
 	healthMesh.back()->textureID = LoadTGA("Image//health pack.tga");
 
-	fireMesh.push_back(MeshBuilder::Generate2DMesh("fire", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
-	fireMesh.back()->textureID = LoadTGA("Image//fire 0.tga");
-	fireMesh.push_back(MeshBuilder::Generate2DMesh("fire", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
-	fireMesh.back()->textureID = LoadTGA("Image//fire 1.tga");
-	fireMesh.push_back(MeshBuilder::Generate2DMesh("fire", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
-	fireMesh.back()->textureID = LoadTGA("Image//fire 2.tga");
-	fireMesh.push_back(MeshBuilder::Generate2DMesh("fire", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
-	fireMesh.back()->textureID = LoadTGA("Image//fire 3.tga");
-	fireMesh.push_back(MeshBuilder::Generate2DMesh("fire", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
-	fireMesh.back()->textureID = LoadTGA("Image//fire 4.tga");
+	trapMesh.push_back(MeshBuilder::Generate2DMesh("trap", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
+	trapMesh.back()->textureID = LoadTGA("Image//trap 0.tga");
+	trapMesh.push_back(MeshBuilder::Generate2DMesh("trap", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
+	trapMesh.back()->textureID = LoadTGA("Image//trap 1.tga");
+	trapMesh.push_back(MeshBuilder::Generate2DMesh("trap", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
+	trapMesh.back()->textureID = LoadTGA("Image//trap 2.tga");
+	trapMesh.push_back(MeshBuilder::Generate2DMesh("trap", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
+	trapMesh.back()->textureID = LoadTGA("Image//trap 3.tga");
+	trapMesh.push_back(MeshBuilder::Generate2DMesh("trap", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
+	trapMesh.back()->textureID = LoadTGA("Image//trap 4.tga");/**/
 
 	arrowMesh.push_back(MeshBuilder::Generate2DMesh("arrow", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f));
 	arrowMesh.back()->textureID = LoadTGA("Image//arrow arrow.tga");
@@ -1306,12 +1311,12 @@ void SceneSP3::DeleteGoMeshes()
 			timmingDoorMesh[i] = NULL;
 		}
 	}
-	for(int i = 0; i < lockedDoorMesh.size(); i++)
+	for(int i = 0; i < blockMesh.size(); i++)
 	{
-		if(lockedDoorMesh[i])
+		if(blockMesh[i])
 		{
-			delete lockedDoorMesh[i];
-			lockedDoorMesh[i] = NULL;
+			delete blockMesh[i];
+			blockMesh[i] = NULL;
 		}
 	}
 	for(int i = 0; i < hackMesh.size(); i++)

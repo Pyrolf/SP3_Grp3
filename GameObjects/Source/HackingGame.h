@@ -5,6 +5,7 @@
 class HackingGame
 {
 public:
+	int id;
 	bool active;
 	Vector3 bottomLeftPos, topRightPos;
 	std::vector<HackingBar*> hackingBar;

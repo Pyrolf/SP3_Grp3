@@ -796,19 +796,19 @@ bool CPlayerInfo::CheckCollisionTarget(CAIManager* ai_manager, int tileSize)
 			else
 				return true;
 		}
-	case CPosNode::LOCKED_DOOR:
+	case CPosNode::BLOCK:
 		{
 			ActiveGameObject* temp = dynamic_cast<ActiveGameObject*>(theHeroTargetPosNode->gameObject);
 			if(temp->active)
-				return false;
-			else
 				return true;
+			else
+				return false;
 		}
 	case CPosNode::HEALTH_PACK:
 		{
 			return false;
 		}
-	case CPosNode::FIRE:
+	case CPosNode::TRAP:
 		{
 			return false;
 		}
@@ -917,7 +917,7 @@ void CPlayerInfo::CollisionResponseCurrent(void)
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_DOWN
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_LEFT
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_RIGHT
-				&& theHeroTargetPosNode->gameObject->type != GameObject::FIRE)
+				&& theHeroTargetPosNode->gameObject->type != GameObject::TRAP)
 			{
 				theHeroTargetPosNode = theHeroCurrentPosNode;
 				currentState = NIL;
@@ -936,13 +936,6 @@ void CPlayerInfo::CollisionResponseCurrent(void)
 				SetCurrentState(EXITING);
 		}
 		break;
-	case GameObject::LOCKED_DOOR:
-		{
-			ActiveGameObject* temp = dynamic_cast<ActiveGameObject*>(theHeroCurrentPosNode->gameObject);
-			if(temp->active)
-				SetCurrentState(EXITING);
-		}
-		break;
 	case GameObject::HEALTH_PACK:
 		{
 			ActiveGameObject* temp = dynamic_cast<ActiveGameObject*>(theHeroCurrentPosNode->gameObject);
@@ -953,14 +946,14 @@ void CPlayerInfo::CollisionResponseCurrent(void)
 			}
 		}
 		break;
-	case GameObject::FIRE:
+	case GameObject::TRAP:
 		{
 			ActiveGameObject* temp = dynamic_cast<ActiveGameObject*>(theHeroCurrentPosNode->gameObject);
-			if(temp->active && health > 0 && !justGotDamged)
+			if(!temp->active && health > 0 && !justGotDamged)
 			{
 				--health;
 				justGotDamged = true;
-				
+				temp->active = true;
 			}
 			if(health == 0)
 			{
@@ -983,7 +976,7 @@ void CPlayerInfo::CollisionResponseCurrent(void)
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_DOWN
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_LEFT
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_RIGHT
-				&& theHeroTargetPosNode->gameObject->type != GameObject::FIRE)
+				&& theHeroTargetPosNode->gameObject->type != GameObject::TRAP)
 			{
 				theHeroTargetPosNode = theHeroCurrentPosNode;
 				currentState = NIL;
@@ -1010,7 +1003,7 @@ void CPlayerInfo::CollisionResponseCurrent(void)
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_DOWN
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_LEFT
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_RIGHT
-				&& theHeroTargetPosNode->gameObject->type != GameObject::FIRE)
+				&& theHeroTargetPosNode->gameObject->type != GameObject::TRAP)
 			{
 				theHeroTargetPosNode = theHeroCurrentPosNode;
 				currentState = NIL;
@@ -1038,7 +1031,7 @@ void CPlayerInfo::CollisionResponseCurrent(void)
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_DOWN
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_LEFT
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_RIGHT
-				&& theHeroTargetPosNode->gameObject->type != GameObject::FIRE)
+				&& theHeroTargetPosNode->gameObject->type != GameObject::TRAP)
 			{
 				theHeroTargetPosNode = theHeroCurrentPosNode;
 				currentState = NIL;
@@ -1066,7 +1059,7 @@ void CPlayerInfo::CollisionResponseCurrent(void)
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_DOWN
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_LEFT
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_RIGHT
-				&& theHeroTargetPosNode->gameObject->type != GameObject::FIRE)
+				&& theHeroTargetPosNode->gameObject->type != GameObject::TRAP)
 			{
 				theHeroTargetPosNode = theHeroCurrentPosNode;
 				currentState = NIL;
