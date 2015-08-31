@@ -398,9 +398,13 @@ void CPlayerInfo::HeroUpdate(float timeDiff, CAIManager* ai_manager, GameObjectF
 		}
 		if(currentState == NIL)
 		{
-			if(CheckCollisionCurrent())
+			if(theHeroCurrentPosNode->posType != 0
+				&& theHeroCurrentPosNode->posType < CPosNode::TOTAL_ACTIVE_GO)
 			{
-				CollisionResponseCurrent();
+				if(CheckCollisionCurrent())
+				{
+					CollisionResponseCurrent();
+				}
 			}
 		}
 
@@ -677,17 +681,18 @@ void CPlayerInfo::attackingEnabled()
 void CPlayerInfo::Attacking(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager)
 {
 	float PrevHeroAnimationCounter = heroAnimationCounter;
-	heroAnimationCounter += heroAnimationSpeed * 2 * timeDiff;
+	heroAnimationCounter += heroAnimationSpeed * 1 * timeDiff;
 	if(PrevHeroAnimationCounter <= (attackFrontMeshes.size() - 1) * 0.5 
 		&& heroAnimationCounter >= (attackFrontMeshes.size() - 1) * 0.5)
 	{
 		for(int i = 0; i < ai_manager->zombieList.size(); ++i)
 		{
 			// See if zombie is active
-			if(ai_manager->zombieList[i]->active)
+			if(ai_manager->zombieList[i]->active && ai_manager->zombieList[i]->GetCurrentMode() != CZombie::ATTACK)
 			{
 				// Check distance from zombie to hero
-				if((ai_manager->zombieList[i]->GetPos() - theHeroTargetPosNode->pos).Length() < go_manager->tileSize)
+				if((ai_manager->zombieList[i]->GetPos() - theHeroTargetPosNode->pos).Length() < go_manager->tileSize * 0.5
+					&& (ai_manager->zombieList[i]->GetPos() - theHeroCurrentPosNode->pos).Length() < go_manager->tileSize * 1.2)
 				{
 					if(ai_manager->zombieList[i]->GetCurrentMode() != CZombie::CHASE)
 					{
@@ -740,7 +745,13 @@ void CPlayerInfo::Attacking(float timeDiff, CAIManager* ai_manager, GameObjectFa
 
 						ai_manager->zombieList[i]->CalculateVel();
 						ai_manager->zombieList[i]->SetCurrentMode(CZombie::ATTACK);
-						ai_manager->zombieList[i]->SetTime(0.25f);
+						ai_manager->zombieList[i]->SetTime(0.1f);
+						// Minus 1 health
+						ai_manager->zombieList[i]->SetHealth(ai_manager->zombieList[i]->GetHealth() - 1);
+						if(ai_manager->zombieList[i]->GetHealth() == 0)
+						{
+							ai_manager->zombieList[i]->active = false;
+						}
 					}
 				}
 			}
@@ -818,6 +829,12 @@ bool CPlayerInfo::CheckCollisionTarget(CAIManager* ai_manager, int tileSize)
 			return false;
 		}
 	case CPosNode::NORMAL_ZOMBIE_INITIAL_POS:
+		return false;
+	case CPosNode::SMART_ZOMBIE_INITIAL_POS:
+		return false;
+	case CPosNode::TANK_ZOMBIE_INITIAL_POS:
+		return false;
+	case CPosNode::HUNTER_ZOMBIE_INITIAL_POS:
 		return false;
 	case CPosNode::HERO_INIT_POS:
 		return false;

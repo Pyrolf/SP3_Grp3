@@ -24,10 +24,12 @@ CNormalZombie::~CNormalZombie(void)
 void CNormalZombie::Init(CMap *map)
 {
 	movementSpeed = 200.f;
+	animationSpeed = 20;
 	zombie_type = NORMAL;
 	maxRangeToDetect = map->GetTileSize() * 3;
 	zombieAnimationCounter = 0.0f;
 	zombieAnimationInvert = false;
+	health = 3;
 }
 
 // Reset this class instance
@@ -44,6 +46,7 @@ void CNormalZombie::Reset(void)
 	zombieAnimationInvert = false;
 
 	active = true;
+	health = 3;
 
 	movementSpeed = 200.f;
 	zombie_type = ZOMBIE_TYPE::NORMAL;

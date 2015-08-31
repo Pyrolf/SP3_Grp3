@@ -24,10 +24,12 @@ CTankZombie::~CTankZombie(void)
 void CTankZombie::Init(CMap *map)
 {
 	movementSpeed = 100.f;
+	animationSpeed = 10;
 	zombie_type = TANK;
 	maxRangeToDetect = map->GetTileSize() * 5;
 	zombieAnimationCounter = 0.0f;
 	zombieAnimationInvert = false;
+	health = 10;
 }
 
 // Reset this class instance
@@ -44,7 +46,8 @@ void CTankZombie::Reset(void)
 	zombieAnimationInvert = false;
 
 	active = true;
+	health = 10;
 
 	movementSpeed = 200.f;
-	zombie_type = ZOMBIE_TYPE::NORMAL;
+	zombie_type = ZOMBIE_TYPE::TANK;
 }

@@ -180,6 +180,18 @@ float CZombie::GetTime(void)
 	return time;
 }
 
+// Set health of the zombie
+void CZombie::SetHealth(int health)
+{
+	this->health = health;
+}
+
+// Get health of the zombie
+int CZombie::GetHealth(void)
+{
+	return health;
+}
+
 // Check current mode
 void CZombie::CheckMode(CPosNode* heroPosNode, int tileSize, Vector3 heroPos)
 {
@@ -578,7 +590,7 @@ void CZombie::UpdateAnimation(Vector3 CurrentPos, Vector3 PrevPos, float timeDif
 	{
 		zombieAnimationDirection = UP;
 		zombieAnimationInvert = false;
-		zombieAnimationCounter += 30 * timeDiff;
+		zombieAnimationCounter += animationSpeed * timeDiff;
 		if(zombieAnimationCounter > 2.0f)
 			zombieAnimationCounter = 0.0f;
 	}
@@ -586,7 +598,7 @@ void CZombie::UpdateAnimation(Vector3 CurrentPos, Vector3 PrevPos, float timeDif
 	{
 		zombieAnimationDirection = DOWN;
 		zombieAnimationInvert = false;
-		zombieAnimationCounter += 30 * timeDiff;
+		zombieAnimationCounter += animationSpeed * timeDiff;
 		if(zombieAnimationCounter > 2.0f)
 			zombieAnimationCounter = 0.0f;
 	}
@@ -594,7 +606,7 @@ void CZombie::UpdateAnimation(Vector3 CurrentPos, Vector3 PrevPos, float timeDif
 	{
 		zombieAnimationDirection = LEFT;
 		zombieAnimationInvert = true;
-		zombieAnimationCounter -= 30 * timeDiff;
+		zombieAnimationCounter -= animationSpeed * timeDiff;
 		if(zombieAnimationCounter < 0.0f)
 			zombieAnimationCounter = 2.0f;
 	}
@@ -602,7 +614,7 @@ void CZombie::UpdateAnimation(Vector3 CurrentPos, Vector3 PrevPos, float timeDif
 	{
 		zombieAnimationDirection = RIGHT;
 		zombieAnimationInvert = false;
-		zombieAnimationCounter += 30 * timeDiff;
+		zombieAnimationCounter += animationSpeed * timeDiff;
 		if(zombieAnimationCounter > 2.0f)
 			zombieAnimationCounter = 0.0f;
 	}

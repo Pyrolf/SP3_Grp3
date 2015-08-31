@@ -52,6 +52,11 @@ public:
 	// Get time of the zombie
 	float GetTime(void);
 
+	// Set health of the zombie
+	void SetHealth(int health);
+	// Get health of the zombie
+	int GetHealth(void);
+
 	enum ANIMATION_DIRECTION
 	{
 		UP,
@@ -154,4 +159,7 @@ protected:
 
 	bool hitHero;
 	ANIMATION_DIRECTION zombieAnimationDirection;
+	int animationSpeed;
+
+	int health;
 };
