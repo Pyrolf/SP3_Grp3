@@ -12,9 +12,7 @@
 #include "Highscore.h"
 #include "Record.h"
 
-#include <irrKlang.h>
-#pragma comment(lib, "irrKlang.lib")
-using namespace irrklang;
+#include "Sound.h"
 
 class SceneSP3 : public SceneBase
 {
@@ -47,7 +45,6 @@ private:
 	
 	void InitHero();
 	void InitLevels();
-	int InitSound();
 
 	// Render functions
 	void RenderBackground();
@@ -84,7 +81,7 @@ private:
 
 
 	void RenderHackGame();
-
+	Sound mysound;
 	Blackout blackout;
 	bool chara[32];
 	string tempName;

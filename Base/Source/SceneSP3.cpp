@@ -8,7 +8,6 @@
 #include "LoadTGA.h"
 #include <sstream>
 
-ISoundEngine * engine;
 
 SceneSP3::SceneSP3()
 	: gameState(MAINMENU)
@@ -31,6 +30,7 @@ void SceneSP3::Init()
 	InitGoMeshes();
 	InitLevels();
 	InitMinimap();
+	mysound.soundInit();
 	// Normal zombie
 	meshList[GEO_NORMAL_ZOMBIE_ATTACK_RANGE] = MeshBuilder::GenerateRing("NORMAL_ATTACK_RANGE", Color(0, 1, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 2, levelList[0]->gameObjectsManager->tileSize * 2 - 1.f);
 	meshList[GEO_NORMAL_ZOMBIE_REPEL_RANGE] = MeshBuilder::GenerateRing("NORMAL_REPEL_RANGE", Color(1, 0, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 0.5, levelList[0]->gameObjectsManager->tileSize * 0.5 - 1.f);
@@ -51,7 +51,6 @@ void SceneSP3::Init()
 		chara[i] = false;
 	}
 	
-	InitSound();
 	hackingGame.Init(Vector3(270, 335, 0), Vector3(753, 365, 0));
 	
 }
@@ -220,16 +219,6 @@ void SceneSP3::InitLevels()
 	}
 }
 
-int SceneSP3::InitSound()
-{
-	engine = createIrrKlangDevice();
-
-	if (!engine)
-		return 0;
-
-	return 0;
-}
-
 void SceneSP3::UpdateInputs(double dt)
 {
 	static bool backsp = false;
@@ -280,6 +269,7 @@ void SceneSP3::UpdateInputs(double dt)
 			if(this->theHero->GetCurrentState() == this->theHero->NIL && gameState == PLAYING)
 			{
 				gameState = PAUSE;
+				mysound.playSound(Sound::PAUSE);
 			}
 		}
 
@@ -289,6 +279,7 @@ void SceneSP3::UpdateInputs(double dt)
 				&& gameState == PLAYING)
 			{
 				this->theHero->attackingEnabled();
+				mysound.playSound(Sound::PLAYER_ATTACK);
 			}
 		}
 
@@ -418,7 +409,7 @@ void SceneSP3::UpdateInputs(double dt)
 				{
 					choice = PLAY;
 				}
-
+				mysound.playSound(Sound::MENUCHOICE);
 				
 			}
 			if(gameState == MAINMENU)
@@ -435,8 +426,9 @@ void SceneSP3::UpdateInputs(double dt)
 					choice -= 1;					
 					break;
 				}
+				mysound.playSound(Sound::MENUCHOICE);
 			}
-			engine->play2D("../media/click-click-mono.wav");
+			
 			upkey = true;
 
 		}
@@ -453,25 +445,26 @@ void SceneSP3::UpdateInputs(double dt)
 				{
 					choice = QUIT;
 				}
+				mysound.playSound(Sound::MENUCHOICE);
 				
 			}
 			else if(gameState == MAINMENU)
 			{
 				switch(choice)
 				{
-				case EXIT:
-					choice = PLAY;
-					break;
 				case PLAY:
 					choice = SCORE;
+					break;
+				case EXIT:
+					choice = PLAY;
 					break;
 				default:
 					choice += 1;
 					break;
 				}
-
+				mysound.playSound(Sound::MENUCHOICE);
 			}
-			engine->play2D("../media/click-click-mono.wav");
+			
 			downkey = true;
 		}
 		else if(Application::IsKeyPressed(VK_DOWN) == false && downkey == true)
@@ -497,6 +490,7 @@ void SceneSP3::UpdateInputs(double dt)
 					currentLevel->gameObjectsManager->ResetUGO();
 					blackout.Reset();
 				}
+				mysound.playSound(Sound::MENU_ENTER);
 			}
 			else if(gameState == MAINMENU)
 			{
@@ -513,10 +507,12 @@ void SceneSP3::UpdateInputs(double dt)
 				{
 					gameState = HIGHSCORE;
 				}
+				mysound.playSound(Sound::MENU_ENTER);
 			}
 			else if(gameState == HIGHSCORE)
 			{
 				gameState = MAINMENU;
+				mysound.playSound(Sound::MENU_ENTER);
 			}
 			else if(gameState == GAMEOVER)
 			{
@@ -609,10 +605,25 @@ void SceneSP3::RenderHighscore()
 
 void SceneSP3::Update(double dt)
 {
+	static bool soundplaying = false;
+	static bool soundingplay = false;
 	UpdateInputs(dt);
 
+	if(gameState == MAINMENU)
+	{
+		//if(!soundplaying)        // main menu sound
+		//{
+		//	mysound.playSound(Sound::MENUMUSIC);
+		//	soundplaying = true;
+		//}		
+	}
 	if(gameState == PLAYING)
 	{
+		if(!soundingplay)        // main menu sound
+		{
+			mysound.playSound(Sound::GAMEPLAYING);
+			soundingplay = true;
+		}	
 		if(this->theHero->GetCurrentState() != this->theHero->DYING && this->theHero->GetCurrentState() != this->theHero->EXITING)
 		{
 			playerRecord.update(dt);
@@ -762,7 +773,7 @@ void SceneSP3::Render()
 			}
 			if(!soundplayed && gameState == MAINMENU)        // main menu sound
 			{
-				engine->play2D("../media/FFX Otherworld.mp3");
+				
 				soundplayed = true;
 			}
 		}
@@ -849,7 +860,7 @@ void SceneSP3::Exit()
 		delete m_cMiniMap;
 		m_cMiniMap = NULL;
 	}
-	engine->stopAllSounds();
+	mysound.exiting();
 	DeleteGoMeshes();
 }
 
