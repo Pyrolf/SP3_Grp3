@@ -17,6 +17,7 @@ SceneSP3::SceneSP3()
 	, tempName("     ")
 	, currentLetter(0)
 	,isLevelSelect(false)
+	,levelchoice(ONE)
 {
 }
 
@@ -429,7 +430,19 @@ void SceneSP3::UpdateInputs(double dt)
 				}
 				mysound.playSound(Sound::MENUCHOICE);
 			}
-			
+			else if(gameState == LEVEL_SELECTOR)
+			{
+				switch(levelchoice)
+				{
+				case ONE:
+					levelchoice = BACK;
+					break;
+				default:
+					levelchoice -= 1;					
+					break;
+				}
+				mysound.playSound(Sound::MENUCHOICE);
+			}
 			upkey = true;
 
 		}
@@ -453,9 +466,6 @@ void SceneSP3::UpdateInputs(double dt)
 			{
 				switch(choice)
 				{
-				case PLAY:
-					choice = SCORE;
-					break;
 				case EXIT:
 					choice = PLAY;
 					break;
@@ -465,7 +475,19 @@ void SceneSP3::UpdateInputs(double dt)
 				}
 				mysound.playSound(Sound::MENUCHOICE);
 			}
-			
+			else if(gameState == LEVEL_SELECTOR)
+			{
+				switch(levelchoice)
+				{
+				case BACK:
+					levelchoice = ONE;
+					break;
+				default:
+					levelchoice += 1;					
+					break;
+				}
+				mysound.playSound(Sound::MENUCHOICE);
+			}
 			downkey = true;
 		}
 		else if(Application::IsKeyPressed(VK_DOWN) == false && downkey == true)
@@ -490,6 +512,8 @@ void SceneSP3::UpdateInputs(double dt)
 					currentLevel->AI_Manager->Reset();
 					currentLevel->gameObjectsManager->ResetUGO();
 					blackout.Reset();
+
+					isLevelSelect = false;
 				}
 				mysound.playSound(Sound::MENU_ENTER);
 			}
@@ -504,10 +528,34 @@ void SceneSP3::UpdateInputs(double dt)
 					theHero->SetCurrentPosNode(currentLevel->HeroStartPosNode);
 					theHero->SetTargetPosNode(currentLevel->HeroStartPosNode);
 				}
+				else if(choice == SELECT_LEVEL)
+				{
+					gameState = LEVEL_SELECTOR;
+				}
 				else if(choice == SCORE)
 				{
 					gameState = HIGHSCORE;
 				}
+				mysound.playSound(Sound::MENU_ENTER);
+			}
+			else if(gameState == LEVEL_SELECTOR)
+			{
+				if(levelchoice != BACK)
+				{
+					gameState = PLAYING;
+					currentLevel = levelList[levelchoice];
+					theHero->SetPos(currentLevel->HeroStartPosNode->pos);
+					theHero->SetInitialPosNode(currentLevel->HeroStartPosNode);
+					theHero->SetCurrentPosNode(currentLevel->HeroStartPosNode);
+					theHero->SetTargetPosNode(currentLevel->HeroStartPosNode);
+
+					isLevelSelect = true;
+				}
+				else
+				{
+					gameState = MAINMENU;
+				}
+				levelchoice = ONE;
 				mysound.playSound(Sound::MENU_ENTER);
 			}
 			else if(gameState == HIGHSCORE)
@@ -518,7 +566,8 @@ void SceneSP3::UpdateInputs(double dt)
 			else if(gameState == GAMEOVER)
 			{
 				if(theHero->GetCurrentState() != CPlayerInfo::DYING 
-					&& score.HighscoreCheck(playerRecord))
+					&& score.HighscoreCheck(playerRecord)
+					&& !isLevelSelect)
 				{
 					if(playerRecord.getName().size() == 0)
 					{
@@ -539,6 +588,7 @@ void SceneSP3::UpdateInputs(double dt)
 				{
 					gameState = MAINMENU;
 					playerRecord.reset();
+					isLevelSelect = false;
 				}
 
 
@@ -771,24 +821,60 @@ void SceneSP3::Render()
 			Render2DMesh(meshList[GEO_MAINMENU], false);
 			
 			//On screen text
-			RenderTextOnScreen(meshList[GEO_TEXT], "START GAME", Color(1, 1, 1), 5, 25, 20);
-			RenderTextOnScreen(meshList[GEO_TEXT], "HIGHSCORE", Color(1, 1, 1), 5, 25, 15);
-			RenderTextOnScreen(meshList[GEO_TEXT], "EXIT", Color(1, 1, 1), 5, 25, 10);
+			RenderTextOnScreen(meshList[GEO_TEXT], "START GAME", Color(1, 1, 1), 5, 15, 25);
+			RenderTextOnScreen(meshList[GEO_TEXT], "SELECT LEVEL", Color(1, 1, 1), 5, 15, 20);
+			RenderTextOnScreen(meshList[GEO_TEXT], "HIGHSCORE", Color(1, 1, 1), 5, 15, 15);
+			RenderTextOnScreen(meshList[GEO_TEXT], "EXIT", Color(1, 1, 1), 5, 15, 10);
 			if(choice == PLAY)
 			{
-				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 15, 20);
+				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 10, 25);
+			}
+			else if(choice == SELECT_LEVEL)
+			{
+				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 10, 20);
 			}
 			else if(choice == SCORE)
 			{
-				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 15, 15);
+				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 10, 15);
 			}
 			else if(choice == EXIT)
 			{
-				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 15, 10);
+				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 10, 10);
 			}
 			if(!soundplayed && gameState == MAINMENU)        // main menu sound
 			{
 				
+				soundplayed = true;
+			}
+		}
+		break;
+	case LEVEL_SELECTOR:
+		{		
+			Render2DMesh(meshList[GEO_MAINMENU], false);
+			
+			//On screen text
+			RenderTextOnScreen(meshList[GEO_TEXT], "CITY", Color(1, 1, 1), 5, 25, 25);
+			RenderTextOnScreen(meshList[GEO_TEXT], "FOREST", Color(1, 1, 1), 5, 25, 20);
+			RenderTextOnScreen(meshList[GEO_TEXT], "MOUNTANT", Color(1, 1, 1), 5, 25, 15);
+			RenderTextOnScreen(meshList[GEO_TEXT], "BACK", Color(1, 1, 1), 5, 25, 10);
+			if(levelchoice == ONE)
+			{
+				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 15, 25);
+			}
+			else if(levelchoice == TWO)
+			{
+				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 15, 20);
+			}
+			else if(levelchoice == THREE)
+			{
+				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 15, 15);
+			}
+			else if(levelchoice == BACK)
+			{
+				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 15, 10);
+			}
+			if(!soundplayed)        // main menu sound
+			{
 				soundplayed = true;
 			}
 		}
@@ -801,7 +887,8 @@ void SceneSP3::Render()
 		break;
 	case GETTINGPLAYERNAME:
 		{
-			RenderTextOnScreen(meshList[GEO_TEXT], tempName, Color(1,1,1), 2.5, 13, 20);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Press enter your name:", Color(1, 1, 1), 3, 5, 30);
+			RenderTextOnScreen(meshList[GEO_TEXT], tempName, Color(1,1,1), 2.5, 10, 20);
 		}
 		break;
 	case PAUSE:
