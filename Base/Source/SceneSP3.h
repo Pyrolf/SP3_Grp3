@@ -36,6 +36,15 @@ public:
 	};
 	int choice;
 
+	enum LEVEL_CHOICE
+	{
+		ONE = 1,
+		TWO,
+		THREE,
+		BACK
+	};
+
+	int levelchoice;
 private:
 
 	vector<Level*> levelList;
@@ -60,6 +69,7 @@ private:
 	{
 		MAINMENU,
 		PLAYING,
+		LEVEL_SELECTOR,
 		HIGHSCORE,
 		GETTINGPLAYERNAME,
 		PAUSE,
