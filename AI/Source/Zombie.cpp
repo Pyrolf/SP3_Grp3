@@ -7,7 +7,7 @@ CZombie::CZombie(void)
 	, zombieAnimationCounter(0.f)
 	, hitHero(false)
 	, maxRangeToDetect(0)
-	, currentMode(IDLE)
+	, currentMode(NIL)
 	, time(0)
 	, theZombiePosition(Vector3(0,0,0))
 	, theZombieInitialPosNode(NULL)
@@ -201,8 +201,8 @@ void CZombie::CheckMode(CPosNode* heroPosNode, int tileSize, Vector3 heroPos)
 	// If within range of detection
 	if(DistFromHeroTozombieInit <= maxRangeToDetect * 2
 		&& (checkIfHeroIsWithinSight(heroPos)
-		|| currentMode == CHASE
-		|| zombie_type > SMART))
+		|| zombie_type > SMART
+		|| currentMode == CHASE))
 	{
 		// If not chase or attack
 		if(currentMode != CHASE && currentMode != ATTACK)
@@ -211,14 +211,12 @@ void CZombie::CheckMode(CPosNode* heroPosNode, int tileSize, Vector3 heroPos)
 			currentMode = CHASE;
 			ChaseCheck(heroPosNode, tileSize);
 		}
-		// If chase
 		else if(currentMode == CHASE)
 		{
 			// if path is empty or player moved
 			if(zombiePath.size() == 0 || zombiePath[0] != heroPosNode)
 			{
 				// Find a path
-				zombiePath = PathFinding(heroPosNode, tileSize);
 				ChaseCheck(heroPosNode, tileSize);
 			}
 			else
@@ -229,38 +227,40 @@ void CZombie::CheckMode(CPosNode* heroPosNode, int tileSize, Vector3 heroPos)
 			}
 		}
 	}
-	else if(zombie_type == SMART)
+	// If not return/ patrol/ idle
+	else if(zombie_type == SMART
+		&& currentMode != RETURN && currentMode != PATROL && currentMode != IDLE)
 	{
-		// If not return/ patrol/ idle
-		if(currentMode != RETURN && currentMode != PATROL && currentMode != IDLE)
-		{
-			ReturnCheck(tileSize);
-		}
-		// If return
-		else if(currentMode == RETURN)
-		{
-			// if theZombieCurrentPosNode not equal to theZombieInitialPosNode
-			if(theZombieCurrentPosNode != theZombieInitialPosNode)
-			{
-				theZombieTargetPosNode = zombiePath.back();
-				zombiePath.pop_back();
-				CalculateVel();
-				currentMode = RETURN;
-			}
-			// if theZombieCurrentPosNode equal to theZombieInitialPosNode
-			else
-			{
-				ChoosePatrolOrIdleMode();
-			}
-		}
+		ReturnCheck(tileSize);
 	}
-	else
+	// If return
+	else if(currentMode == RETURN)
 	{
-		// If not return/ patrol/ idle
-		if(currentMode != RETURN && currentMode != PATROL && currentMode != IDLE)
+		// if theZombieCurrentPosNode not equal to theZombieInitialPosNode
+		if(theZombieCurrentPosNode != theZombieInitialPosNode)
 		{
+			theZombieTargetPosNode = zombiePath.back();
+			zombiePath.pop_back();
+			CalculateVel();
+		}
+		// if theZombieCurrentPosNode equal to theZombieInitialPosNode
+		else
+		{
+			while(zombiePath.size() != 0)
+			{
+				zombiePath.pop_back();
+			}
 			ChoosePatrolOrIdleMode();
 		}
+	}
+	// If not return/ patrol/ idle
+	else if(currentMode != RETURN && currentMode != PATROL && currentMode != IDLE)
+	{
+		while(zombiePath.size() != 0)
+		{
+			zombiePath.pop_back();
+		}
+		ChoosePatrolOrIdleMode();
 	}
 }
 
@@ -271,61 +271,40 @@ void CZombie::ChaseCheck(CPosNode* heroPosNode, int tileSize)
 	// if path not empty
 	if(zombiePath.size() != 0)
 	{
-		// if theZombieTargetPosNode is equal to next path node
+		// if theZombieTargetPosNode is not equal to next path node
 		if(theZombieTargetPosNode == zombiePath.back())
 		{
 			zombiePath.pop_back();
 		}
-		if(zombiePath.size() != 0)
-		{
-			theZombieTargetPosNode = zombiePath.back();
-			zombiePath.pop_back();
-			CalculateVel();
-		}
+		theZombieTargetPosNode = zombiePath.back();
+		zombiePath.pop_back();
+		CalculateVel();
 	}
 	// if path is empty
 	else
 	{
-		ReturnCheck(tileSize);
+		while(zombiePath.size() != 0)
+		{
+			zombiePath.pop_back();
+		}
+		ChoosePatrolOrIdleMode();
 	}
 }
 
 void CZombie::ReturnCheck(int tileSize)
 {
-	// if zombie is a smart type
-	if((zombie_type == SMART)
-	// if theZombieCurrentPosNode is not theZombieInitialPosNode
-		&& theZombieCurrentPosNode != theZombieInitialPosNode)
+	// Mode = RETURN
+	currentMode = RETURN;
+	// Find a path
+	zombiePath = PathFinding(theZombieInitialPosNode, tileSize);
+	// if theZombieTargetPosNode is not equal to next path node
+	if(theZombieTargetPosNode == zombiePath.back())
 	{
-		// Mode = RETURN
-		currentMode = RETURN;
-		// Find a path
-		zombiePath = PathFinding(theZombieInitialPosNode, tileSize);
-		// if path not empty
-		if(zombiePath.size() != 0)
-		{
-			// if theZombieTargetPosNode is equal to next path node
-			if(theZombieTargetPosNode == zombiePath.back())
-			{
-				zombiePath.pop_back();
-			}
-			if(zombiePath.size() != 0)
-			{
-				theZombieTargetPosNode = zombiePath.back();
-				zombiePath.pop_back();
-				CalculateVel();
-			}
-		}
-		else
-		{
-			// if path is empty
-			ChoosePatrolOrIdleMode();
-		}
+		zombiePath.pop_back();
 	}
-	else
-	{
-		ChoosePatrolOrIdleMode();
-	}
+	theZombieTargetPosNode = zombiePath.back();
+	zombiePath.pop_back();
+	CalculateVel();
 }
 
 
@@ -536,19 +515,15 @@ void CZombie::Update(int tileSize, float timeDiff, CPosNode* heroPosNode, Vector
 			{
 				if(currentMode == NIL)
 				{
-					if((theZombieCurrentPosNode->pos - theZombieInitialPosNode->pos).Length() > maxRangeToDetect * 2)
+					if((theZombieCurrentPosNode->pos - theZombieInitialPosNode->pos).Length() > maxRangeToDetect * 2
+						&& zombie_type == SMART)
 					{
 						currentMode = RETURN;
 						ReturnCheck(tileSize);
 					}
 					else
 					{
-						currentMode = PATROL;
 						CheckMode(heroPosNode, tileSize, heroPos);
-						if(currentMode == PATROL)
-						{
-							ChoosePatrolOrIdleMode();
-						}
 					}
 				}
 			}
@@ -564,8 +539,11 @@ void CZombie::Update(int tileSize, float timeDiff, CPosNode* heroPosNode, Vector
 			}
 		}
 		break;
+	default:
+		ChoosePatrolOrIdleMode();
+		break;
 	}
-	if(currentMode != ATTACK)
+	if(currentMode != ATTACK && currentMode != IDLE && currentMode != NIL)
 		UpdateAnimation(theZombiePosition, theZombiePrevPosition, timeDiff);
 }
 
