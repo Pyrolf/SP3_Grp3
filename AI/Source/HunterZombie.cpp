@@ -23,10 +23,10 @@ CHunterZombie::~CHunterZombie(void)
 
 void CHunterZombie::Init(CMap *map)
 {
-	movementSpeed = 400.f;
+	movementSpeed = 350.f;
 	animationSpeed = 40;
 	zombie_type = HUNTER;
-	maxRangeToDetect = map->GetTileSize() * 5;
+	maxRangeToDetect = map->GetTileSize() * 3;
 	zombieAnimationCounter = 0.0f;
 	zombieAnimationInvert = false;
 	health = 5;
@@ -47,7 +47,4 @@ void CHunterZombie::Reset(void)
 
 	active = true;
 	health = 5;
-
-	movementSpeed = 400.f;
-	zombie_type = ZOMBIE_TYPE::HUNTER;
 }

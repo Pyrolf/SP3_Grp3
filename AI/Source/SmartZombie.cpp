@@ -26,7 +26,7 @@ void CSmartZombie::Init(CMap *map)
 	movementSpeed = 300.f;
 	animationSpeed = 30;
 	zombie_type = SMART;
-	maxRangeToDetect = map->GetTileSize() * 4;
+	maxRangeToDetect = map->GetTileSize() * 3;
 	zombieAnimationCounter = 0.0f;
 	zombieAnimationInvert = false;
 	health = 4;
@@ -47,7 +47,4 @@ void CSmartZombie::Reset(void)
 
 	active = true;
 	health = 4;
-
-	movementSpeed = 300.f;
-	zombie_type = ZOMBIE_TYPE::SMART;
 }

@@ -32,16 +32,16 @@ void SceneSP3::Init()
 	InitLevels();
 	InitMinimap();
 	// Normal zombie
-	meshList[GEO_NORMAL_ZOMBIE_ATTACK_RANGE] = MeshBuilder::GenerateRing("NORMAL_ATTACK_RANGE", Color(0, 1, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 3, levelList[0]->gameObjectsManager->tileSize * 3 - 1.f);
+	meshList[GEO_NORMAL_ZOMBIE_ATTACK_RANGE] = MeshBuilder::GenerateRing("NORMAL_ATTACK_RANGE", Color(0, 1, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 2, levelList[0]->gameObjectsManager->tileSize * 2 - 1.f);
 	meshList[GEO_NORMAL_ZOMBIE_REPEL_RANGE] = MeshBuilder::GenerateRing("NORMAL_REPEL_RANGE", Color(1, 0, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 0.5, levelList[0]->gameObjectsManager->tileSize * 0.5 - 1.f);
 	// Smart zombie
-	meshList[GEO_SMART_ZOMBIE_ATTACK_RANGE] = MeshBuilder::GenerateRing("SMART_ATTACK_RANGE", Color(0, 1, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 4, levelList[0]->gameObjectsManager->tileSize * 4 - 1.f);
+	meshList[GEO_SMART_ZOMBIE_ATTACK_RANGE] = MeshBuilder::GenerateRing("SMART_ATTACK_RANGE", Color(0, 1, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 3, levelList[0]->gameObjectsManager->tileSize * 3 - 1.f);
 	meshList[GEO_SMART_ZOMBIE_REPEL_RANGE] = MeshBuilder::GenerateRing("SMART_REPEL_RANGE", Color(1, 0, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 0.5, levelList[0]->gameObjectsManager->tileSize * 0.5 - 1.f);
 	// Tank zombie
-	meshList[GEO_TANK_ZOMBIE_ATTACK_RANGE] = MeshBuilder::GenerateRing("TANK_ATTACK_RANGE", Color(0, 1, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 5, levelList[0]->gameObjectsManager->tileSize * 5 - 1.f);
+	meshList[GEO_TANK_ZOMBIE_ATTACK_RANGE] = MeshBuilder::GenerateRing("TANK_ATTACK_RANGE", Color(0, 1, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 4, levelList[0]->gameObjectsManager->tileSize * 4 - 1.f);
 	meshList[GEO_TANK_ZOMBIE_REPEL_RANGE] = MeshBuilder::GenerateRing("TANK_REPEL_RANGE", Color(1, 0, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 0.5, levelList[0]->gameObjectsManager->tileSize * 0.5 - 1.f);
 	// Hunter zombie
-	meshList[GEO_HUNTER_ZOMBIE_ATTACK_RANGE] = MeshBuilder::GenerateRing("HUNTER_ATTACK_RANGE", Color(0, 1, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 5, levelList[0]->gameObjectsManager->tileSize * 5 - 1.f);
+	meshList[GEO_HUNTER_ZOMBIE_ATTACK_RANGE] = MeshBuilder::GenerateRing("HUNTER_ATTACK_RANGE", Color(0, 1, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 3, levelList[0]->gameObjectsManager->tileSize * 3 - 1.f);
 	meshList[GEO_HUNTER_ZOMBIE_REPEL_RANGE] = MeshBuilder::GenerateRing("HUNTER_REPEL_RANGE", Color(1, 0, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 0.5, levelList[0]->gameObjectsManager->tileSize * 0.5 - 1.f);
 	
 	score.ReadFromTextFile();
