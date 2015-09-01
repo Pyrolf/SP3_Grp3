@@ -189,19 +189,30 @@ void SceneSP3::InitLevels()
 		levelList[i]->m_cMap->Init( 768 + 64, 1024, 12 + 1, 16, 3200 + 64, 3200, 64);
 	}
 
+	// Level 0
+	//levelList[0]->m_cMap->LoadMap( "Image//level0_house.csv" );
+	//levelList[0]->background = MeshBuilder::Generate2DMesh("HOUSE_LEVEL", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
+	//levelList[0]->background->textureID = LoadTGA("Image//house_level0.tga");
+
+	//// Level Darren
+	//levelList[1]->m_cMap->LoadMap( "Image//map1levelDar.csv" );
+	//levelList[1]->background = MeshBuilder::Generate2DMesh("GEO_LEVL1", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
+	//levelList[1]->background->textureID = LoadTGA("Image//map1level.tga");
+
 	// Level 1
 	//levelList[0]->m_cMap->LoadMap( "Image//MapDesignLv1.csv" );
 	//levelList[0]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL1", Color(1, 1, 1), 0.0f, 0.0f, 2048, 3200);
 	//levelList[0]->background->textureID = LoadTGA("Image//level1_background.tga");
 	// Level 2
-	levelList[0]->m_cMap->LoadMap( "Image//MapDesignLv2.csv" );
+	/*levelList[0]->m_cMap->LoadMap( "Image//MapDesignLv2.csv" );
 	levelList[0]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL2", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
-	levelList[0]->background->textureID = LoadTGA("Image//level2_background.tga");
-	// Level 3
+	levelList[0]->background->textureID = LoadTGA("Image//level2_background.tga");*/
+	//// Level 3
 	levelList[1]->m_cMap->LoadMap( "Image//MapDesignLv3.csv" );
 	levelList[1]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL3", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
 	levelList[1]->background->textureID = LoadTGA("Image//level3_background.tga");
 
+	
 
 	for(int i = 0; i < noOfLevel; i++)
 	{
@@ -269,7 +280,7 @@ void SceneSP3::UpdateInputs(double dt)
 			if(this->theHero->GetCurrentState() == this->theHero->NIL && gameState == PLAYING)
 			{
 				gameState = PAUSE;
-				mysound.playSound(Sound::PAUSE);
+				//mysound.playSound(Sound::PAUSE);
 			}
 		}
 
@@ -1197,11 +1208,11 @@ void SceneSP3::RenderGUI()
 	for(int i = 0; i < theHero->GetHealth(); ++i)
 	{
 		if(theHero->GetHealth() == 1)
-			RenderMeshIn2D(meshList[GEO_LIVE_1], false, 1.0f, -69 + 7 * i, 69.5);
+			RenderMeshIn2D(meshList[GEO_LIVE_1], false, 1.0f, -58 + 5 * i, 72);
 		if(theHero->GetHealth() == 2)
-			RenderMeshIn2D(meshList[GEO_LIVE_2], false, 1.0f, -69 + 7 * i, 69.5);
+			RenderMeshIn2D(meshList[GEO_LIVE_2], false, 1.0f, -58 + 5 * i, 72);
 		if(theHero->GetHealth() == 3)
-			RenderMeshIn2D(meshList[GEO_LIVE_3], false, 1.0f, -69 + 7 * i, 69.5);
+			RenderMeshIn2D(meshList[GEO_LIVE_3], false, 1.0f, -58 + 5 * i, 72);
 	}
 
 	////////////////////////FLASHLIGHT UI BY IVAN DO NOT TOUCH//////////////////////////////////
