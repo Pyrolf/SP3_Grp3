@@ -63,6 +63,7 @@ private:
 		HIGHSCORE,
 		GETTINGPLAYERNAME,
 		PAUSE,
+		ENDING,
 		GAMEOVER,
 	};
 	GAME_STATE gameState;

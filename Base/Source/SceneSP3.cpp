@@ -182,7 +182,7 @@ void SceneSP3::InitMinimap()
 void SceneSP3::InitLevels()
 {
 	// Initialise and load the tile map
-	const int noOfLevel = 2;
+	const int noOfLevel = 1;
 	for(int i = 0; i < noOfLevel; i++)
 	{
 		levelList.push_back(new Level);
@@ -199,9 +199,9 @@ void SceneSP3::InitLevels()
 	levelList[0]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL2", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
 	levelList[0]->background->textureID = LoadTGA("Image//level2_background.tga");
 	// Level 3
-	levelList[1]->m_cMap->LoadMap( "Image//MapDesignLv3.csv" );
-	levelList[1]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL3", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
-	levelList[1]->background->textureID = LoadTGA("Image//level3_background.tga");
+	//levelList[1]->m_cMap->LoadMap( "Image//MapDesignLv3.csv" );
+	//levelList[1]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL3", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
+	//levelList[1]->background->textureID = LoadTGA("Image//level3_background.tga");
 
 
 	for(int i = 0; i < noOfLevel; i++)
@@ -608,7 +608,19 @@ void SceneSP3::Update(double dt)
 {
 	static bool soundplaying = false;
 	static bool soundingplay = false;
-	UpdateInputs(dt);
+	
+	if(gameState == ENDING)
+	{
+		theHero->SetPos_y(theHero->GetPos().y - 400 * dt);
+		if(theHero->GetPos().y < -300)
+		{
+			gameState = GAMEOVER;
+		}
+	}
+	else
+	{
+		UpdateInputs(dt);
+	}
 
 	if(gameState == MAINMENU)
 	{
@@ -654,8 +666,10 @@ void SceneSP3::Update(double dt)
 						}
 						else
 						{
-							gameState = GAMEOVER;
-							break;
+							theHero->SetPos_x(512 - 32);
+							theHero->SetPos_y(768);
+							gameState = ENDING;
+							return;
 						}
 					}
 				}
@@ -806,6 +820,18 @@ void SceneSP3::Render()
 			{
 				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 15, 10);
 			}
+		}
+		break;
+	case ENDING:
+		{
+			RenderTextOnScreen(meshList[GEO_TEXT], "DARREN", Color(1, 1, 1), 2, 45, theHero->GetPos().y / 12.8 + 20);
+			RenderTextOnScreen(meshList[GEO_TEXT], "IVAN", Color(1, 1, 1), 2, 45, theHero->GetPos().y / 12.8 + 15);
+			RenderTextOnScreen(meshList[GEO_TEXT], "GREGORY(LEADER)", Color(1, 1, 1), 2, 45, theHero->GetPos().y / 12.8 + 10);
+
+			RenderTextOnScreen(meshList[GEO_TEXT], "CREDITS:", Color(1, 1, 1), 2.5, 15, theHero->GetPos().y / 12.8 + 10);
+
+
+			Render2DMesh(theHero->backMeshes[0], false, 1.0f, theHero->GetPos().x, theHero->GetPos().y, false, theHero->GetPos().y);
 		}
 		break;
 	case GAMEOVER:

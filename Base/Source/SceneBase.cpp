@@ -492,9 +492,9 @@ void SceneBase::Render2DMesh(Mesh *mesh, bool enableLight, float size, float x, 
 	}
 	if(rotateZ != 0.0f)
 	{
-		modelStack.Translate(32, 0, 0);
+		modelStack.Translate(32, 32, 0);
 		modelStack.Rotate(rotateZ, 0, 0, 1);
-		modelStack.Translate(-32, 0, 0);
+		modelStack.Translate(-32, -32, 0);
 	}
 	modelStack.Scale(size, size, size);
 
