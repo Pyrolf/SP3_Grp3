@@ -427,7 +427,7 @@ void SceneSP3::UpdateInputs(double dt)
 				switch(choice)
 				{
 				case NONE:
-					choice = EXIT;
+					choice = PLAY;
 					break;
 				case PLAY:
 					choice = EXIT;
