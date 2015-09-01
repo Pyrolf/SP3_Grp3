@@ -29,12 +29,22 @@ public:
 	{
 		NONE,
 		PLAY,
+		SELECT_LEVEL,
 		SCORE,
 		EXIT,
 		QUIT,
 	};
 	int choice;
 
+	enum LEVEL_CHOICE
+	{
+		ONE = 1,
+		TWO,
+		THREE,
+		BACK
+	};
+
+	int levelchoice;
 private:
 
 	vector<Level*> levelList;
@@ -59,9 +69,11 @@ private:
 	{
 		MAINMENU,
 		PLAYING,
+		LEVEL_SELECTOR,
 		HIGHSCORE,
 		GETTINGPLAYERNAME,
 		PAUSE,
+		ENDING,
 		GAMEOVER,
 	};
 	GAME_STATE gameState;
@@ -86,6 +98,8 @@ private:
 	bool chara[32];
 	string tempName;
 	int currentLetter;
+
+	bool isLevelSelect;
 };
 
 #endif

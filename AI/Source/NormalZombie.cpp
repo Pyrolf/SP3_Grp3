@@ -39,7 +39,7 @@ void CNormalZombie::Reset(void)
 	theZombieCurrentPosNode = theZombieInitialPosNode;
 	theZombieTargetPosNode = theZombieCurrentPosNode;
 
-	currentMode = RETURN;
+	currentMode = NIL;
 
 	zombieAnimationDirection = DOWN;
 	zombieAnimationCounter = 0.0f;

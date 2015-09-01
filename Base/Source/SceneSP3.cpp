@@ -16,6 +16,8 @@ SceneSP3::SceneSP3()
 	, currentLevel(NULL)
 	, tempName("     ")
 	, currentLetter(0)
+	,isLevelSelect(false)
+	,levelchoice(ONE)
 {
 }
 
@@ -181,7 +183,7 @@ void SceneSP3::InitMinimap()
 void SceneSP3::InitLevels()
 {
 	// Initialise and load the tile map
-	const int noOfLevel = 2;
+	const int noOfLevel = 1;
 	for(int i = 0; i < noOfLevel; i++)
 	{
 		levelList.push_back(new Level);
@@ -194,23 +196,20 @@ void SceneSP3::InitLevels()
 	//levelList[0]->background = MeshBuilder::Generate2DMesh("HOUSE_LEVEL", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
 	//levelList[0]->background->textureID = LoadTGA("Image//house_level0.tga");
 
-	//// Level Darren
+	// Level Darren
 	//levelList[1]->m_cMap->LoadMap( "Image//map1levelDar.csv" );
 	//levelList[1]->background = MeshBuilder::Generate2DMesh("GEO_LEVL1", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
 	//levelList[1]->background->textureID = LoadTGA("Image//map1level.tga");
 
-	// Level 1
-	//levelList[0]->m_cMap->LoadMap( "Image//MapDesignLv1.csv" );
-	//levelList[0]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL1", Color(1, 1, 1), 0.0f, 0.0f, 2048, 3200);
-	//levelList[0]->background->textureID = LoadTGA("Image//level1_background.tga");
 	// Level 2
-	/*levelList[0]->m_cMap->LoadMap( "Image//MapDesignLv2.csv" );
-	levelList[0]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL2", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
-	levelList[0]->background->textureID = LoadTGA("Image//level2_background.tga");*/
+	/*levelList[2]->m_cMap->LoadMap( "Image//MapDesignLv2.csv" );
+	levelList[2]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL2", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
+	levelList[2]->background->textureID = LoadTGA("Image//level2_background.tga");*/
+
 	//// Level 3
-	levelList[1]->m_cMap->LoadMap( "Image//MapDesignLv3.csv" );
-	levelList[1]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL3", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
-	levelList[1]->background->textureID = LoadTGA("Image//level3_background.tga");
+	levelList[0]->m_cMap->LoadMap( "Image//MapDesignLv3.csv" );
+	levelList[0]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL3", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
+	levelList[0]->background->textureID = LoadTGA("Image//level3_background.tga");
 
 	
 
@@ -439,7 +438,19 @@ void SceneSP3::UpdateInputs(double dt)
 				}
 				mysound.playSound(Sound::MENUCHOICE);
 			}
-			
+			else if(gameState == LEVEL_SELECTOR)
+			{
+				switch(levelchoice)
+				{
+				case ONE:
+					levelchoice = BACK;
+					break;
+				default:
+					levelchoice -= 1;					
+					break;
+				}
+				mysound.playSound(Sound::MENUCHOICE);
+			}
 			upkey = true;
 
 		}
@@ -463,9 +474,6 @@ void SceneSP3::UpdateInputs(double dt)
 			{
 				switch(choice)
 				{
-				case PLAY:
-					choice = SCORE;
-					break;
 				case EXIT:
 					choice = PLAY;
 					break;
@@ -475,7 +483,19 @@ void SceneSP3::UpdateInputs(double dt)
 				}
 				mysound.playSound(Sound::MENUCHOICE);
 			}
-			
+			else if(gameState == LEVEL_SELECTOR)
+			{
+				switch(levelchoice)
+				{
+				case BACK:
+					levelchoice = ONE;
+					break;
+				default:
+					levelchoice += 1;					
+					break;
+				}
+				mysound.playSound(Sound::MENUCHOICE);
+			}
 			downkey = true;
 		}
 		else if(Application::IsKeyPressed(VK_DOWN) == false && downkey == true)
@@ -500,6 +520,8 @@ void SceneSP3::UpdateInputs(double dt)
 					currentLevel->AI_Manager->Reset();
 					currentLevel->gameObjectsManager->ResetUGO();
 					blackout.Reset();
+
+					isLevelSelect = false;
 				}
 				mysound.playSound(Sound::MENU_ENTER);
 			}
@@ -514,10 +536,34 @@ void SceneSP3::UpdateInputs(double dt)
 					theHero->SetCurrentPosNode(currentLevel->HeroStartPosNode);
 					theHero->SetTargetPosNode(currentLevel->HeroStartPosNode);
 				}
+				else if(choice == SELECT_LEVEL)
+				{
+					gameState = LEVEL_SELECTOR;
+				}
 				else if(choice == SCORE)
 				{
 					gameState = HIGHSCORE;
 				}
+				mysound.playSound(Sound::MENU_ENTER);
+			}
+			else if(gameState == LEVEL_SELECTOR)
+			{
+				if(levelchoice != BACK)
+				{
+					gameState = PLAYING;
+					currentLevel = levelList[levelchoice];
+					theHero->SetPos(currentLevel->HeroStartPosNode->pos);
+					theHero->SetInitialPosNode(currentLevel->HeroStartPosNode);
+					theHero->SetCurrentPosNode(currentLevel->HeroStartPosNode);
+					theHero->SetTargetPosNode(currentLevel->HeroStartPosNode);
+
+					isLevelSelect = true;
+				}
+				else
+				{
+					gameState = MAINMENU;
+				}
+				levelchoice = ONE;
 				mysound.playSound(Sound::MENU_ENTER);
 			}
 			else if(gameState == HIGHSCORE)
@@ -528,7 +574,8 @@ void SceneSP3::UpdateInputs(double dt)
 			else if(gameState == GAMEOVER)
 			{
 				if(theHero->GetCurrentState() != CPlayerInfo::DYING 
-					&& score.HighscoreCheck(playerRecord))
+					&& score.HighscoreCheck(playerRecord)
+					&& !isLevelSelect)
 				{
 					if(playerRecord.getName().size() == 0)
 					{
@@ -549,6 +596,7 @@ void SceneSP3::UpdateInputs(double dt)
 				{
 					gameState = MAINMENU;
 					playerRecord.reset();
+					isLevelSelect = false;
 				}
 
 
@@ -618,7 +666,19 @@ void SceneSP3::Update(double dt)
 {
 	static bool soundplaying = false;
 	static bool soundingplay = false;
-	UpdateInputs(dt);
+	
+	if(gameState == ENDING)
+	{
+		theHero->SetPos_y(theHero->GetPos().y - 400 * dt);
+		if(theHero->GetPos().y < -300)
+		{
+			gameState = GAMEOVER;
+		}
+	}
+	else
+	{
+		UpdateInputs(dt);
+	}
 
 	if(gameState == MAINMENU)
 	{
@@ -664,8 +724,10 @@ void SceneSP3::Update(double dt)
 						}
 						else
 						{
-							gameState = GAMEOVER;
-							break;
+							theHero->SetPos_x(512 - 32);
+							theHero->SetPos_y(768);
+							gameState = ENDING;
+							return;
 						}
 					}
 				}
@@ -767,24 +829,60 @@ void SceneSP3::Render()
 			Render2DMesh(meshList[GEO_MAINMENU], false);
 			
 			//On screen text
-			RenderTextOnScreen(meshList[GEO_TEXT], "START GAME", Color(1, 1, 1), 5, 25, 20);
-			RenderTextOnScreen(meshList[GEO_TEXT], "HIGHSCORE", Color(1, 1, 1), 5, 25, 15);
-			RenderTextOnScreen(meshList[GEO_TEXT], "EXIT", Color(1, 1, 1), 5, 25, 10);
+			RenderTextOnScreen(meshList[GEO_TEXT], "START GAME", Color(1, 1, 1), 5, 15, 25);
+			RenderTextOnScreen(meshList[GEO_TEXT], "SELECT LEVEL", Color(1, 1, 1), 5, 15, 20);
+			RenderTextOnScreen(meshList[GEO_TEXT], "HIGHSCORE", Color(1, 1, 1), 5, 15, 15);
+			RenderTextOnScreen(meshList[GEO_TEXT], "EXIT", Color(1, 1, 1), 5, 15, 10);
 			if(choice == PLAY)
 			{
-				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 15, 20);
+				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 10, 25);
+			}
+			else if(choice == SELECT_LEVEL)
+			{
+				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 10, 20);
 			}
 			else if(choice == SCORE)
 			{
-				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 15, 15);
+				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 10, 15);
 			}
 			else if(choice == EXIT)
 			{
-				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 15, 10);
+				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 10, 10);
 			}
 			if(!soundplayed && gameState == MAINMENU)        // main menu sound
 			{
 				
+				soundplayed = true;
+			}
+		}
+		break;
+	case LEVEL_SELECTOR:
+		{		
+			Render2DMesh(meshList[GEO_MAINMENU], false);
+			
+			//On screen text
+			RenderTextOnScreen(meshList[GEO_TEXT], "CITY", Color(1, 1, 1), 5, 25, 25);
+			RenderTextOnScreen(meshList[GEO_TEXT], "FOREST", Color(1, 1, 1), 5, 25, 20);
+			RenderTextOnScreen(meshList[GEO_TEXT], "MOUNTANT", Color(1, 1, 1), 5, 25, 15);
+			RenderTextOnScreen(meshList[GEO_TEXT], "BACK", Color(1, 1, 1), 5, 25, 10);
+			if(levelchoice == ONE)
+			{
+				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 15, 25);
+			}
+			else if(levelchoice == TWO)
+			{
+				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 15, 20);
+			}
+			else if(levelchoice == THREE)
+			{
+				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 15, 15);
+			}
+			else if(levelchoice == BACK)
+			{
+				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 15, 10);
+			}
+			if(!soundplayed)        // main menu sound
+			{
 				soundplayed = true;
 			}
 		}
@@ -797,7 +895,8 @@ void SceneSP3::Render()
 		break;
 	case GETTINGPLAYERNAME:
 		{
-			RenderTextOnScreen(meshList[GEO_TEXT], tempName, Color(1,1,1), 2.5, 13, 20);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Press enter your name:", Color(1, 1, 1), 3, 5, 30);
+			RenderTextOnScreen(meshList[GEO_TEXT], tempName, Color(1,1,1), 2.5, 10, 20);
 		}
 		break;
 	case PAUSE:
@@ -816,6 +915,18 @@ void SceneSP3::Render()
 			{
 				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 15, 10);
 			}
+		}
+		break;
+	case ENDING:
+		{
+			RenderTextOnScreen(meshList[GEO_TEXT], "DARREN", Color(1, 1, 1), 2, 45, theHero->GetPos().y / 12.8 + 20);
+			RenderTextOnScreen(meshList[GEO_TEXT], "IVAN", Color(1, 1, 1), 2, 45, theHero->GetPos().y / 12.8 + 15);
+			RenderTextOnScreen(meshList[GEO_TEXT], "GREGORY(LEADER)", Color(1, 1, 1), 2, 45, theHero->GetPos().y / 12.8 + 10);
+
+			RenderTextOnScreen(meshList[GEO_TEXT], "CREDITS:", Color(1, 1, 1), 2.5, 15, theHero->GetPos().y / 12.8 + 10);
+
+
+			Render2DMesh(theHero->backMeshes[0], false, 1.0f, theHero->GetPos().x, theHero->GetPos().y, false, theHero->GetPos().y);
 		}
 		break;
 	case GAMEOVER:
