@@ -29,6 +29,7 @@ public:
 	{
 		NONE,
 		PLAY,
+		SELECT_LEVEL,
 		SCORE,
 		EXIT,
 		QUIT,
@@ -86,6 +87,8 @@ private:
 	bool chara[32];
 	string tempName;
 	int currentLetter;
+
+	bool isLevelSelect;
 };
 
 #endif

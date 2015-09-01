@@ -16,6 +16,7 @@ SceneSP3::SceneSP3()
 	, currentLevel(NULL)
 	, tempName("     ")
 	, currentLetter(0)
+	,isLevelSelect(false)
 {
 }
 
