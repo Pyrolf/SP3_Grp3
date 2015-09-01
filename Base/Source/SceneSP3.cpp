@@ -680,14 +680,6 @@ void SceneSP3::Update(double dt)
 		UpdateInputs(dt);
 	}
 
-	if(gameState == MAINMENU)
-	{
-		//if(!soundplaying)        // main menu sound
-		//{
-		//	mysound.playSound(Sound::MENUMUSIC);
-		//	soundplaying = true;
-		//}		
-	}
 	if(gameState == PLAYING)
 	{
 		if(!soundingplay)        // main menu sound
@@ -743,6 +735,7 @@ void SceneSP3::Update(double dt)
 				// Gameover
 				gameState = GAMEOVER;
 				theHero->SetTimeElasped(0.0f);
+				mysound.playSound(Sound::GAMEOVER);
 			}
 		}
 
@@ -769,6 +762,7 @@ void SceneSP3::Update(double dt)
 						{
 							this->theHero->knockBackEnabled(zombie->GetVel(), currentLevel->AI_Manager, currentLevel->gameObjectsManager->tileSize);
 							this->theHero->SetJustGotDamged(true);
+							mysound.playSound(Sound::PLAYER_DAMAGED);
 						}
 					}
 					zombie->SetHitHero(false);

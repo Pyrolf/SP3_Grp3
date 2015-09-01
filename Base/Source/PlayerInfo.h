@@ -1,7 +1,7 @@
 #pragma once
 #include "Mesh.h"
 #include "LevelMap_Nodes.h"
-
+#include "Sound.h"
 class CPlayerInfo
 {
 public:
@@ -114,7 +114,7 @@ public:
 	void moveAnimation(float timeDiff, Vector3 prevPos);
 	
 	void attackingEnabled();
-	void Attacking(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager);
+	void Attacking(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager);//, Sound Soundname);
 	
 	bool CheckCollisionTarget(CAIManager* ai_manager, int tileSize);
 	bool CheckCollisionCurrent(void);
@@ -134,7 +134,7 @@ private:
 	CPosNode* theHeroCurrentPosNode;
 	CPosNode* theHeroTargetPosNode;
 	Vector3 vel;
-
+	Sound theSound;
 	float movementSpeed;
 
 	int health;

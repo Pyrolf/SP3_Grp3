@@ -34,20 +34,33 @@ void Sound::playSound(SOUND_TYPE sound_type)
 	case MENUMUSIC:
 		engine->play2D("../media/mainmenu.mp3",true);
 		break;
-	case PAUSE:
-		engine->play2D("../media/S_SDI_00006.wav");
-		break;
 	case GAMEPLAYING:
-		engine->play2D("../media/playingsound.mp3", true);
+		engine->play2D("../media/playingbg.mp3", true);
 		break;
-	case MOVING:
-		engine->play2D("../media/");
+	case WATER_SPLASH:
+		engine->play2D("../media/splash.wav");
 		break;
-	case STOPPLAY:
-		engine->stopAllSounds();
+	case HACK_FAILURE:
+		engine->play2D("../media/windowserror.mp3");
+		break;
+	case HACK_SUCCESS:
+		engine->play2D("../media/hacksuccess.mp3");		
+		break;
+	case DOOR_OPEN:
+		engine->play2D("../media/Unlock.mp3");
+		break;
+	case GAMEOVER:
+		engine->play2D("../media/gameover4me.mp3");
+		break;
+	case ZOMBIE_DAMAGED:
+		engine->play2D("../media/zombie_attack.mp3");
+		break;
+	case PLAYER_DAMAGED:
+		engine->play2D("../media/grunt.wav");
 		break;
 	}
 }
+
 
 void Sound::exiting()
 {

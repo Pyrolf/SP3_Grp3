@@ -392,7 +392,7 @@ void CPlayerInfo::HeroUpdate(float timeDiff, CAIManager* ai_manager, GameObjectF
 			break;
 		case CPlayerInfo::ATTACKING:
 			{
-				Attacking(timeDiff, ai_manager, go_manager);
+				Attacking(timeDiff, ai_manager, go_manager/*, theSound*/);
 			}
 			break;
 		default:
@@ -686,7 +686,7 @@ void CPlayerInfo::attackingEnabled()
 	this->heroAnimationCounter = 0.0f;
 }
 
-void CPlayerInfo::Attacking(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager)
+void CPlayerInfo::Attacking(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager/*, Sound Soundname*/)
 {
 	float PrevHeroAnimationCounter = heroAnimationCounter;
 	heroAnimationCounter += heroAnimationSpeed * 1 * timeDiff;
@@ -754,6 +754,7 @@ void CPlayerInfo::Attacking(float timeDiff, CAIManager* ai_manager, GameObjectFa
 						ai_manager->zombieList[i]->CalculateVel();
 						ai_manager->zombieList[i]->SetCurrentMode(CZombie::ATTACK);
 						ai_manager->zombieList[i]->SetTime(0.1f);
+						//Soundname.playSound(Sound::ZOMBIE_DAMAGED);
 						// Minus 1 health
 						ai_manager->zombieList[i]->SetHealth(ai_manager->zombieList[i]->GetHealth() - 1);
 						if(ai_manager->zombieList[i]->GetHealth() == 0)
