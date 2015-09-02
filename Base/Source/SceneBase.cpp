@@ -300,6 +300,10 @@ void SceneBase::Init()
 	meshList[GEO_HIGHSCORE] = MeshBuilder::Generate2DMesh("GEO_HIGHSCORE", Color(1, 1, 1), 0.0f, 0.0f, 1024.0f, 800.0f);
 	meshList[GEO_HIGHSCORE]->textureID = LoadTGA("Image//highscorebg.tga");
 
+	meshList[GEO_INSTRUCTIONS1] = MeshBuilder::Generate2DMesh("suhf", Color(1, 1, 1), 0.0f, 0.0f, 1024.0f, 800.0f);
+	meshList[GEO_INSTRUCTIONS1]->textureID = LoadTGA("Image//instructuons 1.tga");
+	meshList[GEO_INSTRUCTIONS2] = MeshBuilder::Generate2DMesh("suhf", Color(1, 1, 1), 0.0f, 0.0f, 1024.0f, 800.0f);
+	meshList[GEO_INSTRUCTIONS2]->textureID = LoadTGA("Image//instructuons 2.tga");
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 1000 units
 	Mtx44 perspective;
 	perspective.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);

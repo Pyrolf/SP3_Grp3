@@ -318,6 +318,51 @@ Mesh* MeshBuilder::GenerateRing(const std::string &meshName, Color color, unsign
 	return mesh;
 }
 
+Mesh* MeshBuilder::GenerateHalfRing(const std::string &meshName, Color color, unsigned numSlice, float outerR, float innerR)
+{
+	std::vector<Vertex> vertex_buffer_data;
+	std::vector<GLuint> index_buffer_data;
+	Vertex v;
+
+	float degreePerSlice = 360.f / numSlice / 2;
+	//float radianPerSlice = Math::DegreeToRadian(360.f) / numSlice;
+	for(unsigned slice = 0; slice < numSlice + 1; ++slice)
+	{
+		float theta = slice * degreePerSlice;
+		v.color = color;
+		v.normal.Set(0, 1, 0);
+		v.pos.Set(outerR * cos(Math::DegreeToRadian(theta)), outerR * sin(Math::DegreeToRadian(theta)), 0);
+		vertex_buffer_data.push_back(v);
+		
+		v.color = color;
+		v.normal.Set(0, 1, 0);
+		v.pos.Set(innerR * cos(Math::DegreeToRadian(theta)), innerR * sin(Math::DegreeToRadian(theta)), 0);
+		vertex_buffer_data.push_back(v);
+	}
+	for(unsigned slice = 0; slice < numSlice + 1; ++slice)
+	{
+		index_buffer_data.push_back(2 * slice + 0);
+		index_buffer_data.push_back(2 * slice + 1);
+		//index_buffer_data.push_back(2 * slice + 3);
+		//index_buffer_data.push_back(2 * slice + 4);
+		//index_buffer_data.push_back(2 * slice + 3);
+		//index_buffer_data.push_back(2 * slice + 2);
+	}
+
+	Mesh *mesh = new GLMesh(meshName);
+	
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(Vertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
+
+	mesh->mode = Mesh::DRAW_TRIANGLE_STRIP;
+
+	mesh->indexSize = index_buffer_data.size();
+
+	return mesh;
+}
+
 float sphereX(float phi, float theta)
 {
 	return cos(Math::DegreeToRadian(phi)) * cos(Math::DegreeToRadian(theta));

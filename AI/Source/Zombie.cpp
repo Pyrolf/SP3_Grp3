@@ -199,10 +199,10 @@ void CZombie::CheckMode(CPosNode* heroPosNode, int tileSize, Vector3 heroPos)
 	float DistFromHeroTozombieInit = (heroPos - theZombieInitialPosNode->pos).Length();
 	
 	// If within range of detection
-	if(DistFromHeroTozombieInit <= maxRangeToDetect * 2
-		&& (checkIfHeroIsWithinSight(heroPos)
+	if((checkIfHeroIsWithinSight(heroPos)
 		|| zombie_type > SMART
-		|| currentMode == CHASE))
+		|| currentMode == CHASE)
+		&& DistFromHeroTozombie <= maxRangeToDetect)
 	{
 		// If not chase or attack
 		if(currentMode != CHASE && currentMode != ATTACK)
@@ -297,14 +297,27 @@ void CZombie::ReturnCheck(int tileSize)
 	currentMode = RETURN;
 	// Find a path
 	zombiePath = PathFinding(theZombieInitialPosNode, tileSize);
-	// if theZombieTargetPosNode is not equal to next path node
-	if(theZombieTargetPosNode == zombiePath.back())
+	// if path not empty
+	if(zombiePath.size() != 0)
 	{
+		// if theZombieTargetPosNode is not equal to next path node
+		if(theZombieTargetPosNode == zombiePath.back())
+		{
+			zombiePath.pop_back();
+		}
+		theZombieTargetPosNode = zombiePath.back();
 		zombiePath.pop_back();
+		CalculateVel();
 	}
-	theZombieTargetPosNode = zombiePath.back();
-	zombiePath.pop_back();
-	CalculateVel();
+	// if path is empty
+	else
+	{
+		while(zombiePath.size() != 0)
+		{
+			zombiePath.pop_back();
+		}
+		ChoosePatrolOrIdleMode();
+	}
 }
 
 
