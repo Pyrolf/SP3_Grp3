@@ -184,7 +184,7 @@ void SceneSP3::InitMinimap()
 void SceneSP3::InitLevels()
 {
 	// Initialise and load the tile map
-	const int noOfLevel = 1;
+	const int noOfLevel = 4;
 	for(int i = 0; i < noOfLevel; i++)
 	{
 		levelList.push_back(new Level);
@@ -198,14 +198,14 @@ void SceneSP3::InitLevels()
 	//levelList[0]->background->textureID = LoadTGA("Image//house_level0.tga");
 
 	// Level Darren
-	levelList[0]->m_cMap->LoadMap( "Image//map1levelDar.csv" );
+	/*levelList[0]->m_cMap->LoadMap( "Image//map1levelDar.csv" );
 	levelList[0]->background = MeshBuilder::Generate2DMesh("GEO_LEVL1", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
-	levelList[0]->background->textureID = LoadTGA("Image//map1level.tga");
+	levelList[0]->background->textureID = LoadTGA("Image//map1level.tga");*/
 
 	// Level 2
-	/*levelList[2]->m_cMap->LoadMap( "Image//MapDesignLv2.csv" );
-	levelList[2]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL2", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
-	levelList[2]->background->textureID = LoadTGA("Image//level2_background.tga");*/
+	levelList[0]->m_cMap->LoadMap( "Image//MapDesignLv2.csv" );
+	levelList[0]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL2", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
+	levelList[0]->background->textureID = LoadTGA("Image//level2_background.tga");
 
 	// Level 3
 	/*levelList[0]->m_cMap->LoadMap( "Image//MapDesignLv3.csv" );
@@ -347,7 +347,14 @@ void SceneSP3::UpdateInputs(double dt)
 		if(Application::IsKeyPressed(VK_SPACE) && spaceDown == false && gameState == PLAYING)
 		{
 			if(hackingGame.active)
-				hackingGame.Input(dt);
+				if(hackingGame.Input(dt))
+				{
+					mysound.playSound(Sound::HACK_SUCCESS);
+				}
+				else
+				{
+					mysound.playSound(Sound::HACK_FAILURE);
+				}
 			else
 			{
 				switch(this->theHero->GetAnimationDirection())
@@ -796,6 +803,7 @@ void SceneSP3::Update(double dt)
 		}
 		if(hackingGame.active)
 		{
+			mysound.engine2->setAllSoundsPaused(true);
 			hackingGame.Update(dt);
 			if(hackingGame.currentBar == hackingGame.hackingBar.size() || theHero->GetCurrentState() != theHero->NIL)
 			{
@@ -808,7 +816,9 @@ void SceneSP3::Update(double dt)
 							currentLevel->gameObjectsManager->UpdatableGoList[i]->active = false;
 						}
 					}
+					mysound.playSound(Sound::DOOR_OPEN);
 				}
+				mysound.engine2->setAllSoundsPaused(false);
 				hackingGame.active = false;
 				hackingGame.Reset();
 			}
@@ -1415,6 +1425,74 @@ void SceneSP3::RenderGUI()
 	ss.precision(3);
 	ss << "X" << theHero->GetHealth();
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(1, 1, 1), 3, 3, 57);*/
+
+	if(theHero->GetCurrentPosNode()->up->posType == CPosNode::BLOCK
+		&& dynamic_cast<ActiveGameObject*>(theHero->GetCurrentPosNode()->up->gameObject)->active
+		||theHero->GetCurrentPosNode()->down->posType == CPosNode::BLOCK
+		&& dynamic_cast<ActiveGameObject*>(theHero->GetCurrentPosNode()->down->gameObject)->active
+		||theHero->GetCurrentPosNode()->left->posType == CPosNode::BLOCK
+		&& dynamic_cast<ActiveGameObject*>(theHero->GetCurrentPosNode()->left->gameObject)->active
+		||theHero->GetCurrentPosNode()->right->posType == CPosNode::BLOCK
+		&& dynamic_cast<ActiveGameObject*>(theHero->GetCurrentPosNode()->right->gameObject)->active)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(70, 200, 0);
+		modelStack.Scale(890 , 95, 0);
+		Render2DMesh(meshList[GEO_HACK_RED_BAR], false, 1.0f, 0, 0);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Find a hacking terminal", Color(1,1,1), 3.f, 7.f, 20.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "to open this", Color(1,1,1), 3.f, 23.f, 16.f);
+	}
+
+	if(!hackingGame.active)
+	{
+		switch(this->theHero->GetAnimationDirection())
+		{
+		case this->theHero->UP:
+			{
+				if(this->theHero->GetCurrentPosNode()->up->posType == this->theHero->GetCurrentPosNode()->HACK_SYS)
+				{
+					modelStack.PushMatrix();
+					modelStack.Translate(140, 250, 0);
+					modelStack.Scale(755 , 45, 0);
+					Render2DMesh(meshList[GEO_HACK_RED_BAR], false, 1.0f, 0, 0);
+					RenderTextOnScreen(meshList[GEO_TEXT], "Press space to hack", Color(1,1,1), 3.f, 13.f, 20.f);
+				}
+			}break;
+		case this->theHero->DOWN:
+			{
+				if(this->theHero->GetCurrentPosNode()->down->posType == this->theHero->GetCurrentPosNode()->HACK_SYS)
+				{
+					modelStack.PushMatrix();
+					modelStack.Translate(140, 250, 0);
+					modelStack.Scale(755 , 45, 0);
+					Render2DMesh(meshList[GEO_HACK_RED_BAR], false, 1.0f, 0, 0);
+					RenderTextOnScreen(meshList[GEO_TEXT], "Press space to hack", Color(1,1,1), 3.f, 13.f, 20.f);
+				}
+			}break;
+		case this->theHero->LEFT:
+			{
+				if(this->theHero->GetCurrentPosNode()->left->posType == this->theHero->GetCurrentPosNode()->HACK_SYS)
+				{
+					modelStack.PushMatrix();
+					modelStack.Translate(140, 250, 0);
+					modelStack.Scale(755 , 45, 0);
+					Render2DMesh(meshList[GEO_HACK_RED_BAR], false, 1.0f, 0, 0);
+					RenderTextOnScreen(meshList[GEO_TEXT], "Press space to hack", Color(1,1,1), 3.f, 13.f, 20.f);
+				}
+			}break;
+		case this->theHero->RIGHT:
+			{
+				if(this->theHero->GetCurrentPosNode()->right->posType == this->theHero->GetCurrentPosNode()->HACK_SYS)
+				{
+					modelStack.PushMatrix();
+					modelStack.Translate(140, 250, 0);
+					modelStack.Scale(755 , 45, 0);
+					Render2DMesh(meshList[GEO_HACK_RED_BAR], false, 1.0f, 0, 0);
+					RenderTextOnScreen(meshList[GEO_TEXT], "Press space to hack", Color(1,1,1), 3.f, 13.f, 20.f);
+				}
+			}break;
+		}
+	}
 }
 
 void SceneSP3::InitGoMeshes()
@@ -1541,11 +1619,35 @@ void SceneSP3::UpdateActiveGO(double dt)
 		case GameObject::WET_FLOOR:
 			{
 				if(currentLevel->gameObjectsManager->UpdatableGoList[i]->CheckColision(theHero->GetPos(), currentLevel->gameObjectsManager->tileSize))
+				{
+					if(currentLevel->gameObjectsManager->UpdatableGoList[i]->soundPlayed == false)
+					{
+						mysound.playSound(Sound::WATER_SPLASH);
+						currentLevel->gameObjectsManager->UpdatableGoList[i]->soundPlayed = true;
+					}
 					currentLevel->gameObjectsManager->UpdatableGoList[i]->active = true;
+				}
 				else
+				{
+					currentLevel->gameObjectsManager->UpdatableGoList[i]->soundPlayed = false;
 					currentLevel->gameObjectsManager->UpdatableGoList[i]->canActivate = true;
-
+				}
 				break;
+			}
+		case GameObject::TRAP:
+			{
+				if(currentLevel->gameObjectsManager->UpdatableGoList[i]->CheckColision(theHero->GetPos(), currentLevel->gameObjectsManager->tileSize))
+				{
+					if(currentLevel->gameObjectsManager->UpdatableGoList[i]->soundPlayed == false && !theHero->GetJustGotDamged() == true)
+					{
+						mysound.playSound(Sound::TRAP);
+						if(theHero->GetHealth()-1 <= 0)
+							mysound.playSound(Sound::PLAYER_DYING);
+						else
+							mysound.playSound(Sound::PLAYER_DAMAGED);
+						currentLevel->gameObjectsManager->UpdatableGoList[i]->soundPlayed = true;
+					}
+				}
 			}
 		}
 		currentLevel->gameObjectsManager->UpdatableGoList[i]->update(dt);

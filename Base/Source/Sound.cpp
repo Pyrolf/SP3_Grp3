@@ -38,16 +38,16 @@ void Sound::playSound(SOUND_TYPE sound_type)
 		engine2->play2D("../media/playingbg.mp3", true);
 		break;
 	case WATER_SPLASH:
-		engine->play2D("../media/splash.wav");
+		engine->play2D("../media/Water Splash-SoundBible.com-800223477.wav");
 		break;
 	case HACK_FAILURE:
-		engine->play2D("../media/windowserror.mp3");
+		engine->play2D("../media/WINDOWS XP ERROR SOUND.mp3");
 		break;
 	case HACK_SUCCESS:
-		engine->play2D("../media/hacksuccess.mp3");		
+		engine->play2D("../media/Ding Sound Effect.mp3");	
 		break;
 	case DOOR_OPEN:
-		engine->play2D("../media/Unlock.mp3");
+		engine->play2D("../media/Lock-Unlock Sound Effect.mp3");
 		break;
 	case FALLINGENDING:
 		engine2->play2D("../media/gameover4me.mp3");
@@ -66,6 +66,9 @@ void Sound::playSound(SOUND_TYPE sound_type)
 		break;
 	case FOOTSTEP:
 		engine->play2D("../media/walking.mp3");
+		break;
+	case TRAP:
+		engine->play2D("../media/Metal Bang-SoundBible.com-672025076.wav");
 		break;
 	}
 }

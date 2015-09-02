@@ -5,7 +5,7 @@ class ActiveGameObject : public GameObject
 {
 public:
 	int id;
-	bool active, canActivate;
+	bool active, canActivate, soundPlayed;
 	float frameTime, currentFrameTime;
 
 	ActiveGameObject();

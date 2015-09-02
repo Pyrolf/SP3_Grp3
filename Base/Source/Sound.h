@@ -30,6 +30,7 @@ public:
 		FOOTSTEP,
 		PLAYER_ATTACK,
 		WATER_SPLASH,
+		TRAP,
 		GAMEOVER
 	};
 

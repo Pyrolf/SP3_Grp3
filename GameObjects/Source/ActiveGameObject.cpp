@@ -17,6 +17,8 @@ ActiveGameObject::ActiveGameObject(int type, Vector3 pos)
 
 	frameTime = currentFrameTime = 0;
 
+	soundPlayed = false;
+
 	InitRanodmVars();
 }
 
@@ -136,6 +138,8 @@ void ActiveGameObject::Reset()
 	canActivate = true;
 
 	frameTime = currentFrameTime = 0;
+
+	soundPlayed = false;
 
 	InitRanodmVars();
 }
