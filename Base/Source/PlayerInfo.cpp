@@ -410,8 +410,13 @@ void CPlayerInfo::HeroUpdate(float timeDiff, CAIManager* ai_manager, GameObjectF
 				}
 				else
 				{
-					UpdateSound.engine->stopAllSounds();
-					soundplaying = false;
+					if(timeElasped  <= 1.f)
+					{
+						timeElasped += 0.1f * timeDiff;
+						UpdateSound.engine->stopAllSounds();
+						soundplaying = false;
+					}
+					timeElasped = 0.f;
 				}
 					
 			}
