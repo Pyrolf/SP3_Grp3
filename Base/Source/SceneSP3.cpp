@@ -12,7 +12,6 @@ static bool soundingplay = false;
 
 SceneSP3::SceneSP3()
 	: gameState(MAINMENU)
-	, m_cMiniMap(NULL)
 	, choice(NONE)
 	, currentLevel(NULL)
 	, tempName("     ")
@@ -32,7 +31,6 @@ void SceneSP3::Init()
 	InitHero();
 	InitGoMeshes();
 	InitLevels();
-	InitMinimap();
 	mysound.soundInit();
 	// Normal zombie
 	meshList[GEO_NORMAL_ZOMBIE_ATTACK_RANGE] = MeshBuilder::GenerateHalfRing("NORMAL_ATTACK_RANGE", Color(0, 1, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 2, levelList[0]->gameObjectsManager->tileSize * 2 - 1.f);
@@ -172,14 +170,6 @@ void SceneSP3::InitHero()
 	theHero->attackSideMeshes.back()->textureID = LoadTGA("Image//hero_office_attack.tga");
 }
 
-void SceneSP3::InitMinimap()
-{
-	m_cMiniMap = new CMinimap();
-	m_cMiniMap->SetBackground(MeshBuilder::GenerateMinimap("MINIMAP", Color(1,1,1), 1.f));
-	m_cMiniMap->GetBackground()->textureID = LoadTGA("Image//");
-	m_cMiniMap->SetBorder(MeshBuilder::GenerateMinimapBorder("MINIMAPBORDER", Color(1,1,0), 1.f));
-	m_cMiniMap->SetAvatar(MeshBuilder::GenerateMinimapAvatar("MINIMAPAVATAR", Color(1,1,0), 1.f));
-}
 
 void SceneSP3::InitLevels()
 {
@@ -193,24 +183,24 @@ void SceneSP3::InitLevels()
 	}
 
 	// Level 0
-	//levelList[0]->m_cMap->LoadMap( "Image//level0_house.csv" );
-	//levelList[0]->background = MeshBuilder::Generate2DMesh("HOUSE_LEVEL", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
-	//levelList[0]->background->textureID = LoadTGA("Image//house_level0.tga");
+	levelList[0]->m_cMap->LoadMap( "Image//level0_house.csv" );
+	levelList[0]->background = MeshBuilder::Generate2DMesh("HOUSE_LEVEL", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
+	levelList[0]->background->textureID = LoadTGA("Image//house_level0.tga");
 
 	// Level Darren
-	/*levelList[0]->m_cMap->LoadMap( "Image//map1levelDar.csv" );
-	levelList[0]->background = MeshBuilder::Generate2DMesh("GEO_LEVL1", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
-	levelList[0]->background->textureID = LoadTGA("Image//map1level.tga");*/
+	levelList[1]->m_cMap->LoadMap( "Image//map1levelDar.csv" );
+	levelList[1]->background = MeshBuilder::Generate2DMesh("GEO_LEVL1", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
+	levelList[1]->background->textureID = LoadTGA("Image//map1level.tga");
 
 	// Level 2
-	levelList[0]->m_cMap->LoadMap( "Image//MapDesignLv2.csv" );
-	levelList[0]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL2", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
-	levelList[0]->background->textureID = LoadTGA("Image//level2_background.tga");
+	levelList[2]->m_cMap->LoadMap( "Image//MapDesignLv2.csv" );
+	levelList[2]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL2", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
+	levelList[2]->background->textureID = LoadTGA("Image//level2_background.tga");
 
 	// Level 3
-	/*levelList[0]->m_cMap->LoadMap( "Image//MapDesignLv3.csv" );
-	levelList[0]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL3", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
-	levelList[0]->background->textureID = LoadTGA("Image//level3_background.tga");*/
+	levelList[3]->m_cMap->LoadMap( "Image//MapDesignLv3.csv" );
+	levelList[3]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL3", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
+	levelList[3]->background->textureID = LoadTGA("Image//level3_background.tga");
 
 	
 
@@ -245,9 +235,6 @@ void SceneSP3::UpdateInputs(double dt)
 				tempName[currentLetter] = 'A' + i;
 				currentLetter++;
 			}
-			//tempName += i;
-			//cout << tempName << endl;
-			//playerRecord.setName(tempName);
 		}
 		else if(!Application::IsKeyPressed('A' + i) && chara[i])
 		{				
@@ -282,7 +269,6 @@ void SceneSP3::UpdateInputs(double dt)
 				gameState = PAUSE;
 				mysound.engine->setAllSoundsPaused(true);
 				mysound.engine2->setAllSoundsPaused(true);
-				//mysound.playSound(Sound::PAUSE);
 			}
 		}
 
@@ -661,29 +647,15 @@ void SceneSP3::UpdateInputs(double dt)
 	}
 }
 
-void SceneSP3::RenderMinimap()
-{
-	RenderMeshIn2D(m_cMiniMap->GetAvatar(), false, 20.f, 68, -48);
-	RenderMeshIn2D(m_cMiniMap->GetBorder(), false, 20.f, 68, -48);
-	RenderMeshIn2D(m_cMiniMap->GetBackground(), false, 20.f, 68, -48);
-}
 
 void SceneSP3::RenderHighscore()
 {
-	// string playername;
-	// cout << "Enter your name: " << endl;
-	// cin >> playername;
-	//RenderTextOnScreen(meshList[GEO_TEXT],, Color(1,1,1), 1.f, 20.f, 20.f);
-	/*std::ostringstream ss;
-	ss.precision(3);
-	ss << "X" << theHero->GetHealth();
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(1, 1, 1), 3, 3, 57);*/
 	Render2DMesh(meshList[GEO_HIGHSCORE], false);
 	for(int i = 0; i < 5; ++i)
 	{
 		int temp = i;
 		std::ostringstream scoring;
-		scoring << temp + 1 << "." << score.record[i].getName() << score.record[i].getTiming().getMin() << ":" << score.record[i].getTiming().getSec();
+		scoring << temp + 1 << "." << score.record[i].getName() << " " << score.record[i].getTiming().getMin() << ":" << score.record[i].getTiming().getSec();
 		RenderTextOnScreen(meshList[GEO_TEXT], scoring.str(), Color(1, 1, 1), 5, 5, 40 - i * 5);
 	}
 
@@ -765,7 +737,6 @@ void SceneSP3::Update(double dt)
 				mysound.engine2->stopAllSounds();
 				soundingplay = false;
 				theHero->SetTimeElasped(0.0f);
-				//mysound.playSound(Sound::GAMEOVER);
 			}
 		}
 
@@ -826,17 +797,6 @@ void SceneSP3::Update(double dt)
 		UpdateActiveGO(dt);
 		blackout.Update(dt);
 	}
-
-
-	//	for(char i = 'A'; i < '[' && tempName.length() < 6 ; ++i)
-	//	{
-	//		if(Application::IsKeyPressed(i) && !chara[i])
-	//		{
-	//			tempName += i;
-	//			cout << tempName << endl;
-	//			playerRecord.setName(tempName);
-	//		}
-	//  }
 }
 
 void SceneSP3::RenderBackground()
@@ -847,7 +807,6 @@ void SceneSP3::RenderBackground()
 void SceneSP3::Render()
 {
 	SceneBase::Render();
-	//static bool soundplayed = false;
 	glDisable(GL_DEPTH_TEST);
 	switch(gameState)
 	{
@@ -959,7 +918,6 @@ void SceneSP3::Render()
 
 			RenderTextOnScreen(meshList[GEO_TEXT], "CREDITS:", Color(1, 1, 1), 2.5, 15, theHero->GetPos().y / 12.8 + 10);
 
-
 			Render2DMesh(theHero->backMeshes[0], false, 1.0f, theHero->GetPos().x, theHero->GetPos().y, false, theHero->GetPos().y);
 		}
 		break;
@@ -993,8 +951,9 @@ void SceneSP3::Render()
 			{
 				RenderHero();
 			}
-
-			//Render2DMesh(meshList[GEO_BLACK_HOLE], false, blackout.lightSize, theHero->GetPos().x + currentLevel->gameObjectsManager->tileSize * 0.5 - Application::getWindowWidth() * blackout.lightSize, theHero->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5 - Application::getWindowWidth() * blackout.lightSize);
+			
+			if(currentLevel != levelList[0])
+				Render2DMesh(meshList[GEO_BLACK_HOLE], false, blackout.lightSize, theHero->GetPos().x + currentLevel->gameObjectsManager->tileSize * 0.5 - Application::getWindowWidth() * blackout.lightSize, theHero->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5 - Application::getWindowWidth() * blackout.lightSize);
 
 			modelStack.PopMatrix();
 			if(hackingGame.active)
@@ -1011,11 +970,6 @@ void SceneSP3::Render()
 void SceneSP3::Exit()
 {
 	delete theHero;
-	if(m_cMiniMap)
-	{
-		delete m_cMiniMap;
-		m_cMiniMap = NULL;
-	}
 	mysound.exiting();
 	DeleteGoMeshes();
 }
@@ -1027,11 +981,6 @@ void SceneSP3::RenderHero()
 {
 	switch (this->theHero->GetCurrentState())
 	{
-	case this->theHero->EXITING:
-		{
-			Render2DMesh(theHero->backMeshes[0], false, 1.0f, theHero->GetPos().x, theHero->GetPos().y, false);
-		}
-		break;
 	case this->theHero->DYING:
 		{
 			if(this->theHero->GetCurrentPosNode()->posType == this->theHero->GetCurrentPosNode()->HOLE)
@@ -1123,7 +1072,7 @@ void SceneSP3::RenderGameObjects()
 			}
 		case  GameObject::DOOR:
 			{
-				Render2DMesh(doorMesh[go->currentFrame], false, 1.0f, go->pos.x, go->pos.y);
+				//Render2DMesh(doorMesh[go->currentFrame], false, 1.0f, go->pos.x, go->pos.y);
 				break;
 			}
 		case  GameObject::WET_FLOOR:
@@ -1418,13 +1367,6 @@ void SceneSP3::RenderGUI()
 	time.precision(3);
 	time << playerRecord.getTiming().getMin() << ":" << playerRecord.getTiming().getSec();
 	RenderTextOnScreen(meshList[GEO_TEXT], time.str(), Color(1,1,1), 5.f, 40.f, 55.f);
-
-
-	//On screen text
-	/*std::ostringstream ss;
-	ss.precision(3);
-	ss << "X" << theHero->GetHealth();
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(1, 1, 1), 3, 3, 57);*/
 
 	if(theHero->GetCurrentPosNode()->up->posType == CPosNode::BLOCK
 		&& dynamic_cast<ActiveGameObject*>(theHero->GetCurrentPosNode()->up->gameObject)->active

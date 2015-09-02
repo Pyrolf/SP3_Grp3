@@ -64,7 +64,7 @@ private:
 	void RenderGameObjects();
 	void RenderEnemies();
 	void RenderGUI();
-	void RenderMinimap();
+
 
 	enum GAME_STATE
 	{
@@ -82,14 +82,13 @@ private:
 	GAME_STATE gameState;
 	Highscore score;
 	CRecord playerRecord;
-	CMinimap* m_cMiniMap;
 
 	void UpdateInputs(double dt);
 
 	vector<Mesh*> wallMesh, holeMesh, doorMesh, wetFloorMesh, timmingDoorMesh, blockMesh, hackMesh, healthMesh, trapMesh, arrowMesh;
 
 	void InitGoMeshes();
-	void InitMinimap();
+
 	void DeleteGoMeshes();
 	void UpdateActiveGO(double dt);
 	HackingGame hackingGame;
