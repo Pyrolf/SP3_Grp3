@@ -760,6 +760,7 @@ void SceneSP3::Update(double dt)
 				// Gameover
 				gameState = GAMEOVER;
 				mysound.engine2->stopAllSounds();
+				soundingplay = false;
 				theHero->SetTimeElasped(0.0f);
 				//mysound.playSound(Sound::GAMEOVER);
 			}

@@ -276,9 +276,12 @@ void CZombie::ChaseCheck(CPosNode* heroPosNode, int tileSize)
 		{
 			zombiePath.pop_back();
 		}
-		theZombieTargetPosNode = zombiePath.back();
-		zombiePath.pop_back();
-		CalculateVel();
+		if(zombiePath.size() != 0)
+		{
+			theZombieTargetPosNode = zombiePath.back();
+			zombiePath.pop_back();
+			CalculateVel();
+		}
 	}
 	// if path is empty
 	else
