@@ -65,7 +65,7 @@ void Sound::playSound(SOUND_TYPE sound_type)
 		engine2->play2D("../media/mainmenu.mp3", true);
 		break;
 	case FOOTSTEP:
-		engine->play2D("../media/walking.mp3", true);
+		engine->play2D("../media/walking.mp3");
 		break;
 	}
 }

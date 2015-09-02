@@ -193,14 +193,14 @@ void SceneSP3::InitLevels()
 	}
 
 	// Level 0
-	levelList[0]->m_cMap->LoadMap( "Image//level0_house.csv" );
+	/*levelList[0]->m_cMap->LoadMap( "Image//level0_house.csv" );
 	levelList[0]->background = MeshBuilder::Generate2DMesh("HOUSE_LEVEL", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
-	levelList[0]->background->textureID = LoadTGA("Image//house_level0.tga");
+	levelList[0]->background->textureID = LoadTGA("Image//house_level0.tga");*/
 
 	// Level Darren
-	//levelList[1]->m_cMap->LoadMap( "Image//map1levelDar.csv" );
-	//levelList[1]->background = MeshBuilder::Generate2DMesh("GEO_LEVL1", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
-	//levelList[1]->background->textureID = LoadTGA("Image//map1level.tga");
+	levelList[0]->m_cMap->LoadMap( "Image//map1levelDar.csv" );
+	levelList[0]->background = MeshBuilder::Generate2DMesh("GEO_LEVL1", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
+	levelList[0]->background->textureID = LoadTGA("Image//map1level.tga");
 
 	// Level 2
 	/*levelList[2]->m_cMap->LoadMap( "Image//MapDesignLv2.csv" );
@@ -302,7 +302,7 @@ void SceneSP3::UpdateInputs(double dt)
 			if(this->theHero->GetCurrentState() == this->theHero->NIL 
 				&& gameState == PLAYING)
 			{
-				this->theHero->MoveUpDown(true, currentLevel->AI_Manager, currentLevel->gameObjectsManager->tileSize);
+				this->theHero->MoveUpDown(true, currentLevel->AI_Manager, currentLevel->gameObjectsManager->tileSize, mysound);
 			}
 		}
 		// Check Collision of th hero before moving down
@@ -311,7 +311,7 @@ void SceneSP3::UpdateInputs(double dt)
 			if(this->theHero->GetCurrentState() == this->theHero->NIL
 				&& gameState == PLAYING)
 			{
-				this->theHero->MoveUpDown(false, currentLevel->AI_Manager, currentLevel->gameObjectsManager->tileSize);
+				this->theHero->MoveUpDown(false, currentLevel->AI_Manager, currentLevel->gameObjectsManager->tileSize, mysound);
 			}
 		}
 
@@ -321,7 +321,7 @@ void SceneSP3::UpdateInputs(double dt)
 			if(this->theHero->GetCurrentState() == this->theHero->NIL
 				&& gameState == PLAYING)
 			{
-				this->theHero->MoveLeftRight(true, currentLevel->AI_Manager, currentLevel->gameObjectsManager->tileSize);
+				this->theHero->MoveLeftRight(true, currentLevel->AI_Manager, currentLevel->gameObjectsManager->tileSize, mysound);
 			}
 		}
 		// Check Collision of th hero before moving right
@@ -331,7 +331,7 @@ void SceneSP3::UpdateInputs(double dt)
 			if(this->theHero->GetCurrentState() == this->theHero->NIL
 				&& gameState == PLAYING)
 			{
-				this->theHero->MoveLeftRight(false, currentLevel->AI_Manager, currentLevel->gameObjectsManager->tileSize);
+				this->theHero->MoveLeftRight(false, currentLevel->AI_Manager, currentLevel->gameObjectsManager->tileSize, mysound);
 			}
 		}
 
@@ -933,9 +933,9 @@ void SceneSP3::Render()
 
 			std::ostringstream gamoev;
 			gamoev << playerRecord.getTiming().getMin() << ":" << playerRecord.getTiming().getSec();
-			RenderTextOnScreen(meshList[GEO_TEXT], gamoev.str(), Color(1,1,1), 5.f, 20.f, 20.f);
+			RenderTextOnScreen(meshList[GEO_TEXT], gamoev.str(), Color(0, 0, 0), 5.f, 20.f, 15.f);
 		
-			RenderTextOnScreen(meshList[GEO_TEXT], "Press enter to return", Color(1, 1, 1), 2.5, 13, 5);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Press enter to return", Color(0, 0, 0), 2.5, 13, 10);
 		}
 		break;
 

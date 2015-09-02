@@ -102,8 +102,8 @@ public:
 	Vector3 GetMapOffset(void);
 
 	// Update Movements
-	void MoveUpDown(const bool mode, CAIManager* ai_manager, int tileSize);
-	void MoveLeftRight(const bool mode, CAIManager* ai_manager, int tileSize);
+	void MoveUpDown(const bool mode, CAIManager* ai_manager, int tileSize, Sound soundMove);
+	void MoveLeftRight(const bool mode, CAIManager* ai_manager, int tileSize, Sound soundMove);
 
 	// Hero Update
 	void HeroUpdate(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager, CMap* map, Sound UpdateSound);

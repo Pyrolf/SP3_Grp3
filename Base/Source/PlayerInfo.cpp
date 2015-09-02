@@ -303,7 +303,7 @@ Vector3 CPlayerInfo::GetMapOffset(void)
 /********************************************************************************
 Hero Move Up Down
 ********************************************************************************/
-void CPlayerInfo::MoveUpDown(const bool mode, CAIManager* ai_manager, int tileSize)
+void CPlayerInfo::MoveUpDown(const bool mode, CAIManager* ai_manager, int tileSize, Sound soundMove)
 {
 	if (mode)
 	{
@@ -314,6 +314,7 @@ void CPlayerInfo::MoveUpDown(const bool mode, CAIManager* ai_manager, int tileSi
 		{
 			vel.Set(0, movementSpeed, 0);
 			currentState = MOVING;
+			soundMove.playSound(Sound::FOOTSTEP);
 		}
 		else
 		{
@@ -329,6 +330,7 @@ void CPlayerInfo::MoveUpDown(const bool mode, CAIManager* ai_manager, int tileSi
 		{
 			vel.Set(0, -movementSpeed, 0);
 			currentState = MOVING;
+			soundMove.playSound(Sound::FOOTSTEP);
 		}
 		else
 		{
@@ -340,7 +342,7 @@ void CPlayerInfo::MoveUpDown(const bool mode, CAIManager* ai_manager, int tileSi
 /********************************************************************************
 Hero Move Left Right
 ********************************************************************************/
-void CPlayerInfo::MoveLeftRight(const bool mode, CAIManager* ai_manager, int tileSize)
+void CPlayerInfo::MoveLeftRight(const bool mode, CAIManager* ai_manager, int tileSize, Sound soundMove)
 {
 	if (mode)
 	{
@@ -351,6 +353,7 @@ void CPlayerInfo::MoveLeftRight(const bool mode, CAIManager* ai_manager, int til
 		{
 			vel.Set(-movementSpeed, 0, 0);
 			currentState = MOVING;
+			soundMove.playSound(Sound::FOOTSTEP);
 		}
 		else
 		{
@@ -366,6 +369,7 @@ void CPlayerInfo::MoveLeftRight(const bool mode, CAIManager* ai_manager, int til
 		{
 			vel.Set(movementSpeed, 0, 0);
 			currentState = MOVING;
+			soundMove.playSound(Sound::FOOTSTEP);
 		}
 		else
 		{
@@ -374,7 +378,6 @@ void CPlayerInfo::MoveLeftRight(const bool mode, CAIManager* ai_manager, int til
 	}
 }
 
-static bool soundplaying = false;
 /********************************************************************************
 Hero Update
 ********************************************************************************/
@@ -402,23 +405,7 @@ void CPlayerInfo::HeroUpdate(float timeDiff, CAIManager* ai_manager, GameObjectF
 				if(currentState == MOVING)
 				{
 					moveAnimation(timeDiff, HeroPrevPos);
-					if(!soundplaying)
-					{
-						UpdateSound.playSound(Sound::FOOTSTEP);
-						soundplaying = true;
-					}
 				}
-				else
-				{
-					if(timeElasped  <= 1.f)
-					{
-						timeElasped += 0.1f * timeDiff;
-						UpdateSound.engine->stopAllSounds();
-						soundplaying = false;
-					}
-					timeElasped = 0.f;
-				}
-					
 			}
 			break;
 		}
