@@ -532,6 +532,10 @@ void SceneSP3::UpdateInputs(double dt)
 				{
 					gameState = LEVEL_SELECTOR;
 				}
+				else if(choice == INSTRUCTIONS)
+				{
+					gameState = INSTRUCTIONS1;
+				}
 				else if(choice == SCORE)
 				{
 					gameState = HIGHSCORE;
@@ -558,6 +562,16 @@ void SceneSP3::UpdateInputs(double dt)
 				levelchoice = ONE;
 				mysound.playSound(Sound::MENU_ENTER);
 			}
+			else if(gameState == INSTRUCTIONS1)
+			{
+				gameState = INSTRUCTIONS2;
+				mysound.playSound(Sound::MENU_ENTER);
+			}
+			else if(gameState == INSTRUCTIONS2)
+			{
+				gameState = MAINMENU;
+				mysound.playSound(Sound::MENU_ENTER);
+			}
 			else if(gameState == HIGHSCORE)
 			{
 				gameState = MAINMENU;
@@ -582,7 +596,6 @@ void SceneSP3::UpdateInputs(double dt)
 						playerRecord.reset();
 
 					}
-
 				}
 				else
 				{
@@ -631,7 +644,6 @@ void SceneSP3::RenderMinimap()
 	RenderMeshIn2D(m_cMiniMap->GetBorder(), false, 20.f, 68, -48);
 	RenderMeshIn2D(m_cMiniMap->GetBackground(), false, 20.f, 68, -48);
 }
-
 
 void SceneSP3::RenderHighscore()
 {
@@ -809,8 +821,9 @@ void SceneSP3::Render()
 			//On screen text
 			RenderTextOnScreen(meshList[GEO_TEXT], "START GAME", Color(1, 1, 1), 5, 15, 25);
 			RenderTextOnScreen(meshList[GEO_TEXT], "SELECT LEVEL", Color(1, 1, 1), 5, 15, 20);
-			RenderTextOnScreen(meshList[GEO_TEXT], "HIGHSCORE", Color(1, 1, 1), 5, 15, 15);
-			RenderTextOnScreen(meshList[GEO_TEXT], "EXIT", Color(1, 1, 1), 5, 15, 10);
+			RenderTextOnScreen(meshList[GEO_TEXT], "INSTRUCTIONS", Color(1, 1, 1), 5, 15, 15);
+			RenderTextOnScreen(meshList[GEO_TEXT], "HIGHSCORE", Color(1, 1, 1), 5, 15, 10);
+			RenderTextOnScreen(meshList[GEO_TEXT], "EXIT", Color(1, 1, 1), 5, 15, 5);
 			if(choice == PLAY)
 			{
 				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 10, 25);
@@ -819,19 +832,28 @@ void SceneSP3::Render()
 			{
 				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 10, 20);
 			}
-			else if(choice == SCORE)
+			else if(choice == INSTRUCTIONS)
 			{
 				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 10, 15);
 			}
-			else if(choice == EXIT)
+			else if(choice == SCORE)
 			{
 				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 10, 10);
 			}
-			if(!soundplayed && gameState == MAINMENU)        // main menu sound
+			else if(choice == EXIT)
 			{
-				
-				soundplayed = true;
+				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 10, 5);
 			}
+		}
+		break;
+	case INSTRUCTIONS1:
+		{		
+			Render2DMesh(meshList[GEO_INSTRUCTIONS1], false);
+		}
+		break;
+	case INSTRUCTIONS2:
+		{		
+			Render2DMesh(meshList[GEO_INSTRUCTIONS2], false);
 		}
 		break;
 	case LEVEL_SELECTOR:
@@ -858,10 +880,6 @@ void SceneSP3::Render()
 			else if(levelchoice == BACK)
 			{
 				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 15, 10);
-			}
-			if(!soundplayed)        // main menu sound
-			{
-				soundplayed = true;
 			}
 		}
 		break;
