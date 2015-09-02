@@ -1293,16 +1293,16 @@ void SceneSP3::RenderEnemies()
 			switch(zombie->zombie_type)
 			{
 			case CZombie::NORMAL:
-				Render2DMesh(meshList[GEO_NORMAL_ZOMBIE_BACK_0], false, 1.0f, zombie->GetPos().x + currentLevel->gameObjectsManager->tileSize * 0.5, zombie->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, false, 90.f);
+				Render2DMesh(meshList[GEO_NORMAL_ZOMBIE_BACK_0], false, 1.0f, zombie->GetPos().x, zombie->GetPos().y, false, 90.f);
 				break;
 			case CZombie::SMART:
-				Render2DMesh(meshList[GEO_SMART_ZOMBIE_BACK_0], false, 1.0f, zombie->GetPos().x + currentLevel->gameObjectsManager->tileSize * 0.5, zombie->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, false, 90.f);
+				Render2DMesh(meshList[GEO_SMART_ZOMBIE_BACK_0], false, 1.0f, zombie->GetPos().x, zombie->GetPos().y, false, 90.f);
 				break;
 			case CZombie::TANK:
-				Render2DMesh(meshList[GEO_TANK_ZOMBIE_BACK_0], false, 1.0f, zombie->GetPos().x + currentLevel->gameObjectsManager->tileSize * 0.5, zombie->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, false, 90.f);
+				Render2DMesh(meshList[GEO_TANK_ZOMBIE_BACK_0], false, 1.0f, zombie->GetPos().x, zombie->GetPos().y, false, 90.f);
 				break;
 			case CZombie::HUNTER:
-				Render2DMesh(meshList[GEO_HUNTER_ZOMBIE_BACK_0], false, 1.0f, zombie->GetPos().x + currentLevel->gameObjectsManager->tileSize * 0.5, zombie->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, false, 90.f);
+				Render2DMesh(meshList[GEO_HUNTER_ZOMBIE_BACK_0], false, 1.0f, zombie->GetPos().x, zombie->GetPos().y, false, 90.f);
 				break;
 			}
 		}
