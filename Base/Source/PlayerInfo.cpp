@@ -644,7 +644,7 @@ void CPlayerInfo::moveAnimation(float timeDiff, Vector3 prevPos)
 	{
 		heroAnimationDirection = UP;
 		heroAnimationInvert = false;
-		heroAnimationCounter += heroAnimationSpeed * timeDiff;
+		heroAnimationCounter += heroAnimationSpeed * timeDiff * 2;
 		if(heroAnimationCounter > backMeshes.size() - 1)
 			heroAnimationCounter = 1.0f;
 	}
@@ -652,7 +652,7 @@ void CPlayerInfo::moveAnimation(float timeDiff, Vector3 prevPos)
 	{
 		heroAnimationDirection = DOWN;
 		heroAnimationInvert = false;
-		heroAnimationCounter += heroAnimationSpeed * timeDiff;
+		heroAnimationCounter += heroAnimationSpeed * timeDiff * 2;
 		if(heroAnimationCounter > frontMeshes.size() - 1)
 			heroAnimationCounter = 1.0f;
 	}
@@ -660,7 +660,7 @@ void CPlayerInfo::moveAnimation(float timeDiff, Vector3 prevPos)
 	{
 		heroAnimationDirection = RIGHT;
 		heroAnimationInvert = false;
-		heroAnimationCounter += heroAnimationSpeed * timeDiff;
+		heroAnimationCounter += heroAnimationSpeed * timeDiff * 2;
 		if(heroAnimationCounter > sideMeshes.size() - 1)
 			heroAnimationCounter = 0.0f;
 	}
@@ -668,7 +668,7 @@ void CPlayerInfo::moveAnimation(float timeDiff, Vector3 prevPos)
 	{
 		heroAnimationDirection = LEFT;
 		heroAnimationInvert = true;
-		heroAnimationCounter -= heroAnimationSpeed * timeDiff;
+		heroAnimationCounter -= heroAnimationSpeed * timeDiff * 2;
 		if(heroAnimationCounter < 0.0f)
 			heroAnimationCounter = sideMeshes.size() - 1;
 	}
@@ -1003,7 +1003,8 @@ void CPlayerInfo::CollisionResponseCurrent(void)
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_DOWN
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_LEFT
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_RIGHT
-				&& theHeroTargetPosNode->gameObject->type != GameObject::TRAP)
+				&& theHeroTargetPosNode->gameObject->type != GameObject::TRAP
+				&& theHeroTargetPosNode->gameObject->type != GameObject::DOOR)
 			{
 				theHeroTargetPosNode = theHeroCurrentPosNode;
 				currentState = NIL;
@@ -1030,7 +1031,8 @@ void CPlayerInfo::CollisionResponseCurrent(void)
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_DOWN
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_LEFT
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_RIGHT
-				&& theHeroTargetPosNode->gameObject->type != GameObject::TRAP)
+				&& theHeroTargetPosNode->gameObject->type != GameObject::TRAP
+				&& theHeroTargetPosNode->gameObject->type != GameObject::DOOR)
 			{
 				theHeroTargetPosNode = theHeroCurrentPosNode;
 				currentState = NIL;
@@ -1058,7 +1060,8 @@ void CPlayerInfo::CollisionResponseCurrent(void)
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_DOWN
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_LEFT
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_RIGHT
-				&& theHeroTargetPosNode->gameObject->type != GameObject::TRAP)
+				&& theHeroTargetPosNode->gameObject->type != GameObject::TRAP
+				&& theHeroTargetPosNode->gameObject->type != GameObject::DOOR)
 			{
 				theHeroTargetPosNode = theHeroCurrentPosNode;
 				currentState = NIL;
@@ -1086,7 +1089,8 @@ void CPlayerInfo::CollisionResponseCurrent(void)
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_DOWN
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_LEFT
 				&& theHeroTargetPosNode->gameObject->type != GameObject::MOVE_RIGHT
-				&& theHeroTargetPosNode->gameObject->type != GameObject::TRAP)
+				&& theHeroTargetPosNode->gameObject->type != GameObject::TRAP
+				&& theHeroTargetPosNode->gameObject->type != GameObject::DOOR)
 			{
 				theHeroTargetPosNode = theHeroCurrentPosNode;
 				currentState = NIL;

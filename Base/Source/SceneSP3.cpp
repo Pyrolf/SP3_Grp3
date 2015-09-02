@@ -35,10 +35,10 @@ void SceneSP3::Init()
 	InitMinimap();
 	mysound.soundInit();
 	// Normal zombie
-	meshList[GEO_NORMAL_ZOMBIE_ATTACK_RANGE] = MeshBuilder::GenerateRing("NORMAL_ATTACK_RANGE", Color(0, 1, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 2, levelList[0]->gameObjectsManager->tileSize * 2 - 1.f);
+	meshList[GEO_NORMAL_ZOMBIE_ATTACK_RANGE] = MeshBuilder::GenerateHalfRing("NORMAL_ATTACK_RANGE", Color(0, 1, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 2, levelList[0]->gameObjectsManager->tileSize * 2 - 1.f);
 	meshList[GEO_NORMAL_ZOMBIE_REPEL_RANGE] = MeshBuilder::GenerateRing("NORMAL_REPEL_RANGE", Color(1, 0, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 0.5, levelList[0]->gameObjectsManager->tileSize * 0.5 - 1.f);
 	// Smart zombie
-	meshList[GEO_SMART_ZOMBIE_ATTACK_RANGE] = MeshBuilder::GenerateRing("SMART_ATTACK_RANGE", Color(0, 1, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 3, levelList[0]->gameObjectsManager->tileSize * 3 - 1.f);
+	meshList[GEO_SMART_ZOMBIE_ATTACK_RANGE] = MeshBuilder::GenerateHalfRing("SMART_ATTACK_RANGE", Color(0, 1, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 3, levelList[0]->gameObjectsManager->tileSize * 3 - 1.f);
 	meshList[GEO_SMART_ZOMBIE_REPEL_RANGE] = MeshBuilder::GenerateRing("SMART_REPEL_RANGE", Color(1, 0, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 0.5, levelList[0]->gameObjectsManager->tileSize * 0.5 - 1.f);
 	// Tank zombie
 	meshList[GEO_TANK_ZOMBIE_ATTACK_RANGE] = MeshBuilder::GenerateRing("TANK_ATTACK_RANGE", Color(0, 1, 0), 36.f, levelList[0]->gameObjectsManager->tileSize * 4, levelList[0]->gameObjectsManager->tileSize * 4 - 1.f);
@@ -193,21 +193,21 @@ void SceneSP3::InitLevels()
 	}
 
 	// Level 0
-	levelList[0]->m_cMap->LoadMap( "Image//level0_house.csv" );
-	levelList[0]->background = MeshBuilder::Generate2DMesh("HOUSE_LEVEL", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
-	levelList[0]->background->textureID = LoadTGA("Image//house_level0.tga");
+	//levelList[0]->m_cMap->LoadMap( "Image//level0_house.csv" );
+	//levelList[0]->background = MeshBuilder::Generate2DMesh("HOUSE_LEVEL", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
+	//levelList[0]->background->textureID = LoadTGA("Image//house_level0.tga");
 
 	// Level Darren
-	//levelList[1]->m_cMap->LoadMap( "Image//map1levelDar.csv" );
-	//levelList[1]->background = MeshBuilder::Generate2DMesh("GEO_LEVL1", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
-	//levelList[1]->background->textureID = LoadTGA("Image//map1level.tga");
+	levelList[0]->m_cMap->LoadMap( "Image//map1levelDar.csv" );
+	levelList[0]->background = MeshBuilder::Generate2DMesh("GEO_LEVL1", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
+	levelList[0]->background->textureID = LoadTGA("Image//map1level.tga");
 
 	// Level 2
 	/*levelList[2]->m_cMap->LoadMap( "Image//MapDesignLv2.csv" );
 	levelList[2]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL2", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
 	levelList[2]->background->textureID = LoadTGA("Image//level2_background.tga");*/
 
-	//// Level 3
+	// Level 3
 	/*levelList[0]->m_cMap->LoadMap( "Image//MapDesignLv3.csv" );
 	levelList[0]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL3", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
 	levelList[0]->background->textureID = LoadTGA("Image//level3_background.tga");*/
@@ -1287,13 +1287,55 @@ void SceneSP3::RenderEnemies()
 			{
 			case CZombie::NORMAL:
 				{
-					Render2DMesh(meshList[GEO_NORMAL_ZOMBIE_ATTACK_RANGE], false, 1.0f, zombie->GetPos().x - currentLevel->gameObjectsManager->tileSize * 0.5, zombie->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, true);
+					modelStack.PushMatrix();
+					
+					modelStack.Translate(zombie->GetPos().x + currentLevel->gameObjectsManager->tileSize * 0.5, zombie->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, 0);
+					modelStack.Rotate(180, 0, 1, 0);
+
+					if(zombie->GetAnimationDirection() == CZombie::DOWN)
+					{
+						modelStack.Rotate(180, 0, 0, 1);
+					}
+					else if(zombie->GetAnimationDirection() == CZombie::LEFT)
+					{
+						modelStack.Rotate(-90, 0, 0, 1);
+					}
+					else if(zombie->GetAnimationDirection() == CZombie::RIGHT)
+					{
+						modelStack.Rotate(90, 0, 0, 1);
+					}
+
+					Render2DMesh(meshList[GEO_NORMAL_ZOMBIE_ATTACK_RANGE], false, 1.0f, 0, 0);
+
+					modelStack.PopMatrix();
+
 					Render2DMesh(meshList[GEO_NORMAL_ZOMBIE_REPEL_RANGE], false, 1.0f, zombie->GetPos().x - currentLevel->gameObjectsManager->tileSize * 0.5, zombie->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, true);
 				}
 				break;
 			case CZombie::SMART:
 				{
-					Render2DMesh(meshList[GEO_SMART_ZOMBIE_ATTACK_RANGE], false, 1.0f, zombie->GetPos().x - currentLevel->gameObjectsManager->tileSize * 0.5, zombie->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, true);
+					modelStack.PushMatrix();
+					
+					modelStack.Translate(zombie->GetPos().x + currentLevel->gameObjectsManager->tileSize * 0.5, zombie->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, 0);
+					modelStack.Rotate(180, 0, 1, 0);
+
+					if(zombie->GetAnimationDirection() == CZombie::DOWN)
+					{
+						modelStack.Rotate(180, 0, 0, 1);
+					}
+					else if(zombie->GetAnimationDirection() == CZombie::LEFT)
+					{
+						modelStack.Rotate(-90, 0, 0, 1);
+					}
+					else if(zombie->GetAnimationDirection() == CZombie::RIGHT)
+					{
+						modelStack.Rotate(90, 0, 0, 1);
+					}
+
+					Render2DMesh(meshList[GEO_SMART_ZOMBIE_ATTACK_RANGE], false, 1.0f, 0,0);
+					
+					modelStack.PopMatrix();
+
 					Render2DMesh(meshList[GEO_SMART_ZOMBIE_REPEL_RANGE], false, 1.0f, zombie->GetPos().x - currentLevel->gameObjectsManager->tileSize * 0.5, zombie->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, true);
 				}break;
 			case CZombie::TANK:
