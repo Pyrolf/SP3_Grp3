@@ -8,6 +8,7 @@
 #include "LoadTGA.h"
 #include <sstream>
 
+static bool soundingplay = false;
 
 SceneSP3::SceneSP3()
 	: gameState(MAINMENU)
@@ -192,9 +193,9 @@ void SceneSP3::InitLevels()
 	}
 
 	// Level 0
-	//levelList[0]->m_cMap->LoadMap( "Image//level0_house.csv" );
-	//levelList[0]->background = MeshBuilder::Generate2DMesh("HOUSE_LEVEL", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
-	//levelList[0]->background->textureID = LoadTGA("Image//house_level0.tga");
+	levelList[0]->m_cMap->LoadMap( "Image//level0_house.csv" );
+	levelList[0]->background = MeshBuilder::Generate2DMesh("HOUSE_LEVEL", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
+	levelList[0]->background->textureID = LoadTGA("Image//house_level0.tga");
 
 	// Level Darren
 	//levelList[1]->m_cMap->LoadMap( "Image//map1levelDar.csv" );
@@ -207,9 +208,9 @@ void SceneSP3::InitLevels()
 	levelList[2]->background->textureID = LoadTGA("Image//level2_background.tga");*/
 
 	//// Level 3
-	levelList[0]->m_cMap->LoadMap( "Image//MapDesignLv3.csv" );
+	/*levelList[0]->m_cMap->LoadMap( "Image//MapDesignLv3.csv" );
 	levelList[0]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL3", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
-	levelList[0]->background->textureID = LoadTGA("Image//level3_background.tga");
+	levelList[0]->background->textureID = LoadTGA("Image//level3_background.tga");*/
 
 	
 
@@ -279,6 +280,8 @@ void SceneSP3::UpdateInputs(double dt)
 			if(this->theHero->GetCurrentState() == this->theHero->NIL && gameState == PLAYING)
 			{
 				gameState = PAUSE;
+				mysound.engine->setAllSoundsPaused(true);
+				mysound.engine2->setAllSoundsPaused(true);
 				//mysound.playSound(Sound::PAUSE);
 			}
 		}
@@ -510,6 +513,8 @@ void SceneSP3::UpdateInputs(double dt)
 				if(choice == PLAY)
 				{
 					gameState = PLAYING;
+					mysound.engine->setAllSoundsPaused(false);
+					mysound.engine2->setAllSoundsPaused(false);
 				}
 				else if(choice == QUIT)
 				{
@@ -522,6 +527,9 @@ void SceneSP3::UpdateInputs(double dt)
 					blackout.Reset();
 
 					isLevelSelect = false;
+					mysound.engine->stopAllSounds();
+					mysound.engine2->stopAllSounds();
+					soundingplay = false;
 				}
 				mysound.playSound(Sound::MENU_ENTER);
 			}
@@ -664,15 +672,13 @@ void SceneSP3::RenderHighscore()
 
 void SceneSP3::Update(double dt)
 {
-	static bool soundplaying = false;
-	static bool soundingplay = false;
-	
 	if(gameState == ENDING)
 	{
 		theHero->SetPos_y(theHero->GetPos().y - 400 * dt);
 		if(theHero->GetPos().y < -300)
 		{
 			gameState = GAMEOVER;
+			mysound.engine2->stopAllSounds();
 		}
 	}
 	else
@@ -716,9 +722,12 @@ void SceneSP3::Update(double dt)
 						}
 						else
 						{
+							mysound.engine2->stopAllSounds();
+							soundingplay = false;
 							theHero->SetPos_x(512 - 32);
 							theHero->SetPos_y(768);
 							gameState = ENDING;
+							mysound.playSound(Sound::FALLINGENDING);
 							return;
 						}
 					}
@@ -734,12 +743,13 @@ void SceneSP3::Update(double dt)
 			{
 				// Gameover
 				gameState = GAMEOVER;
+				mysound.engine2->stopAllSounds();
 				theHero->SetTimeElasped(0.0f);
-				mysound.playSound(Sound::GAMEOVER);
+				//mysound.playSound(Sound::GAMEOVER);
 			}
 		}
 
-		theHero->HeroUpdate(dt, currentLevel->AI_Manager, currentLevel->gameObjectsManager, currentLevel->m_cMap);
+		theHero->HeroUpdate(dt, currentLevel->AI_Manager, currentLevel->gameObjectsManager, currentLevel->m_cMap, mysound);
 
 		//Enemies
 		for(vector<CZombie *>::iterator it = currentLevel->AI_Manager->zombieList.begin(); it != currentLevel->AI_Manager->zombieList.end(); ++it)
@@ -757,6 +767,7 @@ void SceneSP3::Update(double dt)
 						{
 							this->theHero->SetCurrentState(CPlayerInfo::DYING);
 							theHero->SetAnimationCounter(0.0f);
+							mysound.playSound(Sound::PLAYER_DYING);
 						}
 						else
 						{
@@ -813,7 +824,7 @@ void SceneSP3::RenderBackground()
 void SceneSP3::Render()
 {
 	SceneBase::Render();
-	static bool soundplayed = false;
+	//static bool soundplayed = false;
 	glDisable(GL_DEPTH_TEST);
 	switch(gameState)
 	{
@@ -843,11 +854,7 @@ void SceneSP3::Render()
 			{
 				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 10, 10);
 			}
-			if(!soundplayed && gameState == MAINMENU)        // main menu sound
-			{
-				
-				soundplayed = true;
-			}
+			
 		}
 		break;
 	case LEVEL_SELECTOR:
@@ -875,10 +882,7 @@ void SceneSP3::Render()
 			{
 				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 15, 10);
 			}
-			if(!soundplayed)        // main menu sound
-			{
-				soundplayed = true;
-			}
+
 		}
 		break;
 	case HIGHSCORE:

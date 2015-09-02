@@ -106,7 +106,7 @@ public:
 	void MoveLeftRight(const bool mode, CAIManager* ai_manager, int tileSize);
 
 	// Hero Update
-	void HeroUpdate(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager, CMap* map);
+	void HeroUpdate(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager, CMap* map, Sound UpdateSound);
 
 	void knockBackEnabled(Vector3 AI_Pos, CAIManager* ai_manager, int tileSize);
 
@@ -114,7 +114,7 @@ public:
 	void moveAnimation(float timeDiff, Vector3 prevPos);
 	
 	void attackingEnabled();
-	void Attacking(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager);//, Sound Soundname);
+	void Attacking(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager, Sound Soundname);
 	
 	bool CheckCollisionTarget(CAIManager* ai_manager, int tileSize);
 	bool CheckCollisionCurrent(void);
