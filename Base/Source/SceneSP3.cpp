@@ -193,10 +193,6 @@ void SceneSP3::InitLevels()
 	}
 
 	// Level 0
-	/*levelList[0]->m_cMap->LoadMap( "Image//level0_house.csv" );
-	levelList[0]->background = MeshBuilder::Generate2DMesh("HOUSE_LEVEL", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
-	levelList[0]->background->textureID = LoadTGA("Image//house_level0.tga");*/
-
 	//levelList[0]->m_cMap->LoadMap( "Image//level0_house.csv" );
 	//levelList[0]->background = MeshBuilder::Generate2DMesh("HOUSE_LEVEL", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
 	//levelList[0]->background->textureID = LoadTGA("Image//house_level0.tga");
