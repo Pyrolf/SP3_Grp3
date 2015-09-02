@@ -13,7 +13,10 @@ Sound::~Sound()
 void Sound::soundInit()
 {
 	engine = createIrrKlangDevice();
+	engine2 = createIrrKlangDevice();
 	if(!engine)
+		return;
+	if(!engine2)
 		return;
 	return;
 }
@@ -31,31 +34,56 @@ void Sound::playSound(SOUND_TYPE sound_type)
 	case MENU_ENTER:
 		engine->play2D("../media/select.mp3");
 		break;
-	case MENUMUSIC:
-		engine->play2D("../media/mainmenu.mp3",true);
-		break;
-	case PAUSE:
-		engine->play2D("../media/S_SDI_00006.wav");
-		break;
 	case GAMEPLAYING:
-		engine->play2D("../media/playingsound.mp3", true);
+		engine2->play2D("../media/playingbg.mp3", true);
 		break;
-	case MOVING:
-		engine->play2D("../media/");
+	case WATER_SPLASH:
+		engine->play2D("../media/splash.wav");
 		break;
-	case STOPPLAY:
-		engine->stopAllSounds();
+	case HACK_FAILURE:
+		engine->play2D("../media/windowserror.mp3");
+		break;
+	case HACK_SUCCESS:
+		engine->play2D("../media/hacksuccess.mp3");		
+		break;
+	case DOOR_OPEN:
+		engine->play2D("../media/Unlock.mp3");
+		break;
+	case FALLINGENDING:
+		engine2->play2D("../media/gameover4me.mp3");
+		break;
+	case PLAYER_DYING:
+		engine->play2D("../media/Hl2_Rebel-Ragdoll485-573931361.mp3");
+		break;
+	case ZOMBIE_DAMAGED:
+		engine->play2D("../media/zombie_attack.mp3");
+		break;
+	case PLAYER_DAMAGED:
+		engine->play2D("../media/grunt.wav");
+		break;
+	case MAINMENU:
+		engine2->play2D("../media/mainmenu.mp3", true);
+		break;
+	case FOOTSTEP:
+		engine->play2D("../media/walking.mp3", true);
 		break;
 	}
 }
 
+
 void Sound::exiting()
 {
 	engine->stopAllSounds();
+	engine2->stopAllSounds();
 	if(engine)
 	{
 		delete engine;
 		engine = NULL;
+	}
+	if(engine2)
+	{
+		delete engine2;
+		engine2 = NULL;
 	}
 
 }

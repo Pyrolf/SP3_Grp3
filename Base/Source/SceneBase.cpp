@@ -259,9 +259,9 @@ void SceneBase::Init()
 	meshList[GEO_MAGMA]->textureID = LoadTGA("Image//tile2_magma.tga");
 	meshList[GEO_DOOR] = MeshBuilder::Generate2DMesh("GEO_DOOR", Color(1, 1, 1), 0.0f, 0.0f, 64.0f, 64.0f);
 	meshList[GEO_DOOR]->textureID = LoadTGA("Image//tile3_door.tga");
-	meshList[GEO_LIVE_1] = MeshBuilder::Generate2DMesh("GEO_LIVE_red", Color(5, 0, 0), 0.0f, 0.0f, 6.0f, 7.0f);
-	meshList[GEO_LIVE_2] = MeshBuilder::Generate2DMesh("GEO_LIVE_orange", Color(3, 3, 0), 0.0f, 0.0f, 6.0f, 7.0f);
-	meshList[GEO_LIVE_3] = MeshBuilder::Generate2DMesh("GEO_LIVE_green", Color(0, 5, 0), 0.0f, 0.0f, 6.0f, 7.0f);
+	meshList[GEO_LIVE_1] = MeshBuilder::Generate2DMesh("GEO_LIVE_red", Color(5, 0, 0), 0.0f, 0.0f, 5.0f, 2.0f);
+	meshList[GEO_LIVE_2] = MeshBuilder::Generate2DMesh("GEO_LIVE_orange", Color(3, 3, 0), 0.0f, 0.0f, 5.0f, 2.0f);
+	meshList[GEO_LIVE_3] = MeshBuilder::Generate2DMesh("GEO_LIVE_green", Color(0, 5, 0), 0.0f, 0.0f, 5.0f, 2.0f);
 	//meshList[GEO_LIVE]->textureID = LoadTGA("Image//health.tga");
 	meshList[GEO_HEALTH_BAR] = MeshBuilder::Generate2DMesh("GEO_HEALTH_BAR", Color(1, 1, 1), 0.0f, 0.0f, 18.f, 10.f);
 	meshList[GEO_HEALTH_BAR]->textureID = LoadTGA("Image//healthbar.tga");
@@ -496,9 +496,9 @@ void SceneBase::Render2DMesh(Mesh *mesh, bool enableLight, float size, float x, 
 	}
 	if(rotateZ != 0.0f)
 	{
-		modelStack.Translate(32, 0, 0);
+		modelStack.Translate(32, 32, 0);
 		modelStack.Rotate(rotateZ, 0, 0, 1);
-		modelStack.Translate(-32, 0, 0);
+		modelStack.Translate(-32, -32, 0);
 	}
 	modelStack.Scale(size, size, size);
 

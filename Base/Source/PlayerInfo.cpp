@@ -374,11 +374,11 @@ void CPlayerInfo::MoveLeftRight(const bool mode, CAIManager* ai_manager, int til
 	}
 }
 
-
+static bool soundplaying = false;
 /********************************************************************************
 Hero Update
 ********************************************************************************/
-void CPlayerInfo::HeroUpdate(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager, CMap* map)
+void CPlayerInfo::HeroUpdate(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager, CMap* map, Sound UpdateSound)
 {
 	if(currentState != DYING)
 	{
@@ -392,7 +392,7 @@ void CPlayerInfo::HeroUpdate(float timeDiff, CAIManager* ai_manager, GameObjectF
 			break;
 		case CPlayerInfo::ATTACKING:
 			{
-				Attacking(timeDiff, ai_manager, go_manager);
+				Attacking(timeDiff, ai_manager, go_manager, UpdateSound);
 			}
 			break;
 		default:
@@ -400,7 +400,25 @@ void CPlayerInfo::HeroUpdate(float timeDiff, CAIManager* ai_manager, GameObjectF
 				Vector3 HeroPrevPos = theHeroPosition;
 				moving(timeDiff, map);
 				if(currentState == MOVING)
+				{
 					moveAnimation(timeDiff, HeroPrevPos);
+					if(!soundplaying)
+					{
+						UpdateSound.playSound(Sound::FOOTSTEP);
+						soundplaying = true;
+					}
+				}
+				else
+				{
+					if(timeElasped  <= 1.f)
+					{
+						timeElasped += 0.1f * timeDiff;
+						UpdateSound.engine->stopAllSounds();
+						soundplaying = false;
+					}
+					timeElasped = 0.f;
+				}
+					
 			}
 			break;
 		}
@@ -686,7 +704,7 @@ void CPlayerInfo::attackingEnabled()
 	this->heroAnimationCounter = 0.0f;
 }
 
-void CPlayerInfo::Attacking(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager)
+void CPlayerInfo::Attacking(float timeDiff, CAIManager* ai_manager, GameObjectFactory* go_manager, Sound Soundname)
 {
 	float PrevHeroAnimationCounter = heroAnimationCounter;
 	heroAnimationCounter += heroAnimationSpeed * 1 * timeDiff;
@@ -754,6 +772,7 @@ void CPlayerInfo::Attacking(float timeDiff, CAIManager* ai_manager, GameObjectFa
 						ai_manager->zombieList[i]->CalculateVel();
 						ai_manager->zombieList[i]->SetCurrentMode(CZombie::ATTACK);
 						ai_manager->zombieList[i]->SetTime(0.1f);
+						Soundname.playSound(Sound::ZOMBIE_DAMAGED);
 						// Minus 1 health
 						ai_manager->zombieList[i]->SetHealth(ai_manager->zombieList[i]->GetHealth() - 1);
 						if(ai_manager->zombieList[i]->GetHealth() == 0)

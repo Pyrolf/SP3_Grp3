@@ -8,6 +8,7 @@
 #include "LoadTGA.h"
 #include <sstream>
 
+static bool soundingplay = false;
 
 SceneSP3::SceneSP3()
 	: gameState(MAINMENU)
@@ -183,7 +184,7 @@ void SceneSP3::InitMinimap()
 void SceneSP3::InitLevels()
 {
 	// Initialise and load the tile map
-	const int noOfLevel = 4;
+	const int noOfLevel = 1;
 	for(int i = 0; i < noOfLevel; i++)
 	{
 		levelList.push_back(new Level);
@@ -191,19 +192,27 @@ void SceneSP3::InitLevels()
 		levelList[i]->m_cMap->Init( 768 + 64, 1024, 12 + 1, 16, 3200 + 64, 3200, 64);
 	}
 
-	// Level 1
-	//levelList[0]->m_cMap->LoadMap( "Image//MapDesignLv1.csv" );
-	//levelList[0]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL1", Color(1, 1, 1), 0.0f, 0.0f, 2048, 3200);
-	//levelList[0]->background->textureID = LoadTGA("Image//level1_background.tga");
-	// Level 2
-	levelList[2]->m_cMap->LoadMap( "Image//MapDesignLv2.csv" );
-	levelList[2]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL2", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
-	levelList[2]->background->textureID = LoadTGA("Image//level2_background.tga");
-	// Level 3
-	levelList[3]->m_cMap->LoadMap( "Image//MapDesignLv3.csv" );
-	levelList[3]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL3", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
-	levelList[3]->background->textureID = LoadTGA("Image//level3_background.tga");
+	// Level 0
+	levelList[0]->m_cMap->LoadMap( "Image//level0_house.csv" );
+	levelList[0]->background = MeshBuilder::Generate2DMesh("HOUSE_LEVEL", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
+	levelList[0]->background->textureID = LoadTGA("Image//house_level0.tga");
 
+	// Level Darren
+	//levelList[1]->m_cMap->LoadMap( "Image//map1levelDar.csv" );
+	//levelList[1]->background = MeshBuilder::Generate2DMesh("GEO_LEVL1", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
+	//levelList[1]->background->textureID = LoadTGA("Image//map1level.tga");
+
+	// Level 2
+	/*levelList[2]->m_cMap->LoadMap( "Image//MapDesignLv2.csv" );
+	levelList[2]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL2", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
+	levelList[2]->background->textureID = LoadTGA("Image//level2_background.tga");*/
+
+	//// Level 3
+	/*levelList[0]->m_cMap->LoadMap( "Image//MapDesignLv3.csv" );
+	levelList[0]->background = MeshBuilder::Generate2DMesh("GEO_BACKGROUND_LEVEL3", Color(1, 1, 1), 0.0f, 0.0f, 3200, 3200);
+	levelList[0]->background->textureID = LoadTGA("Image//level3_background.tga");*/
+
+	
 
 	for(int i = 0; i < noOfLevel; i++)
 	{
@@ -271,7 +280,9 @@ void SceneSP3::UpdateInputs(double dt)
 			if(this->theHero->GetCurrentState() == this->theHero->NIL && gameState == PLAYING)
 			{
 				gameState = PAUSE;
-				mysound.playSound(Sound::PAUSE);
+				mysound.engine->setAllSoundsPaused(true);
+				mysound.engine2->setAllSoundsPaused(true);
+				//mysound.playSound(Sound::PAUSE);
 			}
 		}
 
@@ -419,7 +430,7 @@ void SceneSP3::UpdateInputs(double dt)
 				switch(choice)
 				{
 				case NONE:
-					choice = EXIT;
+					choice = PLAY;
 					break;
 				case PLAY:
 					choice = EXIT;
@@ -502,6 +513,8 @@ void SceneSP3::UpdateInputs(double dt)
 				if(choice == PLAY)
 				{
 					gameState = PLAYING;
+					mysound.engine->setAllSoundsPaused(false);
+					mysound.engine2->setAllSoundsPaused(false);
 				}
 				else if(choice == QUIT)
 				{
@@ -514,6 +527,9 @@ void SceneSP3::UpdateInputs(double dt)
 					blackout.Reset();
 
 					isLevelSelect = false;
+					mysound.engine->stopAllSounds();
+					mysound.engine2->stopAllSounds();
+					soundingplay = false;
 				}
 				mysound.playSound(Sound::MENU_ENTER);
 			}
@@ -668,18 +684,20 @@ void SceneSP3::RenderHighscore()
 
 void SceneSP3::Update(double dt)
 {
-	static bool soundplaying = false;
-	static bool soundingplay = false;
-	UpdateInputs(dt);
-
-	if(gameState == MAINMENU)
+	if(gameState == ENDING)
 	{
-		//if(!soundplaying)        // main menu sound
-		//{
-		//	mysound.playSound(Sound::MENUMUSIC);
-		//	soundplaying = true;
-		//}		
+		theHero->SetPos_y(theHero->GetPos().y - 400 * dt);
+		if(theHero->GetPos().y < -300)
+		{
+			gameState = GAMEOVER;
+			mysound.engine2->stopAllSounds();
+		}
 	}
+	else
+	{
+		UpdateInputs(dt);
+	}
+
 	if(gameState == PLAYING)
 	{
 		if(!soundingplay)        // main menu sound
@@ -716,8 +734,13 @@ void SceneSP3::Update(double dt)
 						}
 						else
 						{
-							gameState = GAMEOVER;
-							break;
+							mysound.engine2->stopAllSounds();
+							soundingplay = false;
+							theHero->SetPos_x(512 - 32);
+							theHero->SetPos_y(768);
+							gameState = ENDING;
+							mysound.playSound(Sound::FALLINGENDING);
+							return;
 						}
 					}
 				}
@@ -732,11 +755,13 @@ void SceneSP3::Update(double dt)
 			{
 				// Gameover
 				gameState = GAMEOVER;
+				mysound.engine2->stopAllSounds();
 				theHero->SetTimeElasped(0.0f);
+				//mysound.playSound(Sound::GAMEOVER);
 			}
 		}
 
-		theHero->HeroUpdate(dt, currentLevel->AI_Manager, currentLevel->gameObjectsManager, currentLevel->m_cMap);
+		theHero->HeroUpdate(dt, currentLevel->AI_Manager, currentLevel->gameObjectsManager, currentLevel->m_cMap, mysound);
 
 		//Enemies
 		for(vector<CZombie *>::iterator it = currentLevel->AI_Manager->zombieList.begin(); it != currentLevel->AI_Manager->zombieList.end(); ++it)
@@ -754,11 +779,13 @@ void SceneSP3::Update(double dt)
 						{
 							this->theHero->SetCurrentState(CPlayerInfo::DYING);
 							theHero->SetAnimationCounter(0.0f);
+							mysound.playSound(Sound::PLAYER_DYING);
 						}
 						else
 						{
 							this->theHero->knockBackEnabled(zombie->GetVel(), currentLevel->AI_Manager, currentLevel->gameObjectsManager->tileSize);
 							this->theHero->SetJustGotDamged(true);
+							mysound.playSound(Sound::PLAYER_DAMAGED);
 						}
 					}
 					zombie->SetHitHero(false);
@@ -809,7 +836,7 @@ void SceneSP3::RenderBackground()
 void SceneSP3::Render()
 {
 	SceneBase::Render();
-	static bool soundplayed = false;
+	//static bool soundplayed = false;
 	glDisable(GL_DEPTH_TEST);
 	switch(gameState)
 	{
@@ -891,7 +918,8 @@ void SceneSP3::Render()
 		break;
 	case GETTINGPLAYERNAME:
 		{
-			RenderTextOnScreen(meshList[GEO_TEXT], tempName, Color(1,1,1), 2.5, 13, 20);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Press enter your name:", Color(1, 1, 1), 3, 5, 30);
+			RenderTextOnScreen(meshList[GEO_TEXT], tempName, Color(1,1,1), 2.5, 10, 20);
 		}
 		break;
 	case PAUSE:
@@ -910,6 +938,18 @@ void SceneSP3::Render()
 			{
 				RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(1, 1, 1), 5, 15, 10);
 			}
+		}
+		break;
+	case ENDING:
+		{
+			RenderTextOnScreen(meshList[GEO_TEXT], "DARREN", Color(1, 1, 1), 2, 45, theHero->GetPos().y / 12.8 + 20);
+			RenderTextOnScreen(meshList[GEO_TEXT], "IVAN", Color(1, 1, 1), 2, 45, theHero->GetPos().y / 12.8 + 15);
+			RenderTextOnScreen(meshList[GEO_TEXT], "GREGORY(LEADER)", Color(1, 1, 1), 2, 45, theHero->GetPos().y / 12.8 + 10);
+
+			RenderTextOnScreen(meshList[GEO_TEXT], "CREDITS:", Color(1, 1, 1), 2.5, 15, theHero->GetPos().y / 12.8 + 10);
+
+
+			Render2DMesh(theHero->backMeshes[0], false, 1.0f, theHero->GetPos().x, theHero->GetPos().y, false, theHero->GetPos().y);
 		}
 		break;
 	case GAMEOVER:
@@ -1276,16 +1316,16 @@ void SceneSP3::RenderEnemies()
 			switch(zombie->zombie_type)
 			{
 			case CZombie::NORMAL:
-				Render2DMesh(meshList[GEO_NORMAL_ZOMBIE_BACK_0], false, 1.0f, zombie->GetPos().x + currentLevel->gameObjectsManager->tileSize * 0.5, zombie->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, false, 90.f);
+				Render2DMesh(meshList[GEO_NORMAL_ZOMBIE_BACK_0], false, 1.0f, zombie->GetPos().x, zombie->GetPos().y, false, 90.f);
 				break;
 			case CZombie::SMART:
-				Render2DMesh(meshList[GEO_SMART_ZOMBIE_BACK_0], false, 1.0f, zombie->GetPos().x + currentLevel->gameObjectsManager->tileSize * 0.5, zombie->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, false, 90.f);
+				Render2DMesh(meshList[GEO_SMART_ZOMBIE_BACK_0], false, 1.0f, zombie->GetPos().x, zombie->GetPos().y, false, 90.f);
 				break;
 			case CZombie::TANK:
-				Render2DMesh(meshList[GEO_TANK_ZOMBIE_BACK_0], false, 1.0f, zombie->GetPos().x + currentLevel->gameObjectsManager->tileSize * 0.5, zombie->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, false, 90.f);
+				Render2DMesh(meshList[GEO_TANK_ZOMBIE_BACK_0], false, 1.0f, zombie->GetPos().x, zombie->GetPos().y, false, 90.f);
 				break;
 			case CZombie::HUNTER:
-				Render2DMesh(meshList[GEO_HUNTER_ZOMBIE_BACK_0], false, 1.0f, zombie->GetPos().x + currentLevel->gameObjectsManager->tileSize * 0.5, zombie->GetPos().y + currentLevel->gameObjectsManager->tileSize * 0.5, false, 90.f);
+				Render2DMesh(meshList[GEO_HUNTER_ZOMBIE_BACK_0], false, 1.0f, zombie->GetPos().x, zombie->GetPos().y, false, 90.f);
 				break;
 			}
 		}
@@ -1302,11 +1342,11 @@ void SceneSP3::RenderGUI()
 	for(int i = 0; i < theHero->GetHealth(); ++i)
 	{
 		if(theHero->GetHealth() == 1)
-			RenderMeshIn2D(meshList[GEO_LIVE_1], false, 1.0f, -69 + 7 * i, 69.5);
+			RenderMeshIn2D(meshList[GEO_LIVE_1], false, 1.0f, -58 + 5 * i, 72);
 		if(theHero->GetHealth() == 2)
-			RenderMeshIn2D(meshList[GEO_LIVE_2], false, 1.0f, -69 + 7 * i, 69.5);
+			RenderMeshIn2D(meshList[GEO_LIVE_2], false, 1.0f, -58 + 5 * i, 72);
 		if(theHero->GetHealth() == 3)
-			RenderMeshIn2D(meshList[GEO_LIVE_3], false, 1.0f, -69 + 7 * i, 69.5);
+			RenderMeshIn2D(meshList[GEO_LIVE_3], false, 1.0f, -58 + 5 * i, 72);
 	}
 
 	////////////////////////FLASHLIGHT UI BY IVAN DO NOT TOUCH//////////////////////////////////
